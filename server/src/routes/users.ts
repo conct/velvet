@@ -126,7 +126,7 @@ usersRouter.get("/me/venues", requireAuth, requireUser, async (req, res) => {
   // never in a sandbox guest's.
   const filters = world(await worldOf(req.auth!.sub));
   const relationships = await prisma.venueRelationship.findMany({
-    where: { userId: req.auth!.sub, ...filters.venue },
+    where: { userId: req.auth!.sub, hiddenAt: null, ...filters.venue },
     include: { venue: true },
     orderBy: { lastVisitAt: "desc" },
   });
@@ -139,4 +139,23 @@ usersRouter.get("/me/venues", requireAuth, requireUser, async (req, res) => {
       localFlag: r.localFlag,
     }))
   );
+});
+
+// One-way on purpose: there is no counterpart to un-hide. Someone going
+// through a guest's phone must not be able to reveal a location again by
+// toggling it back, so restoring one is a support action
+// (server/scripts/unhide-venue.ts). See lib/hidden-venues.ts for what hiding
+// does and deliberately does not change.
+usersRouter.post("/me/venues/:venueId/hide", requireAuth, requireUser, async (req, res) => {
+  const relationship = await prisma.venueRelationship.findUnique({
+    where: { userId_venueId: { userId: req.auth!.sub, venueId: req.params.venueId } },
+  });
+  if (!relationship) return res.status(404).json({ error: t(req.locale, "users.venueNotInHistory") });
+  if (relationship.hiddenAt) return res.json({ ok: true });
+
+  await prisma.venueRelationship.update({
+    where: { id: relationship.id },
+    data: { hiddenAt: new Date() },
+  });
+  res.json({ ok: true });
 });

@@ -14,6 +14,7 @@
     "verify-venue": "tsx scripts/verify-venue.ts",
     "set-platform-admin": "tsx scripts/set-platform-admin.ts",
     "set-demo": "tsx scripts/set-demo.ts",
+    "unhide-venue": "tsx scripts/unhide-venue.ts",
     "backfill:staff-venue": "tsx scripts/backfill-staff-venue.ts",
     "send-email": "tsx scripts/send-email.ts",
     "verify-instagram": "tsx scripts/verify-instagram.ts",

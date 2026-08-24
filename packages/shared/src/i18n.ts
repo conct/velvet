@@ -526,6 +526,12 @@ export interface Translations {
       visitsPlural: string;
       flagVip: string;
       flagBanned: string;
+      hide: string;
+      hideConfirmTitle: string;
+      hideConfirmBody: string;
+      hideConfirmAction: string;
+      hideCancel: string;
+      hideFailed: string;
     };
     staffScanner: {
       scanFailed: string;
@@ -1276,6 +1282,13 @@ const de: Translations = {
       visitsPlural: "Besuche",
       flagVip: "VIP hier",
       flagBanned: "Hausverbot",
+      hide: "Ausblenden",
+      hideConfirmTitle: "Location dauerhaft ausblenden?",
+      hideConfirmBody:
+        "Diese Location verschwindet aus deiner Historie, und niemand kann dich über sie in den Premium-Kontakten finden. Das lässt sich in der App nicht rückgängig machen — nur der Support kann sie zurückholen.\n\nDeine Bewertungen von dort zählen weiter für deinen Status, und die Location selbst behält ihre eigenen Aufzeichnungen.",
+      hideConfirmAction: "Dauerhaft ausblenden",
+      hideCancel: "Abbrechen",
+      hideFailed: "Ausblenden fehlgeschlagen",
     },
     staffScanner: {
       scanFailed: "Scan fehlgeschlagen",
@@ -2181,6 +2194,13 @@ const en: Translations = {
       visitsPlural: "visits",
       flagVip: "VIP here",
       flagBanned: "Banned",
+      hide: "Hide",
+      hideConfirmTitle: "Hide this location for good?",
+      hideConfirmBody:
+        "It disappears from your history, and nobody can find you through it in Premium contacts. You cannot undo this in the app — only support can bring it back.\n\nRatings from there still count towards your status, and the location keeps its own records.",
+      hideConfirmAction: "Hide permanently",
+      hideCancel: "Cancel",
+      hideFailed: "Could not hide it",
     },
     staffScanner: {
       scanFailed: "Scan failed",
@@ -3087,6 +3107,13 @@ const pl: Translations = {
       visitsPlural: "wizyt",
       flagVip: "VIP tutaj",
       flagBanned: "Zakaz wstępu",
+      hide: "Ukryj",
+      hideConfirmTitle: "Ukryć lokal na stałe?",
+      hideConfirmBody:
+        "Zniknie z Twojej historii i nikt nie znajdzie Cię przez niego w kontaktach Premium. W aplikacji nie da się tego cofnąć — tylko wsparcie może go przywrócić.\n\nOceny stamtąd nadal liczą się do Twojego statusu, a lokal zachowuje własne zapisy.",
+      hideConfirmAction: "Ukryj na stałe",
+      hideCancel: "Anuluj",
+      hideFailed: "Nie udało się ukryć",
     },
     staffScanner: {
       scanFailed: "Skanowanie nie powiodło się",
@@ -3992,6 +4019,13 @@ const es: Translations = {
       visitsPlural: "visitas",
       flagVip: "VIP aquí",
       flagBanned: "Vetado",
+      hide: "Ocultar",
+      hideConfirmTitle: "¿Ocultar el local para siempre?",
+      hideConfirmBody:
+        "Desaparece de tu historial y nadie podrá encontrarte a través de él en los contactos Premium. No puedes deshacerlo en la app — solo soporte puede recuperarlo.\n\nLas valoraciones de allí siguen contando para tu estado, y el local conserva sus propios registros.",
+      hideConfirmAction: "Ocultar para siempre",
+      hideCancel: "Cancelar",
+      hideFailed: "No se pudo ocultar",
     },
     staffScanner: {
       scanFailed: "Error al escanear",

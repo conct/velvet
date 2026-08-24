@@ -98,6 +98,11 @@ model VenueRelationship {
   lastVisitAt DateTime?
   localFlag   String    @default("NONE") // "NONE" | "VIP" | "BANNED"
   privateNote String?   @db.Text
+  // Set when the guest hides this location from their own history (see
+  // POST /users/me/venues/:venueId/hide). Deliberately one-directional and
+  // one-way: it changes nothing about the venue's own records or the guest's
+  // trust score, and only support can clear it again.
+  hiddenAt    DateTime?
 
   user  User  @relation(fields: [userId], references: [id])
   venue Venue @relation(fields: [venueId], references: [id])

@@ -53,6 +53,7 @@ interface Translations {
   "users.noImageProvided": string;
   "users.photoRequirementsNotMet": string;
   "users.invalidImageType": string;
+  "users.venueNotInHistory": string;
 
   "venues.noChangesProvided": string;
   "venues.emailAlreadyTaken": string;
@@ -144,6 +145,7 @@ const de: Translations = {
   "users.noImageProvided": "Kein Bild übermittelt",
   "users.photoRequirementsNotMet": "Foto erfüllt die Anforderungen nicht",
   "users.invalidImageType": "Nur JPEG, PNG oder WebP erlaubt",
+  "users.venueNotInHistory": "Diese Location ist nicht in deiner Historie",
 
   "venues.noChangesProvided": "Keine Änderungen übergeben",
   "venues.emailAlreadyTaken": "E-Mail bereits vergeben",
@@ -244,6 +246,7 @@ const en: Translations = {
   "users.noImageProvided": "No image provided",
   "users.photoRequirementsNotMet": "Photo doesn't meet the requirements",
   "users.invalidImageType": "Only JPEG, PNG, or WebP allowed",
+  "users.venueNotInHistory": "This location is not in your history",
 
   "venues.noChangesProvided": "No changes provided",
   "venues.emailAlreadyTaken": "Email already taken",

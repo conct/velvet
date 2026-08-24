@@ -285,6 +285,48 @@ serverseitig greifen — direkt danach getestete SMTP-Auth kann kurz mit `535
 Authentication failed` fehlschlagen, obwohl das Passwort korrekt ist. Vor
 einem erneuten Reset lieber 10-15s warten und nochmal testen.
 
+## Ausgeblendete Locations
+
+Gäste können eine Location aus ihrer eigenen Historie nehmen — ein
+Fetischclub, eine queere Bar, was auch immer man nicht auf einem Handy
+gelistet haben möchte, das jemand anders in die Hand nimmt. Die Logik steht in
+`server/src/lib/hidden-venues.ts`.
+
+**Was Ausblenden nicht tut, ist so wichtig wie was es tut.** Die Bewertungen
+von dort zählen weiter für den Trust-Score, und die Location behält ihre
+eigenen Aufzeichnungen (Besuche, Flags, interne Notizen). Sonst wäre das ein
+Knopf zum Löschen eines schlechten Abends, und die Grundlage eines geteilten
+Vertrauensnetzwerks wäre weg. Es ist eine Kontrolle darüber, wer die
+Verbindung sieht — nicht darüber, was passiert ist.
+
+Konkret verschwindet die Location aus:
+
+- der eigenen Historie in der Gast-App (`GET /users/me/venues`),
+- dem Premium-Matching, **in beide Richtungen** — sonst wäre das Ausblenden
+  wirkungslos, weil der Chat selbst weiterhin verkünden würde, dass beide dort
+  waren.
+
+Eine Ausnahme beim Matching: Ein **bereits bestehender** Chat bleibt offen. Die
+andere Person hat einen längst gesehen, bevor die Location ausgeblendet wurde
+— den Verlauf jetzt zu kappen schützt nichts und hinterlässt nur einen Chat,
+der stillschweigend nicht mehr funktioniert. Wer da raus will, blockiert.
+
+### Rückgängig machen (nur Support)
+
+In der App gibt es bewusst **kein** Wiedereinblenden. Ein Umschalter würde
+genau das Gegenteil bewirken: Wer ein entsperrtes Handy in der Hand hält,
+könnte die versteckten Locations wieder sichtbar machen — und die Liste der
+Ausgeblendeten wäre selbst das Interessanteste am Screen. Zurückholen geht
+deshalb nur hier, nachdem die Person darum gebeten hat:
+
+```bash
+npm run unhide-venue -- <gast-email>              # zeigt, was ausgeblendet ist
+npm run unhide-venue -- <gast-email> <venue-slug> # holt eine zurück
+```
+
+Das Schema-Update ist rein additiv (`VenueRelationship.hiddenAt`), also ein
+normaler `prisma db push`.
+
 ## Test-Zugänge: die Sandbox-Welt
 
 Die Zugangsdaten der App-Store-Reviewer-Accounts stehen in Formularen bei
