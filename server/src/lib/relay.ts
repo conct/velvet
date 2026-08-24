@@ -72,11 +72,13 @@ export async function mirrorMessageAsEmail(opts: {
     if (!recipient) return;
 
     let replyToAddress: string;
+    let senderCode: string | null = null;
     let senderName: string;
     if (opts.senderId) {
       const sender = await prisma.user.findUnique({ where: { id: opts.senderId }, select: { firstName: true } });
       if (!sender) return;
       replyToAddress = await relayAddressFor(opts.senderId);
+      senderCode = extractRelayCode(replyToAddress);
       senderName = sender.firstName;
     } else if (opts.externalSenderEmail) {
       // No VELVET identity to route through -- reply goes straight back to
@@ -90,6 +92,7 @@ export async function mirrorMessageAsEmail(opts: {
     await sendRelayMessageMail({
       to: recipient.email,
       replyToAddress,
+      senderCode,
       senderName,
       bodyText: opts.body,
       locale: "de",

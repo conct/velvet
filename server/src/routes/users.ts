@@ -9,6 +9,7 @@ import { requireAuth, requireUser } from "../middleware/auth";
 import { getUserTrust } from "../lib/trust";
 import { verifyProfilePhoto } from "../lib/photo-verification";
 import { t } from "../lib/i18n";
+import { deleteRelayFolders } from "../lib/mailer";
 
 export const usersRouter = Router();
 
@@ -90,7 +91,10 @@ usersRouter.post("/me/photo", requireAuth, requireUser, uploadPhotoMiddleware, a
 usersRouter.delete("/me", requireAuth, requireUser, async (req, res) => {
   const userId = req.auth!.sub;
 
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { photoUrl: true } });
+  const [user, inviteCode] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { photoUrl: true } }),
+    prisma.userInviteCode.findUnique({ where: { userId }, select: { code: true } }),
+  ]);
 
   await prisma.$transaction([
     prisma.rating.deleteMany({ where: { userId } }),
@@ -104,6 +108,13 @@ usersRouter.delete("/me", requireAuth, requireUser, async (req, res) => {
     if (filename) {
       fs.unlink(path.join(process.cwd(), "uploads", filename), () => {});
     }
+  }
+
+  // Best-effort: purges this user's entire email-relay correspondence
+  // (both directions) so deleting the account actually removes it, not
+  // just the in-app Message rows. Never blocks the deletion response on it.
+  if (inviteCode) {
+    deleteRelayFolders(inviteCode.code).catch(() => {});
   }
 
   res.status(204).end();

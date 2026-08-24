@@ -247,6 +247,62 @@ export async function sendCustomEmail(to: string, subject: string, bodyText: str
   });
 }
 
+// Appends a message into a folder on the relay mailbox (RELAY_IMAP_*, a
+// separate account from the transactional mail@ box) -- creating the folder
+// first if it doesn't exist yet. Used to file both sides of a user's relay
+// correspondence under a per-user folder named after their relay code, so
+// deleting that one folder on account deletion removes all of it (see
+// deleteRelayFolders below) without touching anyone else's mail.
+async function appendToRelayFolder(mailboxPath: string, message: Buffer) {
+  if (!process.env.RELAY_IMAP_HOST || !process.env.RELAY_IMAP_USER || !process.env.RELAY_IMAP_PASS) return;
+
+  const client = new ImapFlow({
+    host: process.env.RELAY_IMAP_HOST,
+    port: 993,
+    secure: true,
+    auth: { user: process.env.RELAY_IMAP_USER, pass: process.env.RELAY_IMAP_PASS },
+    logger: false,
+  });
+
+  try {
+    await client.connect();
+    await client.mailboxCreate(mailboxPath).catch(() => {});
+    await client.append(mailboxPath, message, ["\\Seen"]);
+  } finally {
+    await client.logout().catch(() => {});
+  }
+}
+
+// Deletes a user's entire relay correspondence (both the folder their
+// inbound mail was filed under, and their outbound archive under Sent.<code>)
+// -- called from the account-deletion route. Best-effort: a mailbox that was
+// never created (e.g. this user never received or sent any relay mail) just
+// fails to delete, which is fine and expected, not an error worth surfacing.
+// Uses "." as the hierarchy separator, not "/" -- confirmed empirically via
+// client.list()'s `delimiter` field for this specific mail server (Uberspace
+// rejects APPEND/CREATE with a '/' path outright), not a universal IMAP rule.
+export async function deleteRelayFolders(code: string) {
+  if (!process.env.RELAY_IMAP_HOST || !process.env.RELAY_IMAP_USER || !process.env.RELAY_IMAP_PASS) return;
+
+  const client = new ImapFlow({
+    host: process.env.RELAY_IMAP_HOST,
+    port: 993,
+    secure: true,
+    auth: { user: process.env.RELAY_IMAP_USER, pass: process.env.RELAY_IMAP_PASS },
+    logger: false,
+  });
+
+  try {
+    await client.connect();
+    await client.mailboxDelete(code).catch(() => {});
+    await client.mailboxDelete(`Sent.${code}`).catch(() => {});
+  } catch (err) {
+    console.error(`Failed to delete relay folders for code ${code}`, err);
+  } finally {
+    await client.logout().catch(() => {});
+  }
+}
+
 // Mirrors an in-app message as a real email to the recipient's registered
 // address, so a reply from their normal mail client loops back into the app
 // via the IMAP relay watcher (see lib/relay.ts / relay-watcher.ts). The
@@ -259,6 +315,7 @@ export async function sendCustomEmail(to: string, subject: string, bodyText: str
 export async function sendRelayMessageMail(opts: {
   to: string;
   replyToAddress: string;
+  senderCode?: string | null;
   senderName: string;
   bodyText: string;
   locale: Locale;
@@ -276,7 +333,7 @@ export async function sendRelayMessageMail(opts: {
   `);
 
   const from = process.env.SMTP_FROM ?? "VELVET <mail@velvet-network.app>";
-  await transport.sendMail({
+  const mailInput = {
     from,
     replyTo: `"${opts.senderName}" <${opts.replyToAddress}>`,
     to: opts.to,
@@ -286,7 +343,20 @@ export async function sendRelayMessageMail(opts: {
     ),
     html,
     attachments: [{ filename: "velvet-logo.png", content: LOGO_BUFFER, cid: LOGO_CID }],
-  });
+  };
+
+  await transport.sendMail(mailInput);
+
+  // Only VELVET-identified senders have a code/folder to file under -- an
+  // external sender's outbound re-mirror (see lib/relay.ts) has nowhere of
+  // their own to archive into, so it's skipped rather than invented.
+  if (!opts.senderCode) return;
+  try {
+    const archiveMessage = await buildMessage(mailInput);
+    await appendToRelayFolder(`Sent.${opts.senderCode}`, archiveMessage);
+  } catch (err) {
+    console.error(`Failed to archive relay mail in Sent.${opts.senderCode}`, err);
+  }
 }
 
 export async function sendVerificationEmail(to: string, verifyUrl: string, locale: Locale) {
