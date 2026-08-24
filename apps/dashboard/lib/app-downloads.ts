@@ -22,14 +22,15 @@ const APPLE_APP_ID: string | null = null;
 // Google derives the listing URL from the applicationId, which is
 // `android.package` in apps/mobile/app.json -- nothing to look up.
 const ANDROID_PACKAGE = "space.feif.velvet";
-const ANDROID_LISTING_LIVE = false;
+const ANDROID_LISTING_LIVE = true;
 
 // Direct APK for people who don't have (or don't want) Play Store access.
-// The file is deliberately not committed -- it is tens of megabytes and
-// changes with every release. Build it with
-// `eas build -p android --profile preview` and upload it next to the
-// Werbematerial PDFs (see docs/deployment.md). Set this back to null whenever
-// no current APK is uploaded, so the tile disappears instead of 404ing.
+// Dropped into apps/dashboard/public/app/ by scp, never committed -- it is
+// tens of megabytes and changes with every release. Build it with
+// `eas build -p android --profile preview` (see docs/deployment.md), then
+// fill in the uploaded filename and its version here. Set this back to null
+// whenever no current APK is uploaded, so the tile disappears instead of
+// 404ing.
 const APK_FILE: { path: string; version: string } | null = null;
 
 export const WEB_APP_URL = "https://web.velvet-network.app";

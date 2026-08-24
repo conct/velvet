@@ -313,7 +313,9 @@ eas build -p android --profile preview
 
 Die fertige Datei herunterladen und wie die Werbematerial-PDFs per `scp` nach
 `apps/dashboard/public/app/velvet-<version>.apk` hochladen — **nicht ins Git**,
-sie ist zweistellig megabytegroß und ändert sich mit jedem Release. Danach
+sie ist zweistellig megabytegroß und ändert sich mit jedem Release
+(`apps/dashboard/public/app/*.apk` steht deshalb in `.gitignore`, das
+Verzeichnis selbst liegt mit einer `.gitkeep` bereits im Repo). Danach
 `APK_FILE` in `app-downloads.ts` auf Pfad und Version setzen und das Dashboard
 neu deployen. Ist gerade kein aktuelles APK hochgeladen, `APK_FILE` wieder auf
 `null` setzen, damit die Kachel verschwindet statt zu 404en.
