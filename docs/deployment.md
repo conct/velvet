@@ -111,7 +111,7 @@ inklusive aller Fallstricke abbildet:
 
 ```powershell
 .\scripts\deploy\dashboard.ps1   # Punkt 2
-.\scripts\deploypp.ps1         # Punkt 3
+.\scripts\deploy\app.ps1         # Punkt 3
 ```
 
 `app.ps1` schiebt zusätzlich `apps/mobile/.env` weg (sie zeigt auf
