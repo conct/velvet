@@ -403,6 +403,9 @@ export interface Translations {
       }[];
       previewAlt: string;
       downloadButton: string;
+      guestInfoHeading: string;
+      guestInfoBody: string;
+      guestInfoButton: string;
       stickerHeading: string;
       stickerBody1: string;
       stickerBody2: string;
@@ -526,6 +529,12 @@ export interface Translations {
       visitsPlural: string;
       flagVip: string;
       flagBanned: string;
+      hide: string;
+      hideConfirmTitle: string;
+      hideConfirmBody: string;
+      hideConfirmAction: string;
+      hideCancel: string;
+      hideFailed: string;
     };
     staffScanner: {
       scanFailed: string;
@@ -784,7 +793,7 @@ const de: Translations = {
     downloadSources: {
       ios: { title: "App Store", body: "Für iPhone und iPad." },
       android: { title: "Google Play", body: "Für Android-Geräte." },
-      apk: { title: "APK direkt laden", body: "Ohne Play Store — Installation aus unbekannten Quellen erlauben." },
+      apk: { title: "APK auf Anfrage", body: "Ohne Play Store — schreib uns kurz, dann schicken wir dir die Datei." },
       web: { title: "Im Browser öffnen", body: "Ohne Installation, funktioniert auf jedem Handy." },
     },
     closingEyebrow: "VELVET",
@@ -1145,6 +1154,10 @@ const de: Translations = {
       ],
       previewAlt: "Vorschau",
       downloadButton: "Herunterladen",
+      guestInfoHeading: "Info-Seite für eure Gäste",
+      guestInfoBody:
+        "Eine Seite in einfacher Sprache: wie VELVET funktioniert, was gespeichert wird und wer es sieht. Gedacht zum Weitergeben — als Link, QR-Code am Einlass oder Aushang. Sie ist bewusst nicht über Suchmaschinen auffindbar.",
+      guestInfoButton: "Seite ansehen",
       stickerHeading: "Sticker & individuelles Merch",
       stickerBody1: "Über die PDFs hinaus können wir für eure Location auch **Sticker** sowie **Print-on-Demand-Artikel** (z. B. Tischaufsteller, Garderobenmarken, Merchandise mit eurem Logo kombiniert mit VELVET) produzieren und liefern lassen.",
       stickerBody2: "Meldet euch einfach formlos, dann besprechen wir Format, Menge und Gestaltung.",
@@ -1276,6 +1289,13 @@ const de: Translations = {
       visitsPlural: "Besuche",
       flagVip: "VIP hier",
       flagBanned: "Hausverbot",
+      hide: "Ausblenden",
+      hideConfirmTitle: "Location dauerhaft ausblenden?",
+      hideConfirmBody:
+        "Diese Location verschwindet aus deiner Historie, und niemand kann dich über sie in den Premium-Kontakten finden. Das lässt sich in der App nicht rückgängig machen — nur der Support kann sie zurückholen.\n\nDeine Bewertungen von dort zählen weiter für deinen Status, und die Location selbst behält ihre eigenen Aufzeichnungen.",
+      hideConfirmAction: "Dauerhaft ausblenden",
+      hideCancel: "Abbrechen",
+      hideFailed: "Ausblenden fehlgeschlagen",
     },
     staffScanner: {
       scanFailed: "Scan fehlgeschlagen",
@@ -1690,7 +1710,7 @@ const en: Translations = {
     downloadSources: {
       ios: { title: "App Store", body: "For iPhone and iPad." },
       android: { title: "Google Play", body: "For Android devices." },
-      apk: { title: "Download the APK", body: "Without the Play Store — you'll need to allow installs from unknown sources." },
+      apk: { title: "APK on request", body: "Without the Play Store — drop us a line and we'll send you the file." },
       web: { title: "Open in the browser", body: "No install needed, works on any phone." },
     },
     closingEyebrow: "VELVET",
@@ -2051,6 +2071,10 @@ const en: Translations = {
       ],
       previewAlt: "Preview",
       downloadButton: "Download",
+      guestInfoHeading: "An info page for your guests",
+      guestInfoBody:
+        "A page in plain language: how VELVET works, what is stored and who sees it. Made to be passed on — as a link, a QR code at the door or a printout. It is deliberately not findable through search engines.",
+      guestInfoButton: "View the page",
       stickerHeading: "Stickers & custom merch",
       stickerBody1: "Beyond the PDFs, we can also produce and ship **stickers** and **print-on-demand items** for your venue (e.g. table stands, coat check tags, merch combining your logo with VELVET).",
       stickerBody2: "Just reach out, no formal request needed, and we'll discuss format, quantity, and design.",
@@ -2181,6 +2205,13 @@ const en: Translations = {
       visitsPlural: "visits",
       flagVip: "VIP here",
       flagBanned: "Banned",
+      hide: "Hide",
+      hideConfirmTitle: "Hide this location for good?",
+      hideConfirmBody:
+        "It disappears from your history, and nobody can find you through it in Premium contacts. You cannot undo this in the app — only support can bring it back.\n\nRatings from there still count towards your status, and the location keeps its own records.",
+      hideConfirmAction: "Hide permanently",
+      hideCancel: "Cancel",
+      hideFailed: "Could not hide it",
     },
     staffScanner: {
       scanFailed: "Scan failed",
@@ -2595,7 +2626,7 @@ const pl: Translations = {
     downloadSources: {
       ios: { title: "App Store", body: "Na iPhone'a i iPada." },
       android: { title: "Google Play", body: "Na urządzenia z Androidem." },
-      apk: { title: "Pobierz plik APK", body: "Bez Sklepu Play — trzeba zezwolić na instalację z nieznanych źródeł." },
+      apk: { title: "APK na życzenie", body: "Bez Sklepu Play — napisz do nas, a wyślemy Ci plik." },
       web: { title: "Otwórz w przeglądarce", body: "Bez instalacji, działa na każdym telefonie." },
     },
     closingEyebrow: "VELVET",
@@ -2956,6 +2987,10 @@ const pl: Translations = {
       ],
       previewAlt: "Podgląd",
       downloadButton: "Pobierz",
+      guestInfoHeading: "Strona informacyjna dla gości",
+      guestInfoBody:
+        "Strona napisana prostym językiem: jak działa VELVET, co jest zapisywane i kto to widzi. Do przekazywania dalej — jako link, kod QR przy wejściu albo wydruk. Celowo nie jest wyszukiwalna w wyszukiwarkach.",
+      guestInfoButton: "Zobacz stronę",
       stickerHeading: "Naklejki i indywidualny merch",
       stickerBody1: "Oprócz plików PDF możemy dla Waszego lokalu wyprodukować i dostarczyć również **naklejki** oraz **produkty print-on-demand** (np. stojaki na stoliki, znaczki do szatni, gadżety łączące Wasze logo z VELVET).",
       stickerBody2: "Po prostu się odezwijcie, bez formalności, a omówimy format, ilość i design.",
@@ -3087,6 +3122,13 @@ const pl: Translations = {
       visitsPlural: "wizyt",
       flagVip: "VIP tutaj",
       flagBanned: "Zakaz wstępu",
+      hide: "Ukryj",
+      hideConfirmTitle: "Ukryć lokal na stałe?",
+      hideConfirmBody:
+        "Zniknie z Twojej historii i nikt nie znajdzie Cię przez niego w kontaktach Premium. W aplikacji nie da się tego cofnąć — tylko wsparcie może go przywrócić.\n\nOceny stamtąd nadal liczą się do Twojego statusu, a lokal zachowuje własne zapisy.",
+      hideConfirmAction: "Ukryj na stałe",
+      hideCancel: "Anuluj",
+      hideFailed: "Nie udało się ukryć",
     },
     staffScanner: {
       scanFailed: "Skanowanie nie powiodło się",
@@ -3501,7 +3543,7 @@ const es: Translations = {
     downloadSources: {
       ios: { title: "App Store", body: "Para iPhone y iPad." },
       android: { title: "Google Play", body: "Para dispositivos Android." },
-      apk: { title: "Descargar el APK", body: "Sin Play Store — hay que permitir instalaciones de origen desconocido." },
+      apk: { title: "APK a petición", body: "Sin Play Store — escríbenos y te enviamos el archivo." },
       web: { title: "Abrir en el navegador", body: "Sin instalar nada, funciona en cualquier móvil." },
     },
     closingEyebrow: "VELVET",
@@ -3862,6 +3904,10 @@ const es: Translations = {
       ],
       previewAlt: "Vista previa",
       downloadButton: "Descargar",
+      guestInfoHeading: "Página informativa para tus invitados",
+      guestInfoBody:
+        "Una página en lenguaje sencillo: cómo funciona VELVET, qué se guarda y quién lo ve. Pensada para compartir — como enlace, código QR en la puerta o impresa. A propósito no aparece en los buscadores.",
+      guestInfoButton: "Ver la página",
       stickerHeading: "Pegatinas y merchandising personalizado",
       stickerBody1: "Más allá de los PDF, también podemos producir y enviar **pegatinas** y **artículos bajo demanda** para tu local (p. ej. atriles de mesa, tarjetas de guardarropa, merchandising que combine tu logo con VELVET).",
       stickerBody2: "Escríbenos sin compromiso y hablamos sobre formato, cantidad y diseño.",
@@ -3992,6 +4038,13 @@ const es: Translations = {
       visitsPlural: "visitas",
       flagVip: "VIP aquí",
       flagBanned: "Vetado",
+      hide: "Ocultar",
+      hideConfirmTitle: "¿Ocultar el local para siempre?",
+      hideConfirmBody:
+        "Desaparece de tu historial y nadie podrá encontrarte a través de él en los contactos Premium. No puedes deshacerlo en la app — solo soporte puede recuperarlo.\n\nLas valoraciones de allí siguen contando para tu estado, y el local conserva sus propios registros.",
+      hideConfirmAction: "Ocultar para siempre",
+      hideCancel: "Cancelar",
+      hideFailed: "No se pudo ocultar",
     },
     staffScanner: {
       scanFailed: "Error al escanear",

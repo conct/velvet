@@ -37,6 +37,7 @@ interface Translations {
   "qr.guestNotFound": string;
   "qr.venueNotVerified": string;
   "qr.entryLogNotFound": string;
+  "qr.demoWorldMismatch": string;
 
   "messages.notEligiblePeer": string;
   "messages.noExistingStaffContact": string;
@@ -52,6 +53,7 @@ interface Translations {
   "users.noImageProvided": string;
   "users.photoRequirementsNotMet": string;
   "users.invalidImageType": string;
+  "users.venueNotInHistory": string;
 
   "venues.noChangesProvided": string;
   "venues.emailAlreadyTaken": string;
@@ -127,6 +129,7 @@ const de: Translations = {
   "qr.guestNotFound": "Gast nicht gefunden",
   "qr.venueNotVerified": "Location noch nicht freigegeben",
   "qr.entryLogNotFound": "Einlass-Eintrag nicht gefunden",
+  "qr.demoWorldMismatch": "Test-Zugänge können nur Test-Gäste scannen. Dieser Scan wurde nicht gespeichert.",
 
   "messages.notEligiblePeer": "Nachricht nicht möglich — kein gemeinsamer Location-Besuch als Premium-Mitglieder",
   "messages.noExistingStaffContact": "Kein bestehender Kontakt mit diesem Team",
@@ -142,6 +145,7 @@ const de: Translations = {
   "users.noImageProvided": "Kein Bild übermittelt",
   "users.photoRequirementsNotMet": "Foto erfüllt die Anforderungen nicht",
   "users.invalidImageType": "Nur JPEG, PNG oder WebP erlaubt",
+  "users.venueNotInHistory": "Diese Location ist nicht in deiner Historie",
 
   "venues.noChangesProvided": "Keine Änderungen übergeben",
   "venues.emailAlreadyTaken": "E-Mail bereits vergeben",
@@ -226,6 +230,7 @@ const en: Translations = {
   "qr.guestNotFound": "Guest not found",
   "qr.venueNotVerified": "Venue not yet approved",
   "qr.entryLogNotFound": "Entry log not found",
+  "qr.demoWorldMismatch": "Test logins can only scan test guests. This scan was not recorded.",
 
   "messages.notEligiblePeer": "Can't message — no shared venue visit as Premium members",
   "messages.noExistingStaffContact": "No existing contact with this team",
@@ -241,6 +246,7 @@ const en: Translations = {
   "users.noImageProvided": "No image provided",
   "users.photoRequirementsNotMet": "Photo doesn't meet the requirements",
   "users.invalidImageType": "Only JPEG, PNG, or WebP allowed",
+  "users.venueNotInHistory": "This location is not in your history",
 
   "venues.noChangesProvided": "No changes provided",
   "venues.emailAlreadyTaken": "Email already taken",

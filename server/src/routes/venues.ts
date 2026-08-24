@@ -10,7 +10,8 @@ export const venuesRouter = Router();
 
 venuesRouter.get("/", async (_req, res) => {
   const venues = await prisma.venue.findMany({
-    where: { status: "VERIFIED" },
+    // Sandbox venues stay out of the guest app's location list.
+    where: { status: "VERIFIED", isDemo: false },
     select: { id: true, name: true, address: true, logoUrl: true },
     orderBy: { name: "asc" },
   });
@@ -118,12 +119,20 @@ venuesRouter.post("/me/staff", requireAuth, requireManager, async (req, res) => 
 
 venuesRouter.get("/me/guests", requireAuth, requireManager, async (req, res) => {
   const query = String(req.query.q ?? "").trim();
+  const { isDemo: venueIsDemo } = await prisma.venue.findUniqueOrThrow({
+    where: { id: req.auth!.venueId! },
+    select: { isDemo: true },
+  });
   const relationships = await prisma.venueRelationship.findMany({
     where: {
       venueId: req.auth!.venueId,
+      // A real venue never lists sandbox guests, and vice versa -- the scan
+      // guard already keeps them apart, this keeps any legacy row out too.
+      user: { isDemo: venueIsDemo },
       ...(query
         ? {
             user: {
+              isDemo: venueIsDemo,
               OR: [
                 { firstName: { contains: query } },
                 { lastName: { contains: query } },

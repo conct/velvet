@@ -1,3 +1,7 @@
+// The seed builds its own client instead of going through src/db.ts, so it
+// needs to read server/.env itself -- otherwise `npm run seed` fails on a
+// fresh checkout with a confusing Prisma error.
+import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -5,6 +9,19 @@ const prisma = new PrismaClient();
 
 async function hash(pw: string) {
   return bcrypt.hash(pw, 10);
+}
+
+// Seeded guests need a photo to be usable at all: /qr/token refuses to issue a
+// check-in code without one, so without this the core flow cannot be exercised
+// from a fresh seed. A self-contained data URI rather than a placeholder
+// service, so it renders offline and pulls in no third party.
+function avatar(initials: string): string {
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">` +
+    `<rect width="400" height="400" fill="#1E1B14"/>` +
+    `<text x="200" y="200" fill="#D4AF37" font-family="Georgia,serif" font-size="150"` +
+    ` text-anchor="middle" dominant-baseline="central">${initials}</text></svg>`;
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 
 async function main() {
@@ -25,6 +42,44 @@ async function main() {
       slug: "velvet-lounge-hamburg",
       address: "Reeperbahn 42, 20359 Hamburg",
       status: "VERIFIED",
+    },
+  });
+
+  // A sandbox alongside the demo data, mirroring what production needs for the
+  // app-store reviewers: a venue, a staff login and a guest, all flagged
+  // isDemo, so nothing done with those credentials reaches a real record.
+  // See server/src/lib/demo.ts.
+  const sandbox = await prisma.venue.create({
+    data: {
+      name: "VELVET Testbühne",
+      slug: "velvet-testbuehne",
+      address: "Teststraße 1, 00000 Teststadt",
+      status: "VERIFIED",
+      isDemo: true,
+    },
+  });
+
+  const sandboxStaff = await prisma.staffAccount.create({
+    data: {
+      email: "review@velvet-network.app",
+      passwordHash: await hash("review123"),
+      name: "Review Zugang",
+      isDemo: true,
+    },
+  });
+  await prisma.staffVenueMembership.create({
+    data: { staffAccountId: sandboxStaff.id, venueId: sandbox.id, role: "MANAGER" },
+  });
+
+  await prisma.user.create({
+    data: {
+      email: "review-gast@velvet-network.app",
+      passwordHash: await hash("review123"),
+      firstName: "Review",
+      lastName: "Gast",
+      emailVerifiedAt: new Date(),
+      photoUrl: avatar("RG"),
+      isDemo: true,
     },
   });
 
@@ -58,19 +113,54 @@ async function main() {
   const guestPassword = await hash("guest1234");
 
   const lena = await prisma.user.create({
-    data: { email: "lena@example.com", passwordHash: guestPassword, firstName: "Lena", lastName: "Klein" },
+    data: {
+      email: "lena@example.com",
+      passwordHash: guestPassword,
+      firstName: "Lena",
+      lastName: "Klein",
+      emailVerifiedAt: new Date(),
+      photoUrl: avatar("LK"),
+    },
   });
   const max = await prisma.user.create({
-    data: { email: "max@example.com", passwordHash: guestPassword, firstName: "Max", lastName: "Weber" },
+    data: {
+      email: "max@example.com",
+      passwordHash: guestPassword,
+      firstName: "Max",
+      lastName: "Weber",
+      emailVerifiedAt: new Date(),
+      photoUrl: avatar("MW"),
+    },
   });
   const mia = await prisma.user.create({
-    data: { email: "mia@example.com", passwordHash: guestPassword, firstName: "Mia", lastName: "Schulz" },
+    data: {
+      email: "mia@example.com",
+      passwordHash: guestPassword,
+      firstName: "Mia",
+      lastName: "Schulz",
+      emailVerifiedAt: new Date(),
+      photoUrl: avatar("MS"),
+    },
   });
   const tom = await prisma.user.create({
-    data: { email: "tom@example.com", passwordHash: guestPassword, firstName: "Tom", lastName: "Fischer" },
+    data: {
+      email: "tom@example.com",
+      passwordHash: guestPassword,
+      firstName: "Tom",
+      lastName: "Fischer",
+      emailVerifiedAt: new Date(),
+      photoUrl: avatar("TF"),
+    },
   });
   const ben = await prisma.user.create({
-    data: { email: "ben@example.com", passwordHash: guestPassword, firstName: "Ben", lastName: "Hoffmann" },
+    data: {
+      email: "ben@example.com",
+      passwordHash: guestPassword,
+      firstName: "Ben",
+      lastName: "Hoffmann",
+      emailVerifiedAt: new Date(),
+      photoUrl: avatar("BH"),
+    },
   });
 
   // Lena — VIP: konstant top bewertet, umsatzstark, eigene VIP-Liste bei Noir
@@ -143,6 +233,10 @@ async function main() {
   console.log("  Gast Standard:    mia@example.com / guest1234");
   console.log("  Gast Watch:       tom@example.com / guest1234");
   console.log("  Gast Banned:      ben@example.com / guest1234");
+  console.log("");
+  console.log("  Sandbox (isDemo, zaehlt nirgends mit):");
+  console.log("    Staff: review@velvet-network.app / review123  (VELVET Testbuehne)");
+  console.log("    Gast:  review-gast@velvet-network.app / review123");
 }
 
 main()

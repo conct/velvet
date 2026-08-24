@@ -32,4 +32,6 @@ npm run dev:mobile      # Expo Dev Server
 
 Die vollständige Betriebsdokumentation liegt in [`docs/`](docs/):
 
+- [`docs/handoff.md`](docs/handoff.md) — Einstieg: Adressen, lokales Setup, Test-Zugangsdaten, Rollen, Fallstricke
 - [`docs/deployment.md`](docs/deployment.md) — Hosting-Setup, Secrets, Deploy-Ablauf, Datenbank-Migrationen, Native-Builds
+- [`docs/roadmap.md`](docs/roadmap.md) — Backlog der wöchentlichen Entwicklungsroutine

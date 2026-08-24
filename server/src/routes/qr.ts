@@ -5,6 +5,7 @@ import { prisma } from "../db";
 import { requireAuth, requireScanner, requireUser } from "../middleware/auth";
 import { qrVerifyRateLimit } from "../middleware/rateLimit";
 import { getUserTrust } from "../lib/trust";
+import { assertSameWorld, CrossWorldError } from "../lib/demo";
 import { t } from "../lib/i18n";
 
 export const qrRouter = Router();
@@ -74,6 +75,17 @@ qrRouter.post("/verify", requireAuth, requireScanner, qrVerifyRateLimit, async (
     return res.status(403).json({ error: t(req.locale, "qr.venueNotVerified") });
   }
 
+  // Checked before the first write: a sandbox login must not be able to put a
+  // visit, a rating or a ban on a real guest's record. See lib/demo.ts.
+  try {
+    await assertSameWorld(venueId, user.id);
+  } catch (err) {
+    if (err instanceof CrossWorldError) {
+      return res.status(403).json({ error: t(req.locale, "qr.demoWorldMismatch") });
+    }
+    throw err;
+  }
+
   const relationship = await prisma.venueRelationship.upsert({
     where: { userId_venueId: { userId: user.id, venueId } },
     create: { userId: user.id, venueId, visits: 1, lastVisitAt: new Date() },
@@ -115,6 +127,18 @@ qrRouter.post("/confirm-photo", requireAuth, requireScanner, async (req, res) =>
   const entryLog = await prisma.entryLog.findUnique({ where: { id: parsed.data.entryLogId } });
   if (!entryLog || entryLog.staffAccountId !== req.auth!.sub) {
     return res.status(404).json({ error: t(req.locale, "qr.entryLogNotFound") });
+  }
+
+  // Vouching for a stranger's photo is exactly the kind of permanent mark on
+  // someone else's account a sandbox login must not be able to leave, so this
+  // is re-checked here rather than trusted to the entry log's provenance.
+  try {
+    await assertSameWorld(entryLog.venueId, entryLog.userId);
+  } catch (err) {
+    if (err instanceof CrossWorldError) {
+      return res.status(403).json({ error: t(req.locale, "qr.demoWorldMismatch") });
+    }
+    throw err;
   }
 
   await prisma.user.update({ where: { id: entryLog.userId }, data: { photoConfirmedAt: new Date() } });

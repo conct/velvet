@@ -1,3 +1,5 @@
+import { LEGAL_OPERATOR } from "@velvet/shared";
+
 // Every place the VELVET guest app can be obtained from. Kept in one file so
 // a new store listing (or a pulled one) is a single edit -- the landing page
 // renders exactly the sources that are configured here and nothing else, so
@@ -10,28 +12,27 @@ export interface DownloadSource {
   href: string;
   /** Rendered as a direct file download rather than a link to another page. */
   isFile?: boolean;
-  /** Shown next to the title, e.g. the version of the hosted APK. */
+  /** Opens the visitor's mail client instead of a new tab. */
+  isMail?: boolean;
+  /** Shown next to the title, e.g. the version of a hosted APK. */
   meta?: string;
 }
 
-// Apple has no ID-free deep link to an app listing, so the App Store tile
-// stays hidden until the numeric App ID (App Store Connect → App Information
-// → General Information → Apple ID) is filled in here.
-const APPLE_APP_ID: string | null = null;
+// Apple has no ID-free deep link to an app listing, so this is the numeric
+// App ID from App Store Connect (App Information → General → Apple ID).
+// Setting it back to null hides the App Store tile.
+const APPLE_APP_ID: string | null = "6803371691";
 
 // Google derives the listing URL from the applicationId, which is
 // `android.package` in apps/mobile/app.json -- nothing to look up.
 const ANDROID_PACKAGE = "space.feif.velvet";
 const ANDROID_LISTING_LIVE = true;
 
-// Direct APK for people who don't have (or don't want) Play Store access.
-// Dropped into apps/dashboard/public/app/ by scp, never committed -- it is
-// tens of megabytes and changes with every release. Build it with
-// `eas build -p android --profile preview` (see docs/deployment.md), then
-// fill in the uploaded filename and its version here. Set this back to null
-// whenever no current APK is uploaded, so the tile disappears instead of
-// 404ing.
-const APK_FILE: { path: string; version: string } | null = null;
+// The APK is handed out on request rather than hosted for download: a
+// sideloaded build never auto-updates, so every copy in the wild is one that
+// has to be chased down when the API moves on. Keeping it a conversation
+// means we know who has one. See docs/deployment.md for building it.
+const APK_ON_REQUEST = true;
 
 export const WEB_APP_URL = "https://web.velvet-network.app";
 
@@ -47,11 +48,14 @@ export function availableDownloadSources(): DownloadSource[] {
       href: `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE}`,
     });
   }
-  if (APK_FILE) {
-    sources.push({ key: "apk", href: APK_FILE.path, isFile: true, meta: `v${APK_FILE.version}` });
+  if (APK_ON_REQUEST) {
+    sources.push({
+      key: "apk",
+      href: `mailto:${LEGAL_OPERATOR.email}?subject=${encodeURIComponent("VELVET APK")}`,
+      isMail: true,
+    });
   }
-  // Always available, and the only option while the store listings are still
-  // in review -- so the section is never empty.
+  // Always available, and the fallback for anyone who can use neither store.
   sources.push({ key: "web", href: WEB_APP_URL });
 
   return sources;

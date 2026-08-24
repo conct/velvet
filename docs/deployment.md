@@ -316,6 +316,99 @@ serverseitig greifen — direkt danach getestete SMTP-Auth kann kurz mit `535
 Authentication failed` fehlschlagen, obwohl das Passwort korrekt ist. Vor
 einem erneuten Reset lieber 10-15s warten und nochmal testen.
 
+## Ausgeblendete Locations
+
+Gäste können eine Location aus ihrer eigenen Historie nehmen — ein
+Fetischclub, eine queere Bar, was auch immer man nicht auf einem Handy
+gelistet haben möchte, das jemand anders in die Hand nimmt. Die Logik steht in
+`server/src/lib/hidden-venues.ts`.
+
+**Was Ausblenden nicht tut, ist so wichtig wie was es tut.** Die Bewertungen
+von dort zählen weiter für den Trust-Score, und die Location behält ihre
+eigenen Aufzeichnungen (Besuche, Flags, interne Notizen). Sonst wäre das ein
+Knopf zum Löschen eines schlechten Abends, und die Grundlage eines geteilten
+Vertrauensnetzwerks wäre weg. Es ist eine Kontrolle darüber, wer die
+Verbindung sieht — nicht darüber, was passiert ist.
+
+Konkret verschwindet die Location aus:
+
+- der eigenen Historie in der Gast-App (`GET /users/me/venues`),
+- dem Premium-Matching, **in beide Richtungen** — sonst wäre das Ausblenden
+  wirkungslos, weil der Chat selbst weiterhin verkünden würde, dass beide dort
+  waren.
+
+Eine Ausnahme beim Matching: Ein **bereits bestehender** Chat bleibt offen. Die
+andere Person hat einen längst gesehen, bevor die Location ausgeblendet wurde
+— den Verlauf jetzt zu kappen schützt nichts und hinterlässt nur einen Chat,
+der stillschweigend nicht mehr funktioniert. Wer da raus will, blockiert.
+
+### Rückgängig machen (nur Support)
+
+In der App gibt es bewusst **kein** Wiedereinblenden. Ein Umschalter würde
+genau das Gegenteil bewirken: Wer ein entsperrtes Handy in der Hand hält,
+könnte die versteckten Locations wieder sichtbar machen — und die Liste der
+Ausgeblendeten wäre selbst das Interessanteste am Screen. Zurückholen geht
+deshalb nur hier, nachdem die Person darum gebeten hat:
+
+```bash
+npm run unhide-venue -- <gast-email>              # zeigt, was ausgeblendet ist
+npm run unhide-venue -- <gast-email> <venue-slug> # holt eine zurück
+```
+
+Das Schema-Update ist rein additiv (`VenueRelationship.hiddenAt`), also ein
+normaler `prisma db push`.
+
+## Test-Zugänge: die Sandbox-Welt
+
+Die Zugangsdaten der App-Store-Reviewer-Accounts stehen in Formularen bei
+Google und Apple. Sie sind damit faktisch öffentlich — und ein öffentlicher
+Login darf keine echten Gäste anfassen können. Ungeschützt könnte er einen
+beliebigen Gast scannen, mit einem Stern bewerten und als `BANNED` flaggen;
+zwei sperrende Locations lösen `isNetworkBanned()` aus und der Mensch kommt an
+keiner Tür des Netzwerks mehr rein.
+
+Deshalb gibt es ein `isDemo`-Flag auf `User`, `StaffAccount` und `Venue`. Die
+Logik dazu steht vollständig in `server/src/lib/demo.ts`. Das Modell sind zwei
+parallele Welten, nicht „echte Daten plus ein paar Zeilen zum Ignorieren":
+
+- **Abschottung beim Schreiben:** `assertSameWorld()` lehnt jeden Scan ab, bei
+  dem Location und Gast nicht dieselbe Welt haben — in beide Richtungen, und
+  bevor irgendetwas geschrieben wird. Das gilt auch fürs Bestätigen eines
+  Profilfotos.
+- **Scoping beim Lesen:** Trust-Score, Netzwerksperre, Gästelisten, die eigene
+  Location-Historie und das Chat-Matching bleiben in der Welt der jeweils
+  fragenden Person.
+
+Gefiltert wird bewusst über das *aktuelle* Flag statt über eine Kopie auf
+jeder Zeile. Ein Account nachträglich als Demo zu markieren entwertet damit
+rückwirkend alles, was er bereits geschrieben hat — genau der Fall bei den
+Reviewer-Accounts, die es vor diesem Feature schon gab.
+
+Die Sandbox bleibt dabei voll benutzbar: Ein Reviewer scannt, wird bewertet,
+sieht seinen Status wandern und die Location in seiner Historie. Nur ist
+nichts davon von außen sichtbar oder zählt irgendwo mit.
+
+### Einrichten
+
+```bash
+npm run set-demo -- venue <slug-oder-id>        # Location zur Sandbox machen
+npm run set-demo -- staff <email>               # Staff-Login
+npm run set-demo -- user  <email>               # Gast-Login
+npm run set-demo -- staff <email> off           # zurücknehmen
+```
+
+Für die Produktion heißt das konkret: eine eigene Sandbox-Location anlegen,
+sie und die beiden Reviewer-Accounts (`staff-review@feif.space`,
+`playstore-review@feif.space`) als Demo markieren und **den Staff-Reviewer aus
+jeder echten Location entfernen** — solange er Mitglied einer echten Location
+ist, arbeitet er in deren Welt. Das Skript weist nach dem Markieren einer
+Location auf deren noch nicht markierte Staff-Accounts hin.
+
+Sandbox-Locations tauchen nicht in der öffentlichen Location-Liste der Gast-App
+auf. Lokal legt `npm run seed` bereits eine an (`VELVET Testbühne` mit
+`review@velvet-network.app` / `review123` und dem Gast
+`review-gast@velvet-network.app`), damit sich die Abschottung testen lässt.
+
 ## Download-Quellen der Gast-App
 
 Welche Bezugsquellen die Landingpage unter `/#app` anzeigt, steht an genau
@@ -323,17 +416,21 @@ einer Stelle: `apps/dashboard/lib/app-downloads.ts`. Die Seite rendert nur
 konfigurierte Quellen, eine nicht freigeschaltete Listing-URL wird also nie
 als toter Link ausgeliefert.
 
-- **App Store:** braucht die numerische Apple-ID (App Store Connect →
-  App-Informationen → Allgemein → Apple-ID) in `APPLE_APP_ID`. Es gibt keinen
-  Apple-Link ohne diese ID, deshalb bleibt die Kachel bis dahin ausgeblendet.
+- **App Store:** `APPLE_APP_ID` ist die numerische Apple-ID (App Store
+  Connect → App-Informationen → Allgemein). Einen Apple-Link ohne diese ID
+  gibt es nicht; auf `null` gesetzt verschwindet die Kachel.
 - **Google Play:** die URL ergibt sich aus `android.package` in
-  `apps/mobile/app.json`, es ist nichts nachzuschlagen. `ANDROID_LISTING_LIVE`
-  auf `true` setzen, sobald das Listing öffentlich ist.
-- **Web-App:** immer sichtbar, damit der Abschnitt nie leer ist.
+  `apps/mobile/app.json`, es ist nichts nachzuschlagen. Schalter ist
+  `ANDROID_LISTING_LIVE`.
+- **APK:** wird **auf Anfrage** herausgegeben, nicht zum Download gehostet —
+  die Kachel ist ein `mailto:` an die Impressums-Adresse. Schalter ist
+  `APK_ON_REQUEST`.
+- **Web-App:** immer sichtbar, als Rückfalloption für alle, die keinen der
+  beiden Stores nutzen können.
 
-### APK direkt anbieten
+### APK für eine Anfrage bauen
 
-Das `preview`-Profil in `apps/mobile/eas.json` baut bereits ein APK (das
+Das `preview`-Profil in `apps/mobile/eas.json` baut ein APK (das
 `production`-Profil dagegen ein App Bundle, das sich nicht installieren
 lässt):
 
@@ -342,14 +439,9 @@ cd apps/mobile
 eas build -p android --profile preview
 ```
 
-Die fertige Datei herunterladen und wie die Werbematerial-PDFs per `scp` nach
-`apps/dashboard/public/app/velvet-<version>.apk` hochladen — **nicht ins Git**,
-sie ist zweistellig megabytegroß und ändert sich mit jedem Release
-(`apps/dashboard/public/app/*.apk` steht deshalb in `.gitignore`, das
-Verzeichnis selbst liegt mit einer `.gitkeep` bereits im Repo). Danach
-`APK_FILE` in `app-downloads.ts` auf Pfad und Version setzen und das Dashboard
-neu deployen. Ist gerade kein aktuelles APK hochgeladen, `APK_FILE` wieder auf
-`null` setzen, damit die Kachel verschwindet statt zu 404en.
+Die fertige Datei aus EAS herunterladen und der anfragenden Person direkt
+schicken. Bewusst nicht öffentlich gehostet und nicht im Git — beides würde
+Kopien in Umlauf bringen, von denen niemand weiß, wer sie hat.
 
 Drei Dinge, die dabei bekannt sein müssen:
 
@@ -360,12 +452,10 @@ Drei Dinge, die dabei bekannt sein müssen:
    benutzen, nicht neu generieren lassen.
 2. **Keine automatischen Updates.** Ein sideloadetes APK aktualisiert sich
    nie von selbst. Bei einer Pflicht-Änderung an der API bleibt es auf dem
-   alten Stand — also entweder aktuell halten oder bewusst als Notlösung
-   kommunizieren.
-3. **Warnhinweise sind normal.** Der Browser warnt beim Download, Android
-   verlangt „Installation aus unbekannten Quellen erlauben", und Play Protect
-   zeigt beim Installieren einen Hinweis. Das lässt sich nicht abstellen; der
-   Text auf der Kachel weist vorab darauf hin.
+   alten Stand — deshalb notieren, wer eins bekommen hat.
+3. **Warnhinweise sind normal.** Android verlangt „Installation aus
+   unbekannten Quellen erlauben", und Play Protect zeigt beim Installieren
+   einen Hinweis. Das lässt sich nicht abstellen.
 
 ## Native Android-Build
 

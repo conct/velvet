@@ -26,12 +26,11 @@ function AndroidIcon() {
   );
 }
 
-function DownloadIcon() {
+function MailIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <path d="M12 3v12" strokeLinecap="round" />
-      <path d="m7 10 5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M4 19h16" strokeLinecap="round" />
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3.5 7 8.5 6 8.5-6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -48,7 +47,7 @@ function GlobeIcon() {
 const ICONS: Record<DownloadSourceKey, ReactNode> = {
   ios: <AppleIcon />,
   android: <AndroidIcon />,
-  apk: <DownloadIcon />,
+  apk: <MailIcon />,
   web: <GlobeIcon />,
 };
 
@@ -63,9 +62,8 @@ export function DownloadSources() {
         <a
           key={source.key}
           href={source.href}
-          {...(source.isFile
-            ? { download: true }
-            : { target: "_blank", rel: "noopener noreferrer" })}
+          {...(source.isFile ? { download: true } : {})}
+          {...(source.isFile || source.isMail ? {} : { target: "_blank", rel: "noopener noreferrer" })}
           className="flex items-center gap-4 rounded-2xl border border-border bg-surface px-5 py-4 text-left transition hover:border-gold/60 hover:bg-surface-raised"
         >
           <span className="text-gold">{ICONS[source.key]}</span>

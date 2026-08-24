@@ -2,8 +2,8 @@
 
 Kurzorientierung für Claude-Sessions auf diesem Repo. Tiefere Doku liegt in
 `docs/`: `docs/deployment.md` (Betrieb), `docs/roadmap.md` (Backlog der
-automatisierten wöchentlichen Routine), `docs/handoff.md` (sobald gemerged —
-Einstieg für Menschen: Adressen, lokales Setup, Test-Zugänge, Rollen).
+automatisierten wöchentlichen Routine), `docs/handoff.md` (Einstieg
+für Menschen: Adressen, lokales Setup, Test-Zugänge, Rollen).
 
 Monorepo, npm Workspaces: `apps/dashboard` (Next.js), `apps/mobile`
 (Expo/React Native), `server` (Express + Prisma), `packages/shared`
