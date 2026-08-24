@@ -137,6 +137,14 @@ Ziele (`velvet-api`, `velvet-dashboard`) haben eine eigene
 `packages/shared/`-Kopie auf dem Server — bei Änderungen an Shared-Typen
 beide aktualisieren.
 
+**Schema-Änderungen gehören zwischen Upload und Restart.** `prisma db push`
+liest das Schema, das *auf dem Server* liegt — läuft es vor dem Upload, pusht
+es das alte und meldet „already in sync", ohne etwas zu tun. Richtige
+Reihenfolge: hochladen (inkl. `server/prisma/`), `npm install`, `db push`,
+dann erst den neuen `dist` testen und tauschen. Der noch laufende alte Server
+stört sich nicht an zusätzlichen Spalten, das Zeitfenster dazwischen ist also
+ungefährlich.
+
 **Sicherer Restart-Ablauf (API):** neuen `dist/` erst nach
 `~/velvet-api/server/dist_new` hochladen (nicht direkt über `dist/`
 drüberkopieren), dann **manuell** testen, bevor `systemctl` angefasst wird:
