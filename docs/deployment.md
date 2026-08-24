@@ -155,10 +155,19 @@ nur, dass der neue Code sauber startet. Danach tauschen, erst dann
 
 ```bash
 cd ~/velvet-api/server
+[ -d dist_new ] || { echo "dist_new fehlt - nichts zu tauschen, Finger weg"; exit 1; }
 mv dist dist.bak-$(date +%Y%m%d-%H%M)
 mv dist_new dist
 systemctl --user restart velvet-api
 ```
+
+**Die Prüfung auf `dist_new` in Zeile zwei ist nicht optional.** Ohne sie
+räumt ein zweiter Aufruf desselben Blocks — etwa weil man nach einer
+Fehlermeldung noch einmal von vorn anfängt — den bereits getauschten,
+laufenden `dist` ins Backup, findet nichts zum Zurückschieben, und der
+anschließende `restart` startet den Dienst ohne Code: `MODULE_NOT_FOUND`,
+API unten. Passiert am 24.08.2026 genau so. Zurück geht es dann mit
+`mv dist.bak-<neuester> dist && systemctl --user restart velvet-api`.
 
 **Der Backup-Name braucht den Zeitstempel.** Mit dem festen Namen `dist.bak`
 geht das genau einmal gut: Beim zweiten Deploy existiert `dist.bak` schon, und
