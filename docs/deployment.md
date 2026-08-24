@@ -75,10 +75,13 @@ Kein automatisiertes Deployment — Builds werden lokal erzeugt und per
 1. **Backend**: `npm run build` in `packages/shared/` und `server/`, dann
    Upload von Root-`package.json`+`package-lock.json` +
    `packages/shared/{package.json,dist}` +
-   `server/{package.json,dist,src,prisma}` nach `~/velvet-api/` auf `u8`
-   (raw `src/` wird mit hochgeladen, nicht nur `dist/` — wird für
-   `tsx`-basierte Einmal-Skripte in `server/scripts/` gebraucht, z.B.
-   `send-email.ts`). `npm install` auf dem Server (volle Installation, nicht
+   `server/{package.json,dist,src,scripts,prisma}` nach `~/velvet-api/` auf
+   `u8`. **`scripts/` gehört ausdrücklich dazu** — die `tsx`-basierten
+   Einmal-Skripte (`set-demo`, `sandbox-staff`, `unhide-venue`,
+   `send-email`, `set-platform-admin`) liegen dort, nicht in `src/`. Fehlen
+   sie, scheitert jeder `npm run <skript>` auf dem Server mit
+   `ERR_MODULE_NOT_FOUND`, obwohl die API selbst tadellos läuft. `src/` wird
+   zusätzlich gebraucht, weil die Skripte von dort importieren. `npm install` auf dem Server (volle Installation, nicht
    `--omit=dev` — `tsx`/`prisma`-CLI werden dort gebraucht), danach
    `npx prisma generate --schema=prisma/mysql/schema.prisma`.
 2. **Dashboard**: `NEXT_PUBLIC_API_URL=https://api.velvet-network.app npx
