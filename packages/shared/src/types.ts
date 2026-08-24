@@ -75,6 +75,18 @@ export interface StaffProfile {
   isPlatformAdmin: boolean;
 }
 
+export interface AdminHiddenVenue {
+  venueId: string;
+  venueName: string;
+  hiddenAt: string;
+}
+
+export interface AdminHiddenVenuesResult {
+  userId: string;
+  email: string;
+  hiddenVenues: AdminHiddenVenue[];
+}
+
 export interface AdminVenue {
   id: string;
   name: string;

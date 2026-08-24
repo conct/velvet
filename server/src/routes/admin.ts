@@ -85,6 +85,55 @@ adminRouter.post("/venues/:id/reactivate", requireAuth, requirePlatformAdmin, as
   res.json(updated);
 });
 
+// --- Restoring a guest's hidden venues (support action) ---
+//
+// Hiding is one-way from the guest's own app on purpose (see
+// lib/hidden-venues.ts) -- an unhide button there would let anyone holding
+// an unlocked phone reveal a location again. This moves the previously
+// SSH-only restore path (scripts/unhide-venue.ts) into the dashboard, but
+// keeps the same shape: an exact email lookup, never a name/partial search,
+// and never surfaced as part of a general guest list -- the fact that
+// someone has hidden venues at all is itself sensitive.
+
+const hiddenVenuesQuerySchema = z.object({ email: z.string().trim().email() });
+
+adminRouter.get("/guests/hidden-venues", requireAuth, requirePlatformAdmin, async (req, res) => {
+  const parsed = hiddenVenuesQuerySchema.safeParse(req.query);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
+  const user = await prisma.user.findUnique({ where: { email: parsed.data.email.toLowerCase() } });
+  if (!user) return res.status(404).json({ error: t(req.locale, "admin.guestNotFound") });
+
+  const hidden = await prisma.venueRelationship.findMany({
+    where: { userId: user.id, hiddenAt: { not: null } },
+    include: { venue: { select: { id: true, name: true, slug: true } } },
+    orderBy: { hiddenAt: "desc" },
+  });
+
+  res.json({
+    userId: user.id,
+    email: user.email,
+    hiddenVenues: hidden.map((h) => ({ venueId: h.venue.id, venueName: h.venue.name, hiddenAt: h.hiddenAt })),
+  });
+});
+
+adminRouter.post(
+  "/guests/:userId/venues/:venueId/unhide",
+  requireAuth,
+  requirePlatformAdmin,
+  async (req, res) => {
+    const relationship = await prisma.venueRelationship.findUnique({
+      where: { userId_venueId: { userId: req.params.userId, venueId: req.params.venueId } },
+    });
+    if (!relationship || !relationship.hiddenAt) {
+      return res.status(404).json({ error: t(req.locale, "admin.hiddenVenueNotFound") });
+    }
+
+    await prisma.venueRelationship.update({ where: { id: relationship.id }, data: { hiddenAt: null } });
+    res.json({ ok: true });
+  }
+);
+
 // --- Self-service venue applications ---
 
 const COMBINING_MARKS = new RegExp("[\\u0300-\\u036f]", "g");

@@ -61,6 +61,8 @@ interface Translations {
   "admin.venueNotFound": string;
   "admin.venueNotVerified": string;
   "admin.venueNotSuspended": string;
+  "admin.guestNotFound": string;
+  "admin.hiddenVenueNotFound": string;
   "admin.applicationNotFound": string;
   "admin.applicationAlreadyReviewed": string;
   "admin.applicationDocumentMissing": string;
@@ -155,6 +157,8 @@ const de: Translations = {
   "admin.venueNotFound": "Location nicht gefunden",
   "admin.venueNotVerified": "Location ist nicht freigegeben",
   "admin.venueNotSuspended": "Location ist nicht stillgelegt",
+  "admin.guestNotFound": "Kein Gast-Account mit dieser E-Mail-Adresse",
+  "admin.hiddenVenueNotFound": "Diese Location ist bei diesem Gast nicht ausgeblendet",
   "admin.applicationNotFound": "Bewerbung nicht gefunden",
   "admin.applicationAlreadyReviewed": "Bewerbung wurde bereits bearbeitet",
   "admin.applicationDocumentMissing": "Dokument nicht mehr vorhanden",
@@ -258,6 +262,8 @@ const en: Translations = {
   "admin.venueNotFound": "Venue not found",
   "admin.venueNotVerified": "Venue is not verified",
   "admin.venueNotSuspended": "Venue is not suspended",
+  "admin.guestNotFound": "No guest account with this email address",
+  "admin.hiddenVenueNotFound": "This guest doesn't have that venue hidden",
   "admin.applicationNotFound": "Application not found",
   "admin.applicationAlreadyReviewed": "Application has already been reviewed",
   "admin.applicationDocumentMissing": "Document is no longer available",

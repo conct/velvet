@@ -33,6 +33,7 @@ export interface Translations {
     addVenue: string;
     reviewVenues: string;
     reviewApplications: string;
+    hiddenVenues: string;
     logout: string;
     openMenu: string;
   };
@@ -401,6 +402,20 @@ export interface Translations {
       suspendedSinceLabel: string;
       suspendedReasonLabel: string;
     };
+    adminHiddenVenues: {
+      title: string;
+      subtitle: string;
+      adminOnly: string;
+      emailPlaceholder: string;
+      search: string;
+      searching: string;
+      searchFailed: string;
+      nothingHidden: string;
+      hiddenSinceLabel: string;
+      unhide: string;
+      unhiding: string;
+      unhideFailed: string;
+    };
     werbematerial: {
       eyebrow: string;
       title: string;
@@ -697,6 +712,7 @@ const de: Translations = {
     addVenue: "Standort hinzufügen",
     reviewVenues: "Locations prüfen",
     reviewApplications: "Bewerbungen",
+    hiddenVenues: "Ausgeblendete Locations",
     logout: "Abmelden",
     openMenu: "Menü öffnen",
   },
@@ -1099,6 +1115,20 @@ const de: Translations = {
       reactivateFailed: "Reaktivieren fehlgeschlagen",
       suspendedSinceLabel: "Stillgelegt seit",
       suspendedReasonLabel: "Grund",
+    },
+    adminHiddenVenues: {
+      title: "Ausgeblendete Locations",
+      subtitle: "Ein Gast kann eine Location dauerhaft aus der eigenen Historie nehmen. Rückgängig geht nur hier, per exakter E-Mail-Suche.",
+      adminOnly: "Nur für Platform-Admins.",
+      emailPlaceholder: "E-Mail-Adresse des Gasts",
+      search: "Suchen",
+      searching: "Suche…",
+      searchFailed: "Suche fehlgeschlagen",
+      nothingHidden: "Dieser Gast hat aktuell keine Location ausgeblendet.",
+      hiddenSinceLabel: "Ausgeblendet seit",
+      unhide: "Wieder einblenden",
+      unhiding: "Blende ein…",
+      unhideFailed: "Einblenden fehlgeschlagen",
     },
     werbematerial: {
       eyebrow: "Für Clubbetreiber",
@@ -1627,6 +1657,7 @@ const en: Translations = {
     addVenue: "Add Location",
     reviewVenues: "Review Locations",
     reviewApplications: "Applications",
+    hiddenVenues: "Hidden venues",
     logout: "Log out",
     openMenu: "Open menu",
   },
@@ -2029,6 +2060,20 @@ const en: Translations = {
       reactivateFailed: "Failed to reactivate",
       suspendedSinceLabel: "Suspended since",
       suspendedReasonLabel: "Reason",
+    },
+    adminHiddenVenues: {
+      title: "Hidden venues",
+      subtitle: "A guest can permanently remove a venue from their own history. Undoing that only happens here, via an exact email lookup.",
+      adminOnly: "Platform admins only.",
+      emailPlaceholder: "Guest's email address",
+      search: "Search",
+      searching: "Searching…",
+      searchFailed: "Search failed",
+      nothingHidden: "This guest doesn't currently have any venue hidden.",
+      hiddenSinceLabel: "Hidden since",
+      unhide: "Unhide",
+      unhiding: "Unhiding…",
+      unhideFailed: "Failed to unhide",
     },
     werbematerial: {
       eyebrow: "For venue operators",
@@ -2556,6 +2601,7 @@ const pl: Translations = {
     addVenue: "Dodaj lokal",
     reviewVenues: "Sprawdź lokale",
     reviewApplications: "Zgłoszenia",
+    hiddenVenues: "Ukryte lokale",
     logout: "Wyloguj",
     openMenu: "Otwórz menu",
   },
@@ -2958,6 +3004,20 @@ const pl: Translations = {
       reactivateFailed: "Nie udało się przywrócić",
       suspendedSinceLabel: "Zawieszone od",
       suspendedReasonLabel: "Powód",
+    },
+    adminHiddenVenues: {
+      title: "Ukryte lokale",
+      subtitle: "Gość może trwale usunąć lokal ze swojej historii. Cofnięcie tego jest możliwe tylko tutaj, przez dokładne wyszukanie e-mail.",
+      adminOnly: "Tylko dla administratorów platformy.",
+      emailPlaceholder: "Adres e-mail gościa",
+      search: "Szukaj",
+      searching: "Wyszukiwanie…",
+      searchFailed: "Wyszukiwanie nie powiodło się",
+      nothingHidden: "Ten gość nie ma obecnie żadnego ukrytego lokalu.",
+      hiddenSinceLabel: "Ukryte od",
+      unhide: "Pokaż ponownie",
+      unhiding: "Pokazywanie…",
+      unhideFailed: "Nie udało się pokazać ponownie",
     },
     werbematerial: {
       eyebrow: "Dla właścicieli lokali",
@@ -3486,6 +3546,7 @@ const es: Translations = {
     addVenue: "Añadir local",
     reviewVenues: "Revisar locales",
     reviewApplications: "Solicitudes",
+    hiddenVenues: "Locales ocultos",
     logout: "Cerrar sesión",
     openMenu: "Abrir menú",
   },
@@ -3888,6 +3949,20 @@ const es: Translations = {
       reactivateFailed: "Error al reactivar",
       suspendedSinceLabel: "Suspendido desde",
       suspendedReasonLabel: "Motivo",
+    },
+    adminHiddenVenues: {
+      title: "Locales ocultos",
+      subtitle: "Un huésped puede quitar un local de su historial de forma permanente. Deshacerlo solo es posible aquí, mediante una búsqueda exacta por correo electrónico.",
+      adminOnly: "Solo para administradores de la plataforma.",
+      emailPlaceholder: "Correo electrónico del huésped",
+      search: "Buscar",
+      searching: "Buscando…",
+      searchFailed: "Error al buscar",
+      nothingHidden: "Este huésped no tiene ningún local oculto actualmente.",
+      hiddenSinceLabel: "Oculto desde",
+      unhide: "Mostrar de nuevo",
+      unhiding: "Mostrando…",
+      unhideFailed: "Error al mostrar de nuevo",
     },
     werbematerial: {
       eyebrow: "Para propietarios de locales",

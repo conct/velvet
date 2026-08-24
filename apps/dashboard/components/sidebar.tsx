@@ -26,6 +26,7 @@ function navItems(t: Translations) {
     { href: "/venues/new", label: t.nav.addVenue, symbol: "＋" },
     { href: "/admin/venues", label: t.nav.reviewVenues, symbol: "⚑", platformAdminOnly: true },
     { href: "/admin/applications", label: t.nav.reviewApplications, symbol: "✎", platformAdminOnly: true },
+    { href: "/admin/hidden-venues", label: t.nav.hiddenVenues, symbol: "◌", platformAdminOnly: true },
   ];
 }
 
