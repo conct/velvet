@@ -16,6 +16,7 @@ neue Deploys benutzt werden.
 | `velvet-network.app` | Dashboard (Web) | systemd `velvet-dashboard`, Port 6302 |
 | `web.velvet-network.app` | Mobile-App (Web-Export) | systemd `velvet-app`, Port 6303 |
 | `api.velvet-network.app` | Backend-API | systemd `velvet-api`, Port 6301 |
+| — (kein Web-Zugriff) | E-Mail-Relay-Watcher | systemd `velvet-mail-relay` (kein Port, pollt IMAP) |
 
 Die alten `*.feif.space`-Alias-Domains (aus der `sabic`-Zeit) existieren auf
 U8 nicht mehr — `velvet-network.app` (+ `api.`/`web.`) ist die einzige Domain.
@@ -195,6 +196,44 @@ DB-Neuaufbau (wie beim U8-Umzug) müssen sie manuell nachgezogen werden.
 Passwort-Hashes migrieren nicht, d.h. bei einem Neuaufbau werden zwangsläufig
 neue Passwörter fällig, die dann in Google Play Console und App Store
 Connect nachgetragen werden müssen.
+
+## Personalisiertes E-Mail-Relay
+
+Jede:r Gast hat eine opake `<inviteCode>@velvet-network.app`-Adresse
+(derselbe Code wie der Invite-Link, siehe `server/src/lib/relay.ts`). Eine
+Nachricht im Chat wird zusätzlich per E-Mail an die echte, registrierte
+Adresse des Empfängers gespiegelt (`mail@velvet-network.app` als Absender,
+`Reply-To` auf die `<code>@...`-Adresse des Senders). Antwortet die Person
+per normalem Mail-Client, landet das auf der Catchall-Adresse
+`relay@velvet-network.app`, wird vom systemd-Service `velvet-mail-relay`
+(`server/src/relay-watcher.ts`, pollt per IMAP alle 20s) geparst, dem
+richtigen Chat zugeordnet und wieder als In-App-Nachricht gespeichert — inkl.
+erneutem Zurückspiegeln als E-Mail, sodass ein reiner E-Mail-Nutzer nie in
+die App muss.
+
+**Setup auf U8:**
+- `relay@velvet-network.app` ist Catchall der Domain (`uberspace mail
+  address set relay@velvet-network.app --catchall`) — jede nicht explizit
+  vergebene Adresse (also jeder `<code>@...`) landet dort.
+- `.env` braucht zusätzlich `RELAY_IMAP_HOST`, `RELAY_IMAP_USER`,
+  `RELAY_IMAP_PASS`, `RELAY_DOMAIN`.
+- Service: `uberspace service add velvet-mail-relay "node dist/src/relay-watcher.js" --workdir ~/velvet-api/server`.
+
+**Pro-Nutzer-Ordner (wichtig für Kontolöschung):** Korrespondenz wird nicht
+flach abgelegt, sondern pro Nutzer in einen eigenen IMAP-Ordner einsortiert —
+eingehend nach `<code>` (Ordner wird beim ersten Gebrauch angelegt), ausgehend
+archiviert nach `Sent.<code>`. Löscht ein Nutzer sein Konto
+(`DELETE /users/me`), räumt `deleteRelayFolders()` in `server/src/lib/mailer.ts`
+beide Ordner weg. **Trennzeichen ist `.`, nicht `/`** — dieser Mailserver
+lehnt `/` in Mailbox-Pfaden mit `CANNOT`/`Invalid mailbox name` ab; per
+`client.list()`s `delimiter`-Feld bestätigt, kein allgemeines IMAP-Gesetz,
+also bei einem Hosting-Wechsel neu prüfen.
+
+**Bekannte Einschränkung:** `mail@velvet-network.app`-Passwort-Resets
+(`uberspace mail address set --password`) brauchen ein paar Sekunden, bis sie
+serverseitig greifen — direkt danach getestete SMTP-Auth kann kurz mit `535
+Authentication failed` fehlschlagen, obwohl das Passwort korrekt ist. Vor
+einem erneuten Reset lieber 10-15s warten und nochmal testen.
 
 ## Native Android-Build
 
