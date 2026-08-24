@@ -183,6 +183,61 @@ ssh u8 "chmod 500 ~/velvet-dashboard/apps/dashboard/public/material"
 (`ls -l` zeigt das als `dr-x------` — das `d` davor ist nur `ls`' Dateityp-Marker,
 nicht Teil des `chmod`-Arguments; der tatsächliche Modus ist `500`.)
 
+## Welcher Stand ist gerade live?
+
+Weil jeder der drei Web-Dienste einzeln deployed wird, können sie
+unterschiedlich alt sein. Diese Checks sagen pro Endpunkt, was dort läuft —
+ohne sich auf SSH oder das eigene Gedächtnis zu verlassen.
+
+**API** (`api.velvet-network.app`, systemd `velvet-api`)
+
+```bash
+curl -s https://api.velvet-network.app/health
+```
+`{"ok":true}` heißt nur: der Prozess läuft. Ob der *neue* Code läuft, zeigt
+eine Route, die es vorher nicht gab:
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" -X POST https://api.velvet-network.app/venue-applications
+```
+- `400` — Route existiert, neuer Code ist live (die 400 ist die
+  Formularvalidierung, die zuschlägt, weil nichts mitgeschickt wurde; es wird
+  nichts gespeichert).
+- `404` — die Route kennt der Server nicht, es läuft noch der alte Stand.
+- `429` — Route existiert, aber das Rate-Limit greift. Zählt als Treffer.
+
+Der Aufruf verbraucht einen von fünf Slots pro Stunde und IP — also nicht in
+einer Schleife laufen lassen.
+
+**Dashboard und Website** (`velvet-network.app`, systemd `velvet-dashboard`)
+
+```bash
+for p in /location-anmelden /fuer-gaeste /werbematerial; do
+  printf "%-20s %s\n" "$p" "$(curl -s -o /dev/null -w '%{http_code}' https://velvet-network.app$p)"
+done
+```
+`200` heißt: diese Seite ist deployed. `404` heißt: der Build auf dem Server
+ist älter als die Seite. Neue Seiten sind damit der zuverlässigste Marker
+dafür, wie alt der Dashboard-Build ist.
+
+**Mobile-Web** (`web.velvet-network.app`, systemd `velvet-app`)
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://web.velvet-network.app/
+```
+Hier hilft kein Pfad-Test, weil die App eine Single-Page-Anwendung ist und
+jeder Pfad `200` liefert. Den Stand sieht man nur im Browser: einloggen, auf
+„Deine Locations" gehen und schauen, ob der „Ausblenden"-Knopf da ist.
+
+**Datenbankschema**
+
+Von außen nicht prüfbar. Auf dem Server zeigt
+```bash
+ssh u8 "cd velvet-api/server && npx prisma db push --schema=prisma/mysql/schema.prisma --skip-generate"
+```
+den Stand selbst an: Läuft es mit „already in sync" durch, ist das Schema
+aktuell. Der Befehl ist bei rein additiven Änderungen ungefährlich und
+idempotent — er ist damit gleichzeitig Prüfung und Reparatur.
+
 ## Schema-Änderungen mit Data Loss (z.B. Spalten droppen)
 
 `prisma db push` (Prod-Weg, kein CI/CD, keine Migration-History) hat keinen
