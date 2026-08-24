@@ -49,6 +49,13 @@ geraten — braucht erst eine Entscheidung des Nutzers.
 - Aus einer Remote-Cloud-Session ist SSH (Port 22) zu Uberspace nicht
   erreichbar — Deploy/SSH-Aufgaben sind nur über eine lokale Session beim
   Nutzer möglich, nicht von hier aus.
+- **Für alles, was sich nicht per Routine automatisieren lässt** (v.a.
+  Deploy, da SSH von hier aus nicht erreichbar ist): keine neue
+  Infrastruktur dafür bauen (siehe das verworfene Runner-Experiment oben),
+  sondern als klare, einfache Befehlsfolge aufbereiten, die der Nutzer
+  bzw. seine lokale Session copy-paste ausführen kann. Auf Nachfrage die
+  Befehle als Erinnerung erneut auflisten, statt nur auf `docs/` zu
+  verweisen.
 
 ## Infrastruktur
 
