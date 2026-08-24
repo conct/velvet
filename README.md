@@ -33,3 +33,4 @@ npm run dev:mobile      # Expo Dev Server
 Die vollständige Betriebsdokumentation liegt in [`docs/`](docs/):
 
 - [`docs/deployment.md`](docs/deployment.md) — Hosting-Setup, Secrets, Deploy-Ablauf, Datenbank-Migrationen, Native-Builds
+<!-- diagnostic write test, safe to delete -->
