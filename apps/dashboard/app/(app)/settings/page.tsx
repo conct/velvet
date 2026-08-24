@@ -27,17 +27,24 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (!token) return;
+    let cancelled = false;
     apiFetch<VenueDetail>("/venues/me", { token })
       .then((v) => {
+        if (cancelled) return;
         setVenue(v);
         setName(v.name);
         setAddress(v.address);
         setLogoUrl(v.logoUrl ?? "");
       })
       .catch((err) => {
-        setError(err instanceof ApiError ? err.message : t.pages.settings.loadFailed);
+        if (!cancelled) setError(err instanceof ApiError ? err.message : t.pages.settings.loadFailed);
       });
-  }, [token]);
+    // Switching venue mid-request would otherwise let the old venue's details
+    // overwrite the new one's in the form.
+    return () => {
+      cancelled = true;
+    };
+  }, [token, t]);
 
   const isManager = staff?.role === "MANAGER";
 

@@ -14,17 +14,31 @@ export default function AdminVenuesPage() {
   const [loading, setLoading] = useState(true);
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Bumped after a verify to re-run the fetch below. A shared load() called
+  // from both the effect and the handlers would have to set state
+  // synchronously inside the effect, which cascades an extra render on every
+  // mount; from an event handler the same setState is fine.
+  const [reloadCount, setReloadCount] = useState(0);
 
-  const load = () => {
+  useEffect(() => {
     if (!token) return;
-    setLoading(true);
+    let cancelled = false;
     apiFetch<AdminVenue[]>("/admin/venues", { token })
-      .then(setVenues)
-      .catch((err) => setError(err instanceof ApiError ? err.message : t.pages.adminVenues.loadFailed))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(load, [token]);
+      .then((data) => {
+        if (!cancelled) setVenues(data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof ApiError ? err.message : t.pages.adminVenues.loadFailed);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    // Guards against an earlier, slower response landing after a newer one
+    // when the venue (and with it the token) is switched mid-request.
+    return () => {
+      cancelled = true;
+    };
+  }, [token, reloadCount, t]);
 
   const verify = async (id: string) => {
     if (!token) return;
@@ -32,7 +46,7 @@ export default function AdminVenuesPage() {
     setError(null);
     try {
       await apiFetch(`/admin/venues/${id}/verify`, { method: "POST", token });
-      load();
+      setReloadCount((n) => n + 1);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t.pages.adminVenues.verifyFailed);
     } finally {

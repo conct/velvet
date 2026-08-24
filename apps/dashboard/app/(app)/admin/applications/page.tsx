@@ -20,17 +20,31 @@ export default function AdminApplicationsPage() {
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [error, setError] = useState<string | null>(null);
+  // Bumped after an approve/reject to re-run the fetch below. A shared load()
+  // called from both the effect and the handlers would have to set state
+  // synchronously inside the effect, which cascades an extra render on every
+  // mount; from an event handler the same setState is fine.
+  const [reloadCount, setReloadCount] = useState(0);
 
-  const load = () => {
+  useEffect(() => {
     if (!token) return;
-    setLoading(true);
+    let cancelled = false;
     apiFetch<AdminVenueApplication[]>("/admin/venue-applications", { token })
-      .then(setApplications)
-      .catch((err) => setError(err instanceof ApiError ? err.message : t.pages.adminApplications.loadFailed))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(load, [token]);
+      .then((data) => {
+        if (!cancelled) setApplications(data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof ApiError ? err.message : t.pages.adminApplications.loadFailed);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    // Guards against an earlier, slower response landing after a newer one
+    // when the venue (and with it the token) is switched mid-request.
+    return () => {
+      cancelled = true;
+    };
+  }, [token, reloadCount, t]);
 
   const openDocument = async (id: string) => {
     if (!token) return;
@@ -55,7 +69,7 @@ export default function AdminApplicationsPage() {
     setError(null);
     try {
       await apiFetch(`/admin/venue-applications/${id}/approve`, { method: "POST", token, body: {} });
-      load();
+      setReloadCount((n) => n + 1);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t.pages.adminApplications.approveFailed);
     } finally {
@@ -75,7 +89,7 @@ export default function AdminApplicationsPage() {
       });
       setRejectingId(null);
       setRejectReason("");
-      load();
+      setReloadCount((n) => n + 1);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t.pages.adminApplications.rejectFailed);
     } finally {
