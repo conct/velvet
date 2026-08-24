@@ -55,9 +55,20 @@ try {
         if ($LASTEXITCODE -ge 8) { throw "robocopy von $dir fehlgeschlagen (Exit $LASTEXITCODE)" }
     }
 
+    Write-Host "-- Entsperre Zielverzeichnisse (sind zwischen Deploys rekursiv 500/700-geschuetzt)"
+    ssh $RemoteHost "chmod -R u+w ${RemoteDir}.next ${RemoteDir}app ${RemoteDir}components ${RemoteDir}lib ${RemoteDir}public 2>/dev/null; true"
+
     Write-Host "-- Lade nach $RemoteHost hoch"
-    scp -r "$stageDir\.next" "$stageDir\app" "$stageDir\components" "$stageDir\public" "$stageDir\lib" "${RemoteHost}:${RemoteDir}"
-    if ($LASTEXITCODE -ne 0) { throw "scp fehlgeschlagen (Exit $LASTEXITCODE)" }
+    # Einzeln statt in einem scp-Aufruf -- ein Klammer-Routengruppen-Ordner wie
+    # app/(app)/ bringt scp bei mehreren Quellen in einem Aufruf durcheinander
+    # ("stat remote: No such file or directory").
+    foreach ($dir in @(".next", "app", "components", "public", "lib")) {
+        scp -r "$stageDir\$dir" "${RemoteHost}:${RemoteDir}"
+        if ($LASTEXITCODE -ne 0) { throw "scp von $dir fehlgeschlagen (Exit $LASTEXITCODE)" }
+    }
+
+    Write-Host "-- Sperre Zielverzeichnisse wieder"
+    ssh $RemoteHost "chmod -R 500 ${RemoteDir}app ${RemoteDir}components ${RemoteDir}lib ${RemoteDir}public && chmod -R 700 ${RemoteDir}.next"
 
     Write-Host "-- Starte velvet-dashboard neu"
     ssh $RemoteHost "systemctl --user restart velvet-dashboard"
