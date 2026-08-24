@@ -495,12 +495,52 @@ npm run set-demo -- user  <email>               # Gast-Login
 npm run set-demo -- staff <email> off           # zurücknehmen
 ```
 
-Für die Produktion heißt das konkret: eine eigene Sandbox-Location anlegen,
-sie und die beiden Reviewer-Accounts (`staff-review@feif.space`,
-`playstore-review@feif.space`) als Demo markieren und **den Staff-Reviewer aus
-jeder echten Location entfernen** — solange er Mitglied einer echten Location
-ist, arbeitet er in deren Welt. Das Skript weist nach dem Markieren einer
-Location auf deren noch nicht markierte Staff-Accounts hin.
+### Bestehendes Staff-Konto in die Sandbox holen
+
+Ein Staff-Account arbeitet in der Welt der Location, der er angehört — das
+`isDemo`-Flag am Konto allein nützt also nichts, solange er Mitglied einer
+echten Location ist. Die **Mitgliedschaft muss umziehen**, und das kann die
+Oberfläche nicht: Die Team-Maske legt immer ein *neues* Konto an und lehnt
+eine bereits vergebene E-Mail mit 409 ab.
+
+Dafür gibt es `sandbox-staff`. Genau der Fall der Store-Reviewer, deren
+Zugangsdaten bei Google und Apple hinterlegt sind und deshalb erhalten bleiben
+müssen:
+
+```bash
+npm run set-demo -- venue <sandbox-slug>                        # zuerst
+npm run sandbox-staff -- staff-review@feif.space <sandbox-slug> # Trockenlauf
+npm run sandbox-staff -- staff-review@feif.space <sandbox-slug> --confirm
+```
+
+Ohne `--confirm` zeigt es nur, was es täte. Es entfernt alle Mitgliedschaften
+an anderen Locations, legt eine an der Sandbox an (Standardrolle `MANAGER`,
+optional `DOORMAN`/`SERVICE` als drittes Argument) und setzt `isDemo`. Ist die
+Ziel-Location keine Sandbox, bricht es ab — sonst würde es das Gegenteil des
+Gewollten tun.
+
+**Vorher prüfen, wen die Umstellung im Score trifft.** Das Flag wirkt
+rückwirkend: Alle Bewertungen, die das Konto je an echten Gästen vergeben hat,
+zählen ab sofort nicht mehr, und deren Stufe kann sich ändern. Das ist der
+Sinn der Sache, sollte einen aber nicht überraschen:
+
+```bash
+mysql velvet -e "
+SELECT u.email, COUNT(*) AS bewertungen
+FROM Rating r
+JOIN StaffAccount s ON s.id = r.staffAccountId
+JOIN User u ON u.id = r.userId
+WHERE s.email = 'staff-review@feif.space'
+GROUP BY u.email;"
+```
+
+Der Gast-Reviewer (`playstore-review@feif.space`) hat keine Mitgliedschaft und
+braucht deshalb nur `npm run set-demo -- user <email>`. Seine bisherigen
+Besuche an echten Locations bleiben in der Datenbank, sind für ihn aber nicht
+mehr sichtbar — die App startet für ihn faktisch leer.
+
+Ausgestellte Tokens leben weiter: Wer gerade eingeloggt ist, behält seine alte
+Location bis zum nächsten Login. Einmal ab- und wieder anmelden lassen.
 
 Sandbox-Locations tauchen nicht in der öffentlichen Location-Liste der Gast-App
 auf. Lokal legt `npm run seed` bereits eine an (`VELVET Testbühne` mit
