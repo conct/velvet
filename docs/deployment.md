@@ -140,6 +140,25 @@ Ziele (`velvet-api`, `velvet-dashboard`) haben eine eigene
 `packages/shared/`-Kopie auf dem Server — bei Änderungen an Shared-Typen
 beide aktualisieren.
 
+**`scp -r <verzeichnis> ziel/` verschachtelt beim zweiten Mal.** Existiert das
+Zielverzeichnis noch nicht, legt `scp` es an — existiert es bereits, kopiert es
+*hinein*: Aus `scp -r server/scripts u8:velvet-api/server/` wird beim zweiten
+Upload `server/scripts/scripts/`. Der erste Deploy funktioniert also, jeder
+weitere legt die Dateien eine Ebene zu tief ab, und `npm run <skript>`
+scheitert mit `ERR_MODULE_NOT_FOUND`, obwohl der Upload fehlerfrei durchlief.
+Dasselbe gilt für `src/`, `prisma/` und `dist_new`.
+
+Robuste Form für wiederholte Uploads — Verzeichnis sicherstellen, dann den
+*Inhalt* kopieren:
+
+```powershell
+ssh u8 "mkdir -p ~/velvet-api/server/scripts"
+scp -r server\scripts\* u8:velvet-api/server/scripts/
+```
+
+Aufräumen, wenn es schon passiert ist:
+`mv scripts/scripts/* scripts/ && rmdir scripts/scripts`
+
 **Schema-Änderungen gehören zwischen Upload und Restart.** `prisma db push`
 liest das Schema, das *auf dem Server* liegt — läuft es vor dem Upload, pusht
 es das alte und meldet „already in sync", ohne etwas zu tun. Richtige
