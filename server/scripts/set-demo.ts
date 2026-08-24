@@ -63,12 +63,28 @@ async function main() {
   // silently -- a venue can have staff who also work elsewhere.
   const staff = await prisma.staffVenueMembership.findMany({
     where: { venueId: venue.id },
-    include: { staffAccount: { select: { email: true, isDemo: true } } },
+    include: { staffAccount: { select: { email: true, isDemo: true, isPlatformAdmin: true } } },
   });
   const mismatched = staff.filter((m) => m.staffAccount.isDemo !== isDemo);
-  if (mismatched.length > 0) {
+
+  // Whoever created the sandbox venue through the dashboard is a MANAGER of it
+  // -- usually the operator's own admin account. Suggesting they flag
+  // themselves would send their real work into the sandbox: their ratings stop
+  // counting retroactively and they can no longer scan a real guest. Their
+  // membership here is harmless (it is what lets them administer the sandbox),
+  // so name them separately instead of handing over the loaded command.
+  const admins = mismatched.filter((m) => m.staffAccount.isPlatformAdmin);
+  const rest = mismatched.filter((m) => !m.staffAccount.isPlatformAdmin);
+
+  if (rest.length > 0) {
     console.log(`\nStaff-Accounts dieser Location, die noch isDemo=${!isDemo} haben:`);
-    for (const m of mismatched) console.log(`  npm run set-demo -- staff ${m.staffAccount.email}${isDemo ? "" : " off"}`);
+    for (const m of rest) console.log(`  npm run set-demo -- staff ${m.staffAccount.email}${isDemo ? "" : " off"}`);
+  }
+  if (admins.length > 0 && isDemo) {
+    console.log("\nPlatform-Admins dieser Location - NICHT markieren:");
+    for (const m of admins) console.log(`  ${m.staffAccount.email}`);
+    console.log("  Die Mitgliedschaft hier ist harmlos und erlaubt das Verwalten der Sandbox.");
+    console.log("  Markiert man sie, zaehlen ihre echten Bewertungen rueckwirkend nicht mehr.");
   }
 }
 
