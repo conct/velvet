@@ -1,0 +1,16 @@
+{
+  "name": "velvet",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "server",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev --workspace=server",
+    "dev:dashboard": "npm run dev --workspace=dashboard",
+    "dev:mobile": "npm run start --workspace=mobile",
+    "seed": "npm run seed --workspace=server"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "expo": {
+    "name": "VELVET",
+    "slug": "velvet",
+    "scheme": "velvet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0B0B0C",
+    "ios": {
+      "bundleIdentifier": "space.feif.velvet",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "VELVET benötigt Kamerazugriff, um QR-Codes am Einlass zu scannen.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "buildNumber": "2"
+    },
+    "android": {
+      "package": "space.feif.velvet",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B0B0C",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "versionCode": 4
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-font",
+      "expo-splash-screen",
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "VELVET benötigt Kamerazugriff, um QR-Codes am Einlass zu scannen.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "VELVET benötigt Zugriff auf deine Fotos, um ein Profilbild auszuwählen.",
+          "cameraPermission": "VELVET benötigt Kamerazugriff, um ein Profilfoto aufzunehmen."
+        }
+      ],
+      "expo-web-browser",
+      "expo-localization"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c9507499-0622-4890-b758-07b79428f047"
+      }
+    },
+    "owner": "feif.space"
+  }
+}

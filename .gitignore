@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+.expo/
+.next/
+*.log
+.env
+.env.local
+server/prisma/dev.db
+server/prisma/dev.db-journal
+server/uploads/*
+!server/uploads/.gitkeep
+.DS_Store
+.claude/scheduled_tasks.lock
+docs/play-store-listing.md

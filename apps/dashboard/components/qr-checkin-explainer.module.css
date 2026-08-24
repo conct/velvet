@@ -1,0 +1,430 @@
+.stage {
+  --cycle: 13s;
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(212, 175, 55, 0.1), transparent 60%),
+    linear-gradient(180deg, #0e0e0f 0%, var(--color-background) 60%);
+  padding: 28px clamp(16px, 4vw, 32px) 24px;
+  overflow: hidden;
+}
+
+.devices {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 7vw, 64px);
+  min-height: 260px;
+}
+
+@media (max-width: 480px) {
+  .devices {
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+  }
+  .pulseTrack {
+    display: none;
+  }
+}
+
+/* ---------- device chrome ---------- */
+.device {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 24px 48px -22px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+.phone {
+  width: 148px;
+  height: 264px;
+  border-radius: 22px;
+  padding: 10px 9px;
+}
+
+.phone::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 4px;
+  border-radius: 3px;
+  background: var(--color-border);
+}
+
+.phoneScreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: var(--color-background);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px 12px;
+}
+
+.sceneStack {
+  position: relative;
+  width: 100%;
+  flex: 1;
+}
+
+.tablet {
+  width: 208px;
+  height: 264px;
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.tabletScreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: var(--color-background);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.brandMark {
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+/* ---------- scan pulse ---------- */
+.pulseTrack {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(24px, 7vw, 64px);
+  height: 2px;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pulseDot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--color-gold-bright);
+  box-shadow: 0 0 12px 3px rgba(244, 229, 161, 0.7);
+  opacity: 0;
+  animation: pulseTravel var(--cycle) infinite;
+}
+
+@keyframes pulseTravel {
+  0%, 32% { opacity: 0; left: 0; }
+  34% { opacity: 1; left: 0; }
+  45% { opacity: 1; left: 100%; }
+  47%, 100% { opacity: 0; left: 100%; }
+}
+
+/* ---------- scene layers ---------- */
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.sceneA { animation: sceneA var(--cycle) infinite; }
+.sceneB { animation: sceneB var(--cycle) infinite; }
+.sceneC { animation: sceneC var(--cycle) infinite; }
+
+@keyframes sceneA {
+  0%, 27% { opacity: 1; }
+  33%, 94% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes sceneB {
+  0%, 27% { opacity: 0; }
+  33%, 60% { opacity: 1; }
+  66%, 100% { opacity: 0; }
+}
+@keyframes sceneC {
+  0%, 60% { opacity: 0; }
+  66%, 94% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---------- scene A: guest code ---------- */
+.codeLabel {
+  font-family: var(--font-body, var(--font-inter));
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.qrBox {
+  width: 82px;
+  height: 82px;
+  border-radius: 12px;
+  background: var(--color-text);
+  border: 1px solid var(--color-gold);
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  padding: 7px;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.qrBox span {
+  border-radius: 1px;
+}
+.qrBox span.on {
+  background: var(--color-background);
+}
+
+.accessCode {
+  font-family: var(--font-inter);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 10px;
+}
+
+.countdownTrack {
+  width: 90px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.countdownFill {
+  height: 100%;
+  background: var(--color-gold);
+  width: 100%;
+  transform-origin: left;
+  animation: countdown var(--cycle) infinite;
+}
+
+@keyframes countdown {
+  0% { transform: scaleX(1); }
+  27% { transform: scaleX(0.15); }
+  28%, 100% { transform: scaleX(1); }
+}
+
+/* ---------- scene B: scanner viewfinder ---------- */
+.viewfinder {
+  position: relative;
+  width: 134px;
+  height: 134px;
+  margin-bottom: 12px;
+}
+
+.vfCorner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid var(--color-gold);
+}
+.tl { top: 0; left: 0; border-right: none; border-bottom: none; border-radius: 6px 0 0 0; }
+.tr { top: 0; right: 0; border-left: none; border-bottom: none; border-radius: 0 6px 0 0; }
+.bl { bottom: 0; left: 0; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
+.br { bottom: 0; right: 0; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
+
+.vfTarget {
+  position: absolute;
+  inset: 20px;
+  border-radius: 8px;
+  background: rgba(212, 175, 55, 0.06);
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  padding: 6px;
+  gap: 2px;
+}
+.vfTarget span {
+  border-radius: 1px;
+  background: transparent;
+}
+.vfTarget span.on {
+  background: rgba(245, 241, 232, 0.28);
+}
+
+.scanLine {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-bright), transparent);
+  box-shadow: 0 0 10px 2px rgba(244, 229, 161, 0.6);
+  animation: scanSweep 1.4s ease-in-out infinite;
+}
+
+@keyframes scanSweep {
+  0%, 100% { top: 22px; }
+  50% { top: 112px; }
+}
+
+.scanCaption {
+  font-family: var(--font-inter);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+/* ---------- scene C: result card ---------- */
+.resultAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-gold);
+  background: var(--color-surface-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  color: var(--color-gold);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.resultName {
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-text);
+  margin-bottom: 5px;
+}
+
+.tierBadge {
+  font-family: var(--font-inter);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  border: 1px solid var(--color-gold);
+  border-radius: 999px;
+  padding: 3px 9px;
+  margin-bottom: 10px;
+}
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-success);
+  font-family: var(--font-inter);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.checkRow svg {
+  width: 14px;
+  height: 14px;
+}
+.checkRow path {
+  stroke: var(--color-success);
+  stroke-width: 2.4;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: drawCheck var(--cycle) infinite;
+}
+
+@keyframes drawCheck {
+  0%, 66% { stroke-dashoffset: 20; }
+  72%, 100% { stroke-dashoffset: 0; }
+}
+
+/* ---------- caption strip ---------- */
+.captionStrip {
+  margin-top: 22px;
+  height: 32px;
+  position: relative;
+  text-align: center;
+}
+
+.caption {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  opacity: 0;
+}
+
+.caption b {
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.captionA { animation: sceneA var(--cycle) infinite; }
+.captionB { animation: sceneB var(--cycle) infinite; }
+.captionC { animation: sceneC var(--cycle) infinite; }
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-border);
+  position: relative;
+}
+
+.dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-gold);
+  opacity: 0;
+}
+
+.dotA::after { animation: sceneA var(--cycle) infinite; }
+.dotB::after { animation: sceneB var(--cycle) infinite; }
+.dotC::after { animation: sceneC var(--cycle) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .caption,
+  .dot::after,
+  .pulseDot,
+  .scanLine,
+  .countdownFill,
+  .checkRow path {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,0 +1,378 @@
+.stage {
+  --cycle: 13s;
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(212, 175, 55, 0.1), transparent 60%),
+    linear-gradient(180deg, #0e0e0f 0%, var(--color-background) 60%);
+  padding: 28px clamp(16px, 4vw, 32px) 24px;
+  overflow: hidden;
+}
+
+.devices {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 7vw, 64px);
+  min-height: 260px;
+}
+
+@media (max-width: 480px) {
+  .devices {
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+  }
+  .pulseTrack {
+    display: none;
+  }
+}
+
+.device {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 24px 48px -22px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+.phone {
+  width: 148px;
+  height: 264px;
+  border-radius: 22px;
+  padding: 10px 9px;
+}
+
+.phone::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 4px;
+  border-radius: 3px;
+  background: var(--color-border);
+}
+
+.phoneScreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: var(--color-background);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px 12px;
+}
+
+.sceneStack {
+  position: relative;
+  width: 100%;
+  flex: 1;
+}
+
+.brandMark {
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.pulseTrack {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(24px, 7vw, 64px);
+  height: 2px;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pulseDot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--color-gold-bright);
+  box-shadow: 0 0 12px 3px rgba(244, 229, 161, 0.7);
+  opacity: 0;
+  animation: pulseTravel var(--cycle) infinite;
+}
+
+@keyframes pulseTravel {
+  0%, 32% { opacity: 0; left: 0; }
+  34% { opacity: 1; left: 0; }
+  45% { opacity: 1; left: 100%; }
+  47%, 100% { opacity: 0; left: 100%; }
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.sceneA { animation: sceneA var(--cycle) infinite; }
+.sceneB { animation: sceneB var(--cycle) infinite; }
+.sceneC { animation: sceneC var(--cycle) infinite; }
+
+@keyframes sceneA {
+  0%, 27% { opacity: 1; }
+  33%, 94% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes sceneB {
+  0%, 27% { opacity: 0; }
+  33%, 60% { opacity: 1; }
+  66%, 100% { opacity: 0; }
+}
+@keyframes sceneC {
+  0%, 60% { opacity: 0; }
+  66%, 94% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---------- scene A: shared check-in ---------- */
+.checkinAvatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-gold);
+  background: var(--color-surface-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  color: var(--color-gold);
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.venueLabel {
+  font-family: var(--font-inter);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.checkedInTag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-inter);
+  font-size: 9.5px;
+  color: var(--color-success);
+  letter-spacing: 0.04em;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-success);
+}
+
+/* ---------- scene B: match appears ---------- */
+.matchesLabel {
+  font-family: var(--font-inter);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.matchRing {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.matchRing::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-gold);
+  opacity: 0;
+  animation: ringPulse var(--cycle) infinite;
+}
+
+@keyframes ringPulse {
+  0%, 30% { opacity: 0; transform: scale(0.9); }
+  36% { opacity: 1; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+  60%, 100% { opacity: 0; transform: scale(1.15); }
+}
+
+.matchAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-gold);
+  background: var(--color-surface-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  color: var(--color-gold);
+  font-size: 17px;
+}
+
+.matchName {
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--color-text);
+  margin-top: 6px;
+}
+
+.matchVenue {
+  font-family: var(--font-inter);
+  font-size: 9.5px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- scene C: chat ---------- */
+.chatBubbleOut {
+  align-self: flex-end;
+  background: var(--color-gold);
+  color: var(--color-background);
+  font-family: var(--font-inter);
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 7px 11px;
+  border-radius: 12px 12px 2px 12px;
+  max-width: 84%;
+  margin-bottom: 6px;
+}
+
+.chatBubbleIn {
+  align-self: flex-start;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-inter);
+  font-size: 10.5px;
+  padding: 7px 11px;
+  border-radius: 12px 12px 12px 2px;
+  max-width: 84%;
+}
+
+.chatColumn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px;
+}
+
+.unreadBadge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background: var(--color-gold);
+  color: var(--color-background);
+  font-family: var(--font-inter);
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  opacity: 0;
+  animation: badgePop var(--cycle) infinite;
+}
+
+@keyframes badgePop {
+  0%, 68% { opacity: 0; transform: scale(0.6); }
+  74%, 94% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.6); }
+}
+
+/* ---------- caption strip ---------- */
+.captionStrip {
+  margin-top: 22px;
+  height: 32px;
+  position: relative;
+  text-align: center;
+}
+
+.caption {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  opacity: 0;
+}
+
+.caption b {
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.captionA { animation: sceneA var(--cycle) infinite; }
+.captionB { animation: sceneB var(--cycle) infinite; }
+.captionC { animation: sceneC var(--cycle) infinite; }
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.dotIndicator {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-border);
+  position: relative;
+}
+
+.dotIndicator::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-gold);
+  opacity: 0;
+}
+
+.dotA::after { animation: sceneA var(--cycle) infinite; }
+.dotB::after { animation: sceneB var(--cycle) infinite; }
+.dotC::after { animation: sceneC var(--cycle) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scene, .caption, .dotIndicator::after, .pulseDot, .matchRing::before, .unreadBadge {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

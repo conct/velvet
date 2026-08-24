@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  passwordHash     String
+  firstName        String
+  lastName         String
+  phone            String?
+  photoUrl         String?
+  photoConfirmedAt DateTime?
+  emailVerifiedAt  DateTime?
+  createdAt        DateTime  @default(now())
+
+  relationships          VenueRelationship[]
+  ratings                Rating[]
+  entryLogs              EntryLog[]
+  subscriptions          Subscription[]
+  messagesSent           Message[]           @relation("MessagesSent")
+  messagesReceived       Message[]           @relation("MessagesReceived")
+  blocksMade             BlockedUser[]       @relation("BlocksMade")
+  blocksReceived         BlockedUser[]       @relation("BlocksReceived")
+  inviteCode             UserInviteCode?
+  connectionsSent        ConnectionRequest[] @relation("ConnectionInvitee")
+  connectionsReceived    ConnectionRequest[] @relation("ConnectionInviter")
+}
+
+model Venue {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  address   String
+  logoUrl   String?
+  status    String   @default("PENDING") // "PENDING" | "VERIFIED"
+  createdAt DateTime @default(now())
+
+  memberships   StaffVenueMembership[]
+  relationships VenueRelationship[]
+  ratings       Rating[]
+  entryLogs     EntryLog[]
+}
+
+model StaffAccount {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  passwordHash    String
+  name            String
+  isPlatformAdmin Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  memberships      StaffVenueMembership[]
+  ratings          Rating[]
+  entryLogs        EntryLog[]
+  messagesSent     Message[]              @relation("StaffMessagesSent")
+  messagesReceived Message[]              @relation("StaffMessagesReceived")
+}
+
+model StaffVenueMembership {
+  id             String   @id @default(cuid())
+  staffAccountId String
+  venueId        String
+  role           String // "DOORMAN" | "MANAGER"
+  createdAt      DateTime @default(now())
+
+  staffAccount StaffAccount @relation(fields: [staffAccountId], references: [id])
+  venue        Venue        @relation(fields: [venueId], references: [id])
+
+  @@unique([staffAccountId, venueId])
+}
+
+model VenueRelationship {
+  id          String    @id @default(cuid())
+  userId      String
+  venueId     String
+  visits      Int       @default(0)
+  lastVisitAt DateTime?
+  localFlag   String    @default("NONE") // "NONE" | "VIP" | "BANNED"
+  privateNote String?
+
+  user  User  @relation(fields: [userId], references: [id])
+  venue Venue @relation(fields: [venueId], references: [id])
+
+  @@unique([userId, venueId])
+}
+
+model Rating {
+  id             String   @id @default(cuid())
+  userId         String
+  venueId        String
+  staffAccountId String
+  stars          Int
+  tags           String   @default("[]") // JSON-encoded string[]
+  note           String?
+  createdAt      DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id])
+  venue        Venue        @relation(fields: [venueId], references: [id])
+  staffAccount StaffAccount @relation(fields: [staffAccountId], references: [id])
+}
+
+model EntryLog {
+  id             String   @id @default(cuid())
+  userId         String
+  venueId        String
+  staffAccountId String
+  scannedAt      DateTime @default(now())
+  rated          Boolean  @default(false)
+
+  user         User         @relation(fields: [userId], references: [id])
+  venue        Venue        @relation(fields: [venueId], references: [id])
+  staffAccount StaffAccount @relation(fields: [staffAccountId], references: [id])
+
+  @@index([venueId, scannedAt])
+}
+
+model Subscription {
+  id                 String   @id @default(cuid())
+  userId             String
+  provider           String // "STRIPE" | "PAYPAL"
+  providerCustomerId String?
+  providerSubId      String   @unique
+  status             String // "ACTIVE" | "PAST_DUE" | "CANCELED" | "INCOMPLETE"
+  interval           String // "MONTH" | "YEAR"
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Message {
+  id                      String    @id @default(cuid())
+  senderId                String?
+  senderStaffAccountId    String?
+  recipientId             String?
+  recipientStaffAccountId String?
+  body                    String
+  createdAt               DateTime  @default(now())
+  readAt                  DateTime?
+  reportedAt              DateTime?
+  reportReason            String?
+
+  sender                User?         @relation("MessagesSent", fields: [senderId], references: [id])
+  senderStaffAccount    StaffAccount? @relation("StaffMessagesSent", fields: [senderStaffAccountId], references: [id])
+  recipient             User?         @relation("MessagesReceived", fields: [recipientId], references: [id])
+  recipientStaffAccount StaffAccount? @relation("StaffMessagesReceived", fields: [recipientStaffAccountId], references: [id])
+
+  @@index([senderId, recipientId])
+  @@index([recipientId, senderId])
+}
+
+model PasswordResetToken {
+  id          String    @id @default(cuid())
+  accountType String // "user" | "staff"
+  accountId   String
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([accountId, accountType])
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model BlockedUser {
+  id        String   @id @default(cuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker User @relation("BlocksMade", fields: [blockerId], references: [id])
+  blocked User @relation("BlocksReceived", fields: [blockedId], references: [id])
+
+  @@unique([blockerId, blockedId])
+}
+
+// A user's personal, shareable connect code/link (QR + URL), analogous to the
+// venue Werbematerial QR but for user-to-user invites instead of location
+// marketing. One per user; rotating it invalidates any previously shared
+// link/QR without affecting existing accepted connections.
+model UserInviteCode {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  code      String   @unique
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// Someone using an invite code/link sends a request to the code's owner, who
+// must accept before a chat opens -- protects the owner (e.g. an influencer
+// sharing their code widely) from being contacted by just anyone who scans
+// it. Once ACCEPTED, canMessage() in lib/messaging.ts allows the pair to
+// message regardless of the separate Premium/shared-night eligibility path.
+model ConnectionRequest {
+  id          String    @id @default(cuid())
+  inviterId   String
+  inviteeId   String
+  status      String    @default("PENDING") // "PENDING" | "ACCEPTED" | "DECLINED"
+  createdAt   DateTime  @default(now())
+  respondedAt DateTime?
+
+  inviter User @relation("ConnectionInviter", fields: [inviterId], references: [id])
+  invitee User @relation("ConnectionInvitee", fields: [inviteeId], references: [id])
+
+  @@unique([inviterId, inviteeId])
+}

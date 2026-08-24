@@ -1,0 +1,41 @@
+# VELVET
+
+> VELVET ist ein geteiltes Vertrauensnetzwerk für den Türstand: Gäste bauen sich eine
+> Reputation auf, die über einen einzelnen Club hinausreicht. Türsteher sehen beim
+> Scan sofort, wen sie vor sich haben. Betreiber schützen ihr Haus, ohne jeden Abend
+> bei null anzufangen.
+
+VELVET ersetzt die Papierliste und das Bauchgefühl am Einlass durch ein digitales
+Gästeprofil, das standortübergreifend gilt. Ein an einer Location vergebenes
+Hausverbot oder VIP-Status ist an jeder anderen teilnehmenden Tür im Netzwerk
+sichtbar.
+
+## Für wen
+
+- **Gäste**: legen ein Profil mit Foto an, zeigen am Einlass einen QR-Code, sammeln
+  standortübergreifend Reputation.
+- **Türsteher & Sicherheitsdienste**: scannen den Code, sehen sofort Foto, Status
+  und Vorgeschichte des Gasts — auch aus anderen Locations im Netzwerk.
+- **Clubbetreiber & Management**: verwalten Gästeliste, Bewertungen und Team über
+  ein Web-Dashboard, profitieren vom Sicherheitswissen anderer Häuser im Netzwerk.
+
+## Wie es funktioniert
+
+1. Profil anlegen — Name, Foto, ein Konto für alle teilnehmenden Locations.
+2. Am Einlass scannen — der Türsteher sieht Foto, Status und Historie.
+3. Bewertung nach dem Abend — Sterne plus Merkmale wie „Freundlich" oder
+   „Ärger gemacht", vergeben durch das Türpersonal.
+4. Der daraus berechnete globale Status reist mit dem Gast durchs gesamte Netzwerk.
+
+## Status-Stufen
+
+VIP, Vertraut, Standard, Beobachtung, Gesperrt — fünf Stufen, die sich aus den
+gesammelten Bewertungen aller teilnehmenden Locations ergeben.
+
+## Seiten
+
+- [Startseite](https://velvet-network.app/): Überblick über Prinzip, Zielgruppen und Status-Pfad.
+- [Impressum](https://velvet-network.app/impressum)
+- [Datenschutzerklärung](https://velvet-network.app/datenschutz)
+- Web-Dashboard für Team & Management: https://velvet-network.app/login
+- Mobile-App (Gäste & Türsteher): https://web.velvet-network.app

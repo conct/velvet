@@ -1,0 +1,312 @@
+.stage {
+  --cycle: 13s;
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(212, 175, 55, 0.1), transparent 60%),
+    linear-gradient(180deg, #0e0e0f 0%, var(--color-background) 60%);
+  padding: 28px clamp(16px, 4vw, 32px) 24px;
+  overflow: hidden;
+}
+
+.deviceWrap {
+  display: flex;
+  justify-content: center;
+  min-height: 260px;
+  align-items: center;
+}
+
+.browser {
+  width: min(420px, 100%);
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 24px 48px -22px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+.browserBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  background: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.browserDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+
+.browserUrl {
+  flex: 1;
+  margin-left: 8px;
+  height: 16px;
+  border-radius: 5px;
+  background: var(--color-background);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-family: var(--font-inter);
+  font-size: 8.5px;
+  color: var(--color-text-muted);
+}
+
+.browserBody {
+  position: relative;
+  display: flex;
+  height: 220px;
+  background: var(--color-background);
+}
+
+.sidebar {
+  width: 96px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--color-border);
+  padding: 12px 10px;
+}
+
+.brandMark {
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-gold);
+  font-size: 9px;
+  margin-bottom: 10px;
+}
+
+.venuePicker {
+  position: relative;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 5px 6px;
+  font-family: var(--font-inter);
+  font-size: 8px;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.venuePickerLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.venueDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  border: 1px solid var(--color-gold);
+  border-radius: 6px;
+  background: var(--color-surface-raised);
+  overflow: hidden;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(-4px);
+  animation: dropdownShow var(--cycle) infinite;
+}
+
+@keyframes dropdownShow {
+  0%, 35% { opacity: 0; transform: translateY(-4px); }
+  38%, 58% { opacity: 1; transform: translateY(0); }
+  63%, 100% { opacity: 0; transform: translateY(-4px); }
+}
+
+.venueOption {
+  padding: 5px 6px;
+  font-family: var(--font-inter);
+  font-size: 7.5px;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.venueOption:last-child {
+  border-bottom: none;
+}
+
+.venueOptionActive {
+  color: var(--color-gold);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.navItem {
+  margin-top: 10px;
+  font-family: var(--font-inter);
+  font-size: 7.5px;
+  color: var(--color-text-muted);
+  padding: 4px 0;
+}
+
+.navItemActive {
+  color: var(--color-text);
+}
+
+.main {
+  position: relative;
+  flex: 1;
+  padding: 14px 16px;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  padding: 14px 16px;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sceneA { animation: sceneA var(--cycle) infinite; }
+.sceneB { animation: sceneB var(--cycle) infinite; }
+.sceneC { animation: sceneC var(--cycle) infinite; }
+
+@keyframes sceneA {
+  0%, 27% { opacity: 1; }
+  33%, 94% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes sceneB {
+  0%, 27% { opacity: 0; }
+  33%, 60% { opacity: 1; }
+  66%, 100% { opacity: 0; }
+}
+@keyframes sceneC {
+  0%, 60% { opacity: 0; }
+  66%, 94% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.pageLabel {
+  font-family: var(--font-inter);
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.pageTitle {
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.statRow {
+  display: flex;
+  gap: 8px;
+}
+
+.statCard {
+  flex: 1;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+
+.statValue {
+  font-family: var(--font-playfair);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-gold);
+}
+
+.statLabel {
+  font-family: var(--font-inter);
+  font-size: 7px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.formField {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-family: var(--font-inter);
+  font-size: 9px;
+  color: var(--color-text-muted);
+  margin-bottom: 7px;
+}
+
+.formButton {
+  align-self: flex-start;
+  margin-top: 4px;
+  background: var(--color-gold);
+  color: var(--color-background);
+  font-family: var(--font-inter);
+  font-weight: 600;
+  font-size: 9px;
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+.captionStrip {
+  margin-top: 22px;
+  height: 32px;
+  position: relative;
+  text-align: center;
+}
+
+.caption {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  opacity: 0;
+}
+
+.caption b {
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.captionA { animation: sceneA var(--cycle) infinite; }
+.captionB { animation: sceneB var(--cycle) infinite; }
+.captionC { animation: sceneC var(--cycle) infinite; }
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.dotIndicator {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-border);
+  position: relative;
+}
+
+.dotIndicator::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-gold);
+  opacity: 0;
+}
+
+.dotA::after { animation: sceneA var(--cycle) infinite; }
+.dotB::after { animation: sceneB var(--cycle) infinite; }
+.dotC::after { animation: sceneC var(--cycle) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scene, .caption, .dotIndicator::after, .venueDropdown {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
