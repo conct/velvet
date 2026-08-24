@@ -1,6 +1,63 @@
-export type StaffRole = "DOORMAN" | "MANAGER";
+export type StaffRole = "DOORMAN" | "MANAGER" | "SERVICE";
+
+export const STAFF_ROLES: StaffRole[] = ["DOORMAN", "SERVICE", "MANAGER"];
+
+export interface StaffRolePermissions {
+  // Look a guest up and see their trust profile at the door.
+  viewGuests: boolean;
+  // Scan a guest QR code and rate the visit afterwards.
+  scanAndRate: boolean;
+  // Create/see staff accounts, venue settings, guest messaging.
+  manageVenue: boolean;
+}
+
+// SERVICE is the slimmer role for bar/service staff at small locations
+// (bars, pubs): same door capabilities as DOORMAN, but deliberately no
+// venue/team administration. It exists as its own role rather than as an
+// alias for DOORMAN so a venue's team list stays truthful about who is
+// actually on the door and who is behind the bar.
+export const staffRolePermissions: Record<StaffRole, StaffRolePermissions> = {
+  MANAGER: { viewGuests: true, scanAndRate: true, manageVenue: true },
+  DOORMAN: { viewGuests: true, scanAndRate: true, manageVenue: false },
+  SERVICE: { viewGuests: true, scanAndRate: true, manageVenue: false },
+};
+
+export function canManageVenue(role: StaffRole): boolean {
+  return staffRolePermissions[role].manageVenue;
+}
+
+export function canScanAndRate(role: StaffRole): boolean {
+  return staffRolePermissions[role].scanAndRate;
+}
 
 export type VenueStatus = "PENDING" | "VERIFIED";
+
+export type VenueType = "CLUB" | "BAR" | "PUB" | "OTHER";
+
+export const VENUE_TYPES: VenueType[] = ["CLUB", "BAR", "PUB", "OTHER"];
+
+export type VenueApplicationStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+// What a location submits through the public self-service form. Approval is
+// always manual: a platform admin checks the attached business registration
+// and only then is the actual Venue created.
+export interface AdminVenueApplication {
+  id: string;
+  venueName: string;
+  venueType: VenueType;
+  address: string;
+  website: string | null;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string | null;
+  message: string | null;
+  documentName: string;
+  status: VenueApplicationStatus;
+  reviewNote: string | null;
+  reviewedAt: string | null;
+  createdVenueId: string | null;
+  createdAt: string;
+}
 
 export interface VenueSummary {
   id: string;

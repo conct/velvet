@@ -30,6 +30,7 @@ interface Translations {
   "auth.invalidTokenType": string;
   "auth.noVenueAccess": string;
   "auth.tooManyRequests": string;
+  "auth.scanNotAllowed": string;
 
   "qr.photoRequired": string;
   "qr.codeInvalidOrExpired": string;
@@ -56,6 +57,14 @@ interface Translations {
   "venues.emailAlreadyTaken": string;
 
   "admin.venueNotFound": string;
+  "admin.applicationNotFound": string;
+  "admin.applicationAlreadyReviewed": string;
+  "admin.applicationDocumentMissing": string;
+
+  "venueApplications.documentRequired": string;
+  "venueApplications.invalidDocumentType": string;
+  "venueApplications.alreadyPending": string;
+  "venueApplications.received": string;
 
   "invites.codeNotFound": string;
   "invites.cannotUseOwnCode": string;
@@ -79,6 +88,20 @@ interface Translations {
   "mail.relay.wroteYou": string;
   "mail.relay.wroteYouPlain": string;
   "mail.relay.replyHint": string;
+  "mail.venueApplication.received.subject": string;
+  "mail.venueApplication.received.text": string;
+  "mail.venueApplication.received.intro": string;
+  "mail.venueApplication.received.body": string;
+  "mail.venueApplication.approved.subject": string;
+  "mail.venueApplication.approved.text": string;
+  "mail.venueApplication.approved.intro": string;
+  "mail.venueApplication.approved.cta": string;
+  "mail.venueApplication.approved.disclaimer": string;
+  "mail.venueApplication.rejected.subject": string;
+  "mail.venueApplication.rejected.text": string;
+  "mail.venueApplication.rejected.intro": string;
+  "mail.venueApplication.rejected.reasonLabel": string;
+  "mail.venueApplication.rejected.outro": string;
 }
 
 const de: Translations = {
@@ -97,6 +120,7 @@ const de: Translations = {
   "auth.invalidTokenType": "Ungültiger Token-Typ",
   "auth.noVenueAccess": "Kein Zugriff auf diese Location",
   "auth.tooManyRequests": "Zu viele Versuche. Bitte später erneut versuchen.",
+  "auth.scanNotAllowed": "Diese Rolle darf keine Gäste scannen oder bewerten",
 
   "qr.photoRequired": "Bitte lade zuerst ein Profilfoto hoch",
   "qr.codeInvalidOrExpired": "Code ist ungültig oder abgelaufen",
@@ -123,6 +147,14 @@ const de: Translations = {
   "venues.emailAlreadyTaken": "E-Mail bereits vergeben",
 
   "admin.venueNotFound": "Location nicht gefunden",
+  "admin.applicationNotFound": "Bewerbung nicht gefunden",
+  "admin.applicationAlreadyReviewed": "Bewerbung wurde bereits bearbeitet",
+  "admin.applicationDocumentMissing": "Dokument nicht mehr vorhanden",
+
+  "venueApplications.documentRequired": "Bitte lade deine Gewerbeanmeldung hoch",
+  "venueApplications.invalidDocumentType": "Nur PDF, JPEG oder PNG erlaubt (max. 10 MB)",
+  "venueApplications.alreadyPending": "Für diese E-Mail-Adresse läuft bereits eine Bewerbung",
+  "venueApplications.received": "Danke! Wir prüfen deine Angaben und melden uns per E-Mail.",
 
   "invites.codeNotFound": "Einladungscode nicht gefunden",
   "invites.cannotUseOwnCode": "Eigenen Einladungscode kann man nicht verwenden",
@@ -149,6 +181,26 @@ const de: Translations = {
   "mail.relay.wroteYou": "hat dir auf VELVET geschrieben:",
   "mail.relay.wroteYouPlain": "hat dir auf VELVET geschrieben:",
   "mail.relay.replyHint": "Antworte einfach auf diese E-Mail, um direkt zu antworten — oder logg dich in der VELVET-App ein.",
+  "mail.venueApplication.received.subject": "VELVET — Bewerbung eingegangen",
+  "mail.venueApplication.received.text":
+    "Danke für deine Bewerbung für {venueName}. Wir prüfen deine Gewerbeanmeldung und melden uns per E-Mail.",
+  "mail.venueApplication.received.intro": "Danke für deine Bewerbung für {venueName}.",
+  "mail.venueApplication.received.body":
+    "Wir prüfen deine Angaben und die hochgeladene Gewerbeanmeldung von Hand. Sobald das erledigt ist, bekommst du eine E-Mail mit deinem Zugang — oder eine Rückfrage, falls uns etwas fehlt.",
+  "mail.venueApplication.approved.subject": "VELVET — {venueName} ist freigeschaltet",
+  "mail.venueApplication.approved.text":
+    "{venueName} ist bei VELVET freigeschaltet. Setze hier dein Passwort: {setPasswordUrl}",
+  "mail.venueApplication.approved.intro":
+    "{venueName} ist freigeschaltet. Setze jetzt dein Passwort, dann kannst du dich im Dashboard anmelden und dein Team anlegen.",
+  "mail.venueApplication.approved.cta": "Passwort setzen",
+  "mail.venueApplication.approved.disclaimer":
+    "Der Link ist eine Stunde gültig. Danach kannst du ihn über \"Passwort vergessen\" neu anfordern.",
+  "mail.venueApplication.rejected.subject": "VELVET — Rückmeldung zu deiner Bewerbung",
+  "mail.venueApplication.rejected.text": "Zu deiner Bewerbung für {venueName}: {reason}",
+  "mail.venueApplication.rejected.intro": "Wir konnten deine Bewerbung für {venueName} leider nicht freischalten.",
+  "mail.venueApplication.rejected.reasonLabel": "Grund",
+  "mail.venueApplication.rejected.outro":
+    "Wenn sich das klären lässt, antworte einfach auf diese E-Mail — wir schauen es uns dann noch einmal an.",
 };
 
 const en: Translations = {
@@ -167,6 +219,7 @@ const en: Translations = {
   "auth.invalidTokenType": "Invalid token type",
   "auth.noVenueAccess": "No access to this venue",
   "auth.tooManyRequests": "Too many attempts. Please try again later.",
+  "auth.scanNotAllowed": "This role cannot scan or rate guests",
 
   "qr.photoRequired": "Please upload a profile photo first",
   "qr.codeInvalidOrExpired": "Code is invalid or has expired",
@@ -193,6 +246,14 @@ const en: Translations = {
   "venues.emailAlreadyTaken": "Email already taken",
 
   "admin.venueNotFound": "Venue not found",
+  "admin.applicationNotFound": "Application not found",
+  "admin.applicationAlreadyReviewed": "Application has already been reviewed",
+  "admin.applicationDocumentMissing": "Document is no longer available",
+
+  "venueApplications.documentRequired": "Please upload your business registration",
+  "venueApplications.invalidDocumentType": "Only PDF, JPEG or PNG allowed (max 10 MB)",
+  "venueApplications.alreadyPending": "There is already a pending application for this email address",
+  "venueApplications.received": "Thanks! We'll review your details and get back to you by email.",
 
   "invites.codeNotFound": "Invite code not found",
   "invites.cannotUseOwnCode": "You can't use your own invite code",
@@ -219,6 +280,25 @@ const en: Translations = {
   "mail.relay.wroteYou": "sent you a message on VELVET:",
   "mail.relay.wroteYouPlain": "sent you a message on VELVET:",
   "mail.relay.replyHint": "Just reply to this email to respond directly — or sign in to the VELVET app.",
+  "mail.venueApplication.received.subject": "VELVET — application received",
+  "mail.venueApplication.received.text":
+    "Thanks for applying with {venueName}. We'll review your business registration and get back to you by email.",
+  "mail.venueApplication.received.intro": "Thanks for applying with {venueName}.",
+  "mail.venueApplication.received.body":
+    "We review every application and the uploaded business registration by hand. Once that's done you'll get an email with your access — or a question, if anything is missing.",
+  "mail.venueApplication.approved.subject": "VELVET — {venueName} is live",
+  "mail.venueApplication.approved.text":
+    "{venueName} has been approved on VELVET. Set your password here: {setPasswordUrl}",
+  "mail.venueApplication.approved.intro":
+    "{venueName} has been approved. Set your password now, then you can sign in to the dashboard and add your team.",
+  "mail.venueApplication.approved.cta": "Set password",
+  "mail.venueApplication.approved.disclaimer": "The link is valid for one hour. After that you can request a new one via \"Forgot password\".",
+  "mail.venueApplication.rejected.subject": "VELVET — about your application",
+  "mail.venueApplication.rejected.text": "About your application for {venueName}: {reason}",
+  "mail.venueApplication.rejected.intro": "Unfortunately we couldn't approve your application for {venueName}.",
+  "mail.venueApplication.rejected.reasonLabel": "Reason",
+  "mail.venueApplication.rejected.outro":
+    "If this can be cleared up, just reply to this email and we'll take another look.",
 };
 
 const dictionaries: Record<Locale, Translations> = { de, en };

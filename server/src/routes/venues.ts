@@ -97,7 +97,7 @@ const createStaffSchema = z.object({
   email: z.string().trim().email().transform((v) => v.toLowerCase()),
   password: z.string().min(8),
   name: z.string().min(1),
-  role: z.enum(["DOORMAN", "MANAGER"]),
+  role: z.enum(["DOORMAN", "MANAGER", "SERVICE"]),
 });
 
 venuesRouter.post("/me/staff", requireAuth, requireManager, async (req, res) => {

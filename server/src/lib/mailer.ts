@@ -379,3 +379,80 @@ export async function sendVerificationEmail(to: string, verifyUrl: string, local
     },
   });
 }
+
+// --- Self-service venue applications (see routes/venue-applications.ts) ---
+
+export async function sendVenueApplicationReceivedEmail(to: string, venueName: string, locale: Locale) {
+  const html = wrapBrandedEmail(`
+    <p style="margin:0 0 16px;color:${THEME.text};">${t(locale, "mail.venueApplication.received.intro", { venueName: escapeHtml(venueName) })}</p>
+    <p style="margin:0;color:${THEME.textMuted};font-size:14px;">${t(locale, "mail.venueApplication.received.body")}</p>
+  `);
+
+  await sendAndArchive({
+    to,
+    subject: t(locale, "mail.venueApplication.received.subject"),
+    text: t(locale, "mail.venueApplication.received.text", { venueName }),
+    html,
+    archiveLabel: "Location-Bewerbung (Eingangsbestätigung)",
+    archiveDetails: {
+      "Kontakt-E-Mail": to,
+      Location: venueName,
+    },
+  });
+}
+
+// Sent once a platform admin has checked the business registration and
+// created the venue. Carries a password-set link rather than a generated
+// password, so no plaintext credential is ever put in an email.
+export async function sendVenueApplicationApprovedEmail(
+  to: string,
+  venueName: string,
+  setPasswordUrl: string,
+  locale: Locale
+) {
+  const html = wrapBrandedEmail(`
+    <p style="margin:0 0 4px;color:${THEME.text};">${t(locale, "mail.venueApplication.approved.intro", { venueName: escapeHtml(venueName) })}</p>
+    ${renderButton(setPasswordUrl, t(locale, "mail.venueApplication.approved.cta"))}
+    ${renderFallbackLink(setPasswordUrl)}
+    <p style="margin:24px 0 0;color:${THEME.textMuted};font-size:13px;">${t(locale, "mail.venueApplication.approved.disclaimer")}</p>
+  `);
+
+  await sendAndArchive({
+    to,
+    subject: t(locale, "mail.venueApplication.approved.subject", { venueName }),
+    text: t(locale, "mail.venueApplication.approved.text", { venueName, setPasswordUrl }),
+    html,
+    archiveLabel: "Location-Bewerbung (Freigabe)",
+    archiveDetails: {
+      "Kontakt-E-Mail": to,
+      Location: venueName,
+      "Gesendeter Link": setPasswordUrl,
+    },
+  });
+}
+
+export async function sendVenueApplicationRejectedEmail(
+  to: string,
+  venueName: string,
+  reason: string,
+  locale: Locale
+) {
+  const html = wrapBrandedEmail(`
+    <p style="margin:0 0 16px;color:${THEME.text};">${t(locale, "mail.venueApplication.rejected.intro", { venueName: escapeHtml(venueName) })}</p>
+    <p style="margin:0 0 16px;color:${THEME.text};"><span style="color:${THEME.textMuted};">${t(locale, "mail.venueApplication.rejected.reasonLabel")}:</span> ${escapeHtml(reason)}</p>
+    <p style="margin:0;color:${THEME.textMuted};font-size:13px;">${t(locale, "mail.venueApplication.rejected.outro")}</p>
+  `);
+
+  await sendAndArchive({
+    to,
+    subject: t(locale, "mail.venueApplication.rejected.subject"),
+    text: t(locale, "mail.venueApplication.rejected.text", { venueName, reason }),
+    html,
+    archiveLabel: "Location-Bewerbung (Absage)",
+    archiveDetails: {
+      "Kontakt-E-Mail": to,
+      Location: venueName,
+      Grund: reason,
+    },
+  });
+}

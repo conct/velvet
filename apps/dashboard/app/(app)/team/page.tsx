@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { canManageVenue, STAFF_ROLES, type StaffRole } from "@velvet/shared";
 import { Button, Card, Heading, Input } from "../../../components/ui";
 import { PasswordInput } from "../../../components/password-input";
 import { ApiError, apiFetch } from "../../../lib/api";
@@ -11,7 +12,7 @@ interface StaffMember {
   id: string;
   email: string;
   name: string;
-  role: "DOORMAN" | "MANAGER";
+  role: StaffRole;
 }
 
 export default function TeamPage() {
@@ -21,9 +22,15 @@ export default function TeamPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"DOORMAN" | "MANAGER">("DOORMAN");
+  const [role, setRole] = useState<StaffRole>("DOORMAN");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const roleLabels: Record<StaffRole, string> = {
+    DOORMAN: t.pages.team.roleDoorman,
+    SERVICE: t.pages.team.roleService,
+    MANAGER: t.pages.team.roleManager,
+  };
 
   const load = () => {
     if (!token) return;
@@ -51,7 +58,7 @@ export default function TeamPage() {
     }
   };
 
-  if (staff && staff.role !== "MANAGER") {
+  if (staff && !canManageVenue(staff.role)) {
     return (
       <div>
         <Heading className="text-3xl">{t.pages.team.title}</Heading>
@@ -82,9 +89,7 @@ export default function TeamPage() {
                 <tr key={m.id}>
                   <td className="px-6 py-4 text-text">{m.name}</td>
                   <td className="px-6 py-4 text-text-muted">{m.email}</td>
-                  <td className="px-6 py-4 text-gold">
-                    {m.role === "MANAGER" ? t.pages.team.roleManager : t.pages.team.roleDoorman}
-                  </td>
+                  <td className="px-6 py-4 text-gold">{roleLabels[m.role]}</td>
                 </tr>
               ))}
             </tbody>
@@ -111,11 +116,14 @@ export default function TeamPage() {
             />
             <select
               value={role}
-              onChange={(e) => setRole(e.target.value as "DOORMAN" | "MANAGER")}
+              onChange={(e) => setRole(e.target.value as StaffRole)}
               className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-text outline-none focus:border-gold"
             >
-              <option value="DOORMAN">{t.pages.team.roleDoorman}</option>
-              <option value="MANAGER">{t.pages.team.roleManager}</option>
+              {STAFF_ROLES.map((r) => (
+                <option key={r} value={r}>
+                  {roleLabels[r]}
+                </option>
+              ))}
             </select>
             {error && <p className="text-sm text-danger">{error}</p>}
             <Button type="submit" disabled={submitting}>

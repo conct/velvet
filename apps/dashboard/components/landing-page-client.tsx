@@ -392,6 +392,9 @@ export function LandingPageClient() {
           <Link href="/werbematerial" className="hover:text-text">
             {t.landing.footerWerbematerial}
           </Link>
+          <Link href="/location-anmelden" className="hover:text-text">
+            {t.landing.footerApply}
+          </Link>
         </span>
       </footer>
     </div>

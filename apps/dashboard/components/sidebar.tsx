@@ -3,11 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { Translations, VenueSummary } from "@velvet/shared";
+import { canManageVenue, type StaffRole, type Translations, type VenueSummary } from "@velvet/shared";
 import { apiFetch } from "../lib/api";
 import { useAuth } from "../lib/auth-context";
 import { useLocale } from "../lib/locale-context";
 import { LanguageSwitcher } from "./language-switcher";
+
+function roleLabel(t: Translations, role: StaffRole): string {
+  if (role === "MANAGER") return t.pages.team.roleManager;
+  if (role === "SERVICE") return t.pages.team.roleService;
+  return t.pages.team.roleDoorman;
+}
 
 function navItems(t: Translations) {
   return [
@@ -19,6 +25,7 @@ function navItems(t: Translations) {
     { href: "/settings", label: t.nav.settings, symbol: "⚙" },
     { href: "/venues/new", label: t.nav.addVenue, symbol: "＋" },
     { href: "/admin/venues", label: t.nav.reviewVenues, symbol: "⚑", platformAdminOnly: true },
+    { href: "/admin/applications", label: t.nav.reviewApplications, symbol: "✎", platformAdminOnly: true },
   ];
 }
 
@@ -43,7 +50,7 @@ export function Sidebar() {
       {navItems(t)
         .filter(
           (item) =>
-            (!item.managerOnly || staff?.role === "MANAGER") &&
+            (!item.managerOnly || (staff ? canManageVenue(staff.role) : false)) &&
             (!item.platformAdminOnly || staff?.isPlatformAdmin)
         )
         .map((item) => {
@@ -67,7 +74,7 @@ export function Sidebar() {
   const footer = (
     <div className="border-t border-border pt-4">
       <div className="text-sm text-text">{staff?.name}</div>
-      <div className="text-xs text-text-muted">{staff?.role === "MANAGER" ? "Manager" : "Türsteher"}</div>
+      <div className="text-xs text-text-muted">{staff ? roleLabel(t, staff.role) : ""}</div>
       <div className="mt-3 flex items-center gap-3">
         <button onClick={logout} className="text-xs text-gold hover:text-gold-bright">
           {t.nav.logout}

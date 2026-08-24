@@ -1,6 +1,13 @@
 import { Router } from "express";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import fs from "fs";
+import path from "path";
+import { z } from "zod";
 import { prisma } from "../db";
 import { requireAuth, requirePlatformAdmin } from "../middleware/auth";
+import { PRIVATE_UPLOAD_DIR } from "./venue-applications";
+import { sendVenueApplicationApprovedEmail, sendVenueApplicationRejectedEmail } from "../lib/mailer";
 import { t } from "../lib/i18n";
 
 export const adminRouter = Router();
@@ -22,4 +29,195 @@ adminRouter.post("/venues/:id/verify", requireAuth, requirePlatformAdmin, async 
 
   const updated = await prisma.venue.update({ where: { id: venue.id }, data: { status: "VERIFIED" } });
   res.json(updated);
+});
+
+// --- Self-service venue applications ---
+
+const COMBINING_MARKS = new RegExp("[\\u0300-\\u036f]", "g");
+
+function slugify(name: string): string {
+  return (
+    name
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(COMBINING_MARKS, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "location"
+  );
+}
+
+async function uniqueSlug(name: string): Promise<string> {
+  const base = slugify(name);
+  let slug = base;
+  for (let i = 1; await prisma.venue.findUnique({ where: { slug } }); i++) {
+    slug = `${base}-${i}`;
+  }
+  return slug;
+}
+
+adminRouter.get("/venue-applications", requireAuth, requirePlatformAdmin, async (req, res) => {
+  const status =
+    req.query.status === "PENDING" || req.query.status === "APPROVED" || req.query.status === "REJECTED"
+      ? req.query.status
+      : undefined;
+
+  const applications = await prisma.venueApplication.findMany({
+    where: status ? { status } : undefined,
+    // documentPath/documentMime stay server-side: the filename is the only
+    // thing standing between a leaked list and a downloadable document.
+    select: {
+      id: true,
+      venueName: true,
+      venueType: true,
+      address: true,
+      website: true,
+      contactName: true,
+      contactEmail: true,
+      contactPhone: true,
+      message: true,
+      documentName: true,
+      status: true,
+      reviewNote: true,
+      reviewedAt: true,
+      createdVenueId: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  res.json(applications);
+});
+
+// The only way to read an uploaded business registration. Streams the file
+// from server/private-uploads, which is never mounted as a static route.
+adminRouter.get("/venue-applications/:id/document", requireAuth, requirePlatformAdmin, async (req, res) => {
+  const application = await prisma.venueApplication.findUnique({ where: { id: req.params.id } });
+  if (!application) return res.status(404).json({ error: t(req.locale, "admin.applicationNotFound") });
+
+  // documentPath is generated server-side (random hex + fixed extension), but
+  // resolving and re-checking the parent directory keeps a future change to
+  // how it is produced from turning into a path traversal.
+  const filePath = path.resolve(PRIVATE_UPLOAD_DIR, application.documentPath);
+  if (path.dirname(filePath) !== path.resolve(PRIVATE_UPLOAD_DIR) || !fs.existsSync(filePath)) {
+    return res.status(404).json({ error: t(req.locale, "admin.applicationDocumentMissing") });
+  }
+
+  res.setHeader("Content-Type", application.documentMime);
+  res.setHeader("Content-Disposition", `inline; filename="${encodeURIComponent(application.documentName)}"`);
+  fs.createReadStream(filePath).pipe(res);
+});
+
+const approveSchema = z.object({
+  // Lets the admin correct a typo'd name/address from the form before the
+  // venue is created, instead of having to fix it afterwards in settings.
+  venueName: z.string().trim().min(1).max(120).optional(),
+  address: z.string().trim().min(1).max(300).optional(),
+  note: z.string().trim().max(2000).optional(),
+});
+
+adminRouter.post("/venue-applications/:id/approve", requireAuth, requirePlatformAdmin, async (req, res) => {
+  const parsed = approveSchema.safeParse(req.body ?? {});
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
+  const application = await prisma.venueApplication.findUnique({ where: { id: req.params.id } });
+  if (!application) return res.status(404).json({ error: t(req.locale, "admin.applicationNotFound") });
+  if (application.status !== "PENDING") {
+    return res.status(409).json({ error: t(req.locale, "admin.applicationAlreadyReviewed") });
+  }
+
+  const venueName = parsed.data.venueName ?? application.venueName;
+  const address = parsed.data.address ?? application.address;
+
+  // Approving means the business registration was checked by hand, so the
+  // venue starts out VERIFIED -- the PENDING venue state exists for venues
+  // created through the staff dashboard without any document review.
+  const venue = await prisma.venue.create({
+    data: { name: venueName, address, slug: await uniqueSlug(venueName), status: "VERIFIED" },
+  });
+
+  // An existing staff account (someone who already runs another location)
+  // just gains a MANAGER membership and keeps their current password.
+  const existing = await prisma.staffAccount.findUnique({ where: { email: application.contactEmail } });
+  const staff =
+    existing ??
+    (await prisma.staffAccount.create({
+      data: {
+        email: application.contactEmail,
+        name: application.contactName,
+        // Never a usable password: the account is only reachable through the
+        // set-password link mailed out below, or "forgot password" later.
+        passwordHash: await bcrypt.hash(crypto.randomBytes(32).toString("hex"), 10),
+      },
+    }));
+
+  await prisma.staffVenueMembership.upsert({
+    where: { staffAccountId_venueId: { staffAccountId: staff.id, venueId: venue.id } },
+    create: { staffAccountId: staff.id, venueId: venue.id, role: "MANAGER" },
+    update: { role: "MANAGER" },
+  });
+
+  await prisma.venueApplication.update({
+    where: { id: application.id },
+    data: {
+      status: "APPROVED",
+      reviewNote: parsed.data.note,
+      reviewedAt: new Date(),
+      reviewedById: req.auth!.sub,
+      createdVenueId: venue.id,
+    },
+  });
+
+  if (!existing) {
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    await prisma.passwordResetToken.create({
+      data: {
+        accountType: "staff",
+        accountId: staff.id,
+        tokenHash: crypto.createHash("sha256").update(rawToken).digest("hex"),
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      },
+    });
+    const setPasswordUrl = `https://velvet-network.app/reset-password?token=${rawToken}&kind=staff`;
+    sendVenueApplicationApprovedEmail(staff.email, venue.name, setPasswordUrl, req.locale).catch((err) =>
+      console.error("Failed to send venue approval email", err)
+    );
+  }
+
+  res.json({ venue, staffAccountId: staff.id, existingAccount: !!existing });
+});
+
+const rejectSchema = z.object({ reason: z.string().trim().min(1).max(2000) });
+
+adminRouter.post("/venue-applications/:id/reject", requireAuth, requirePlatformAdmin, async (req, res) => {
+  const parsed = rejectSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
+  const application = await prisma.venueApplication.findUnique({ where: { id: req.params.id } });
+  if (!application) return res.status(404).json({ error: t(req.locale, "admin.applicationNotFound") });
+  if (application.status !== "PENDING") {
+    return res.status(409).json({ error: t(req.locale, "admin.applicationAlreadyReviewed") });
+  }
+
+  await prisma.venueApplication.update({
+    where: { id: application.id },
+    data: {
+      status: "REJECTED",
+      reviewNote: parsed.data.reason,
+      reviewedAt: new Date(),
+      reviewedById: req.auth!.sub,
+    },
+  });
+
+  // The rejected applicant's document has served its purpose and is business
+  // data we have no reason to keep -- the decision and its reason stay on the
+  // application row.
+  fs.unlink(path.join(PRIVATE_UPLOAD_DIR, application.documentPath), () => {});
+
+  sendVenueApplicationRejectedEmail(
+    application.contactEmail,
+    application.venueName,
+    parsed.data.reason,
+    req.locale
+  ).catch((err) => console.error("Failed to send venue rejection email", err));
+
+  res.json({ ok: true });
 });
