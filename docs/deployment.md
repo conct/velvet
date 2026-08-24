@@ -285,6 +285,55 @@ serverseitig greifen — direkt danach getestete SMTP-Auth kann kurz mit `535
 Authentication failed` fehlschlagen, obwohl das Passwort korrekt ist. Vor
 einem erneuten Reset lieber 10-15s warten und nochmal testen.
 
+## Download-Quellen der Gast-App
+
+Welche Bezugsquellen die Landingpage unter `/#app` anzeigt, steht an genau
+einer Stelle: `apps/dashboard/lib/app-downloads.ts`. Die Seite rendert nur
+konfigurierte Quellen, eine nicht freigeschaltete Listing-URL wird also nie
+als toter Link ausgeliefert.
+
+- **App Store:** braucht die numerische Apple-ID (App Store Connect →
+  App-Informationen → Allgemein → Apple-ID) in `APPLE_APP_ID`. Es gibt keinen
+  Apple-Link ohne diese ID, deshalb bleibt die Kachel bis dahin ausgeblendet.
+- **Google Play:** die URL ergibt sich aus `android.package` in
+  `apps/mobile/app.json`, es ist nichts nachzuschlagen. `ANDROID_LISTING_LIVE`
+  auf `true` setzen, sobald das Listing öffentlich ist.
+- **Web-App:** immer sichtbar, damit der Abschnitt nie leer ist.
+
+### APK direkt anbieten
+
+Das `preview`-Profil in `apps/mobile/eas.json` baut bereits ein APK (das
+`production`-Profil dagegen ein App Bundle, das sich nicht installieren
+lässt):
+
+```bash
+cd apps/mobile
+eas build -p android --profile preview
+```
+
+Die fertige Datei herunterladen und wie die Werbematerial-PDFs per `scp` nach
+`apps/dashboard/public/app/velvet-<version>.apk` hochladen — **nicht ins Git**,
+sie ist zweistellig megabytegroß und ändert sich mit jedem Release. Danach
+`APK_FILE` in `app-downloads.ts` auf Pfad und Version setzen und das Dashboard
+neu deployen. Ist gerade kein aktuelles APK hochgeladen, `APK_FILE` wieder auf
+`null` setzen, damit die Kachel verschwindet statt zu 404en.
+
+Drei Dinge, die dabei bekannt sein müssen:
+
+1. **Derselbe Signaturschlüssel wie im Play Store.** Android verweigert ein
+   Update zwischen unterschiedlich signierten Builds — wer das APK installiert
+   hat, müsste die App deinstallieren (und verliert die lokale Session), um
+   später auf die Play-Version zu wechseln. Also dieselben EAS-Credentials
+   benutzen, nicht neu generieren lassen.
+2. **Keine automatischen Updates.** Ein sideloadetes APK aktualisiert sich
+   nie von selbst. Bei einer Pflicht-Änderung an der API bleibt es auf dem
+   alten Stand — also entweder aktuell halten oder bewusst als Notlösung
+   kommunizieren.
+3. **Warnhinweise sind normal.** Der Browser warnt beim Download, Android
+   verlangt „Installation aus unbekannten Quellen erlauben", und Play Protect
+   zeigt beim Installieren einen Hinweis. Das lässt sich nicht abstellen; der
+   Text auf der Kachel weist vorab darauf hin.
+
 ## Native Android-Build
 
 `apps/mobile/eas.json` — EAS-Build-Profile (`development`, `preview`,

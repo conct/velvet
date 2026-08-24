@@ -54,9 +54,6 @@ export interface Translations {
     heroBody: string;
     ctaLogin: string;
     ctaForTeam: string;
-    mobileOnlyTitle: string;
-    mobileOnlyBody: string;
-    mobileOnlyConfirm: string;
 
     heroEyebrow: string;
     heroCardVerified: string;
@@ -109,6 +106,15 @@ export interface Translations {
     statusBody: string;
     tierPath: { tier: string; body: string }[];
 
+    downloadEyebrow: string;
+    downloadTitle: string;
+    downloadBody: string;
+    downloadSources: {
+      ios: { title: string; body: string };
+      android: { title: string; body: string };
+      apk: { title: string; body: string };
+      web: { title: string; body: string };
+    };
     closingEyebrow: string;
     closingTitle: string;
 
@@ -691,9 +697,6 @@ const de: Translations = {
       "VELVET ersetzt die Papierliste und das Bauchgefühl am Einlass durch ein Profil, das mitwächst: Gäste bauen sich eine Reputation auf, die über einen einzelnen Club hinausreicht. Türsteher sehen beim Scan sofort, wen sie vor sich haben. Betreiber schützen ihr Haus, ohne jeden Abend bei null anzufangen.",
     ctaLogin: "Anmelden",
     ctaForTeam: "Für Team & Management teilnehmender Locations",
-    mobileOnlyTitle: "Nur auf dem Handy",
-    mobileOnlyBody: "Die VELVET-App ist für Smartphones gebaut — ruf velvet-network.app einfach auf deinem Handy auf und starte die App von dort.",
-    mobileOnlyConfirm: "Verstanden",
 
     heroEyebrow: "Geteiltes Vertrauensnetzwerk für den Türstand",
     heroCardVerified: "Verifiziert am Einlass",
@@ -774,6 +777,16 @@ const de: Translations = {
       { tier: "BANNED", body: "Netzwerkweite Sperre. Ein Hausverbot an einem Standort ist an jeder Tür im Netzwerk sichtbar." },
     ],
 
+    downloadEyebrow: "Gast-App",
+    downloadTitle: "VELVET aufs Handy",
+    downloadBody:
+      "Dein Status, dein QR-Code am Einlass, deine Locations — such dir aus, woher du die App holst.",
+    downloadSources: {
+      ios: { title: "App Store", body: "Für iPhone und iPad." },
+      android: { title: "Google Play", body: "Für Android-Geräte." },
+      apk: { title: "APK direkt laden", body: "Ohne Play Store — Installation aus unbekannten Quellen erlauben." },
+      web: { title: "Im Browser öffnen", body: "Ohne Installation, funktioniert auf jedem Handy." },
+    },
     closingEyebrow: "VELVET",
     closingTitle: "Ein Türstand, der sich erinnert.",
 
@@ -1590,9 +1603,6 @@ const en: Translations = {
       "VELVET replaces the paper list and gut feeling at the door with a profile that grows over time: guests build a reputation that carries beyond a single club. Doormen see who they're dealing with the moment they scan. Operators protect their venue without starting from zero every night.",
     ctaLogin: "Sign in",
     ctaForTeam: "For team & management of participating locations",
-    mobileOnlyTitle: "Mobile only",
-    mobileOnlyBody: "The VELVET app is built for smartphones — just open velvet-network.app on your phone and launch the app from there.",
-    mobileOnlyConfirm: "Got it",
 
     heroEyebrow: "Shared trust network for the door",
     heroCardVerified: "Verified at the door",
@@ -1673,6 +1683,16 @@ const en: Translations = {
       { tier: "BANNED", body: "Network-wide ban. A ban at one location is visible at every door in the network." },
     ],
 
+    downloadEyebrow: "Guest app",
+    downloadTitle: "Get VELVET on your phone",
+    downloadBody:
+      "Your status, your QR code at the door, your locations — pick where you'd like to get the app.",
+    downloadSources: {
+      ios: { title: "App Store", body: "For iPhone and iPad." },
+      android: { title: "Google Play", body: "For Android devices." },
+      apk: { title: "Download the APK", body: "Without the Play Store — you'll need to allow installs from unknown sources." },
+      web: { title: "Open in the browser", body: "No install needed, works on any phone." },
+    },
     closingEyebrow: "VELVET",
     closingTitle: "A door that remembers.",
 
@@ -2488,9 +2508,6 @@ const pl: Translations = {
       "VELVET zastępuje papierową listę i przeczucie przy wejściu profilem, który rośnie razem z gościem: goście budują reputację wykraczającą poza jeden klub. Ochrona od razu widzi przy skanowaniu, z kim ma do czynienia. Właściciele chronią swój lokal, nie zaczynając każdego wieczoru od zera.",
     ctaLogin: "Zaloguj się",
     ctaForTeam: "Dla zespołu i kierownictwa uczestniczących lokali",
-    mobileOnlyTitle: "Tylko na telefonie",
-    mobileOnlyBody: "Aplikacja VELVET jest stworzona na smartfony — otwórz po prostu velvet-network.app na swoim telefonie i uruchom aplikację stamtąd.",
-    mobileOnlyConfirm: "Rozumiem",
 
     heroEyebrow: "Wspólna sieć zaufania dla wejścia",
     heroCardVerified: "Zweryfikowano przy wejściu",
@@ -2571,6 +2588,16 @@ const pl: Translations = {
       { tier: "BANNED", body: "Blokada w całej sieci. Zakaz w jednym lokalu jest widoczny przy każdych drzwiach w sieci." },
     ],
 
+    downloadEyebrow: "Aplikacja dla gości",
+    downloadTitle: "VELVET na telefonie",
+    downloadBody:
+      "Twój status, kod QR przy wejściu, Twoje lokale — wybierz, skąd chcesz pobrać aplikację.",
+    downloadSources: {
+      ios: { title: "App Store", body: "Na iPhone'a i iPada." },
+      android: { title: "Google Play", body: "Na urządzenia z Androidem." },
+      apk: { title: "Pobierz plik APK", body: "Bez Sklepu Play — trzeba zezwolić na instalację z nieznanych źródeł." },
+      web: { title: "Otwórz w przeglądarce", body: "Bez instalacji, działa na każdym telefonie." },
+    },
     closingEyebrow: "VELVET",
     closingTitle: "Wejście, które pamięta.",
 
@@ -3387,9 +3414,6 @@ const es: Translations = {
       "VELVET sustituye la lista de papel y el instinto en la puerta por un perfil que crece con el tiempo: los invitados construyen una reputación que va más allá de un solo club. El personal de seguridad ve al instante con quién trata al escanear. Los propietarios protegen su local sin empezar de cero cada noche.",
     ctaLogin: "Iniciar sesión",
     ctaForTeam: "Para el equipo y la dirección de los locales participantes",
-    mobileOnlyTitle: "Solo en el móvil",
-    mobileOnlyBody: "La app de VELVET está hecha para smartphones — abre velvet-network.app en tu móvil e inicia la app desde ahí.",
-    mobileOnlyConfirm: "Entendido",
 
     heroEyebrow: "Red de confianza compartida para la puerta",
     heroCardVerified: "Verificado en la puerta",
@@ -3470,6 +3494,16 @@ const es: Translations = {
       { tier: "BANNED", body: "Veto en toda la red. Un veto en un local es visible en cada puerta de la red." },
     ],
 
+    downloadEyebrow: "App para invitados",
+    downloadTitle: "VELVET en tu móvil",
+    downloadBody:
+      "Tu estado, tu código QR en la puerta, tus locales — elige desde dónde quieres conseguir la app.",
+    downloadSources: {
+      ios: { title: "App Store", body: "Para iPhone y iPad." },
+      android: { title: "Google Play", body: "Para dispositivos Android." },
+      apk: { title: "Descargar el APK", body: "Sin Play Store — hay que permitir instalaciones de origen desconocido." },
+      web: { title: "Abrir en el navegador", body: "Sin instalar nada, funciona en cualquier móvil." },
+    },
     closingEyebrow: "VELVET",
     closingTitle: "Una puerta que recuerda.",
 
