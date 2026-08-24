@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["2MYFL39UG2.space.feif.velvet"],
+        "components": [
+          { "/": "/invite/*", "comment": "Guest invite links" }
+        ]
+      }
+    ]
+  }
+}
