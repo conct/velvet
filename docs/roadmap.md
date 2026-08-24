@@ -76,9 +76,13 @@ vergebene Bewertungen aber **stehen lassen** — sie waren zu ihrer Zeit gültig
 Bedienbar unter `/admin/venues` neben „Freigeben", mit Grund und Datum am
 Datensatz.
 
-Löschen im Wortsinn ist die schwierigere Frage und kann warten: An einer
-Location hängen Bewertungen, Einlass-Historie und Beziehungen, deren Wegfall
-Gäste-Scores verändern würde. Stilllegen deckt den dringenden Fall ab.
+Der halbe Weg ist inzwischen da: `npm run delete-venue -- <slug>` entfernt eine
+Location, die **nie in Betrieb war** — Tippfehler, abgebrochene Bewerbungen,
+Testeinträge. Sobald Scans oder Bewertungen daran hängen, verweigert das Skript
+und verweist auf `set-demo`. Genau das ist die Lücke, die dieser Punkt schließen
+soll: Für eine Location, die tatsächlich gearbeitet hat, gibt es weiterhin nur
+den Vorschlaghammer, weil ihre Bewertungen zur Historie der Gäste gehören und
+deren Score verändern würden. Stilllegen deckt den dringenden Fall ab.
 
 ### Aufbewahrungsfrist für Gewerbeanmeldungen
 **Status:** blocked — braucht eine Datenschutz-Entscheidung.

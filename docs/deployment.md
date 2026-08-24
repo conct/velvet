@@ -78,7 +78,8 @@ Kein automatisiertes Deployment — Builds werden lokal erzeugt und per
    `server/{package.json,dist,src,scripts,prisma}` nach `~/velvet-api/` auf
    `u8`. **`scripts/` gehört ausdrücklich dazu** — die `tsx`-basierten
    Einmal-Skripte (`set-demo`, `sandbox-staff`, `unhide-venue`,
-   `send-email`, `set-platform-admin`, `create-staff-account`) liegen dort, nicht in `src/`. Fehlen
+   `send-email`, `set-platform-admin`, `create-staff-account`,
+   `delete-venue`) liegen dort, nicht in `src/`. Fehlen
    sie, scheitert jeder `npm run <skript>` auf dem Server mit
    `ERR_MODULE_NOT_FOUND`, obwohl die API selbst tadellos läuft. `src/` wird
    zusätzlich gebraucht, weil die Skripte von dort importieren. `npm install` auf dem Server (volle Installation, nicht
@@ -430,6 +431,36 @@ Ein paar bewusste Entscheidungen dahinter:
   kennt keine Welten: `requirePlatformAdmin` prüft nur das Flag. Ein
   Sandbox-Konto mit `--admin` könnte also echte Location-Bewerbungen
   freigeben und echte Gewerbeanmeldungen herunterladen.
+
+## Location löschen
+
+Eine Location, die nie in Betrieb war — Tippfehler, abgebrochene Bewerbung,
+Testeintrag — lässt sich entfernen:
+
+```bash
+cd ~/velvet-api/server
+npm run delete-venue -- <slug>                          # Trockenlauf
+npm run delete-venue -- <slug> --confirm
+npm run delete-venue -- <slug> --confirm --with-staff
+```
+
+Ohne `--confirm` wird nur gezeigt, was passieren würde. Mitgelöscht werden die
+Team-Zuordnungen und die Gast-Verknüpfungen (Historie/ausgeblendet) dieser
+Location.
+
+**Das Skript verweigert, sobald Scans oder Bewertungen daran hängen.** Die
+gehören zur Historie der betroffenen Gäste und fließen in deren
+Vertrauenswert ein; sie zu löschen würde den rückwirkend verändern. Für diesen
+Fall bleibt vorerst nur `npm run set-demo -- venue <slug>` — mit dem
+Nebeneffekt, dass auch die berechtigten Bewertungen dieser Location entwertet
+werden. Ein eigener Zustand `SUSPENDED` steht in `docs/roadmap.md`.
+
+`--with-staff` räumt Staff-Konten mit weg, die danach an keiner Location mehr
+hängen. Solche Konten sind sonst tote Karteileichen: Der Login antwortet mit
+403 (`auth.staffNoVenue`), die E-Mail-Adresse bleibt aber blockiert, weil
+`StaffAccount.email` unique ist. Gelöscht werden dabei nur Konten **ohne
+eigene Spuren** — wer Bewertungen, Scans oder Nachrichten hinterlassen hat,
+bleibt bestehen und wird im Trockenlauf einzeln benannt.
 
 ## Personalisiertes E-Mail-Relay
 

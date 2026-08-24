@@ -17,6 +17,7 @@
     "unhide-venue": "tsx scripts/unhide-venue.ts",
     "sandbox-staff": "tsx scripts/sandbox-staff.ts",
     "create-staff-account": "tsx scripts/create-staff-account.ts",
+    "delete-venue": "tsx scripts/delete-venue.ts",
     "backfill:staff-venue": "tsx scripts/backfill-staff-venue.ts",
     "send-email": "tsx scripts/send-email.ts",
     "verify-instagram": "tsx scripts/verify-instagram.ts",
