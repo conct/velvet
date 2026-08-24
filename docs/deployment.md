@@ -189,6 +189,18 @@ Weil jeder der drei Web-Dienste einzeln deployed wird, können sie
 unterschiedlich alt sein. Diese Checks sagen pro Endpunkt, was dort läuft —
 ohne sich auf SSH oder das eigene Gedächtnis zu verlassen.
 
+Unter Windows/PowerShell macht das ein Skript in einem Rutsch:
+
+```powershell
+.\scripts\deploy\status.ps1
+```
+
+Darunter steht, was es abfragt und wie die Antworten zu lesen sind. Die
+Befehle sind in Bash-Schreibweise — in PowerShell `curl.exe` statt `curl`
+schreiben (in Windows PowerShell 5.1 ist `curl` ein Alias für
+`Invoke-WebRequest` und versteht diese Optionen nicht), `NUL` statt
+`/dev/null`, und Schleifen als `foreach`.
+
 **API** (`api.velvet-network.app`, systemd `velvet-api`)
 
 ```bash
