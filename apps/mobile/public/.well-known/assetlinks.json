@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "space.feif.velvet",
+      "sha256_cert_fingerprints": ["11:05:42:7E:33:CB:F3:E7:A3:FD:33:86:36:3E:87:A6:47:B4:C0:9B:F8:A9:CB:82:32:16:A2:81:36:87:4E:8B"]
+    }
+  }
+]

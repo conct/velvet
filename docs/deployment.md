@@ -114,12 +114,13 @@ Browser-Fallback. Setup:
   JSON-Inhalt, `appIDs` braucht die Apple **Team-ID** (`2MYFL39UG2` für
   `space.feif.velvet`, aus dem `embedded.mobileprovision` eines bestehenden
   EAS-iOS-Builds extrahiert — steht sonst nirgends im Repo).
-- `apps/mobile/public/.well-known/assetlinks.json` — noch nicht angelegt,
-  braucht den **SHA-256-Zertifikats-Fingerabdruck des Play-App-Signing-Keys**
-  (Play Console → Release → Setup → App-Integrität → App-Signaturschlüssel-
-  Zertifikat). Dieser Wert ist über keine API abrufbar, nur über die
-  Play-Console-UI — muss von Hand eingetragen werden, bevor Android App
-  Links funktionieren.
+- `apps/mobile/public/.well-known/assetlinks.json` — den
+  **SHA-256-Zertifikats-Fingerabdruck des Play-App-Signing-Keys** (nicht des
+  Upload-Keys) liefert Play Console unter **"Mit Google Play geschützt" →
+  Google Play Store-Schutz (aufklappen)** direkt als fertiges JSON-Snippet
+  unter "Digital Asset Links-JSON-Datei" — die alte
+  Setup-→-App-Integrität-Seite leitet dorthin um. Dieser Wert ist über keine
+  API abrufbar, nur über die Play-Console-UI.
 - **`express.static()`-Falle**: ignoriert Dotfiles/-Verzeichnisse
   standardmäßig (`dotfiles: 'ignore'`) — `~/velvet-app-server/server.js`
   (dieses Skript existiert nur auf dem Server, nicht im Repo) hat deshalb
