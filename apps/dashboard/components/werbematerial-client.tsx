@@ -51,6 +51,17 @@ export function WerbematerialClient() {
       </div>
 
       <section className="mt-14 border-t border-border pt-10">
+        <h2 className="font-heading text-xl text-text">{w.guestInfoHeading}</h2>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-text-muted">{w.guestInfoBody}</p>
+        <Link
+          href="/fuer-gaeste"
+          className="mt-6 inline-flex items-center justify-center rounded-full border border-gold px-5 py-2.5 text-sm font-medium tracking-wide text-gold transition hover:bg-gold/10"
+        >
+          {w.guestInfoButton}
+        </Link>
+      </section>
+
+      <section className="mt-14 border-t border-border pt-10">
         <h2 className="font-heading text-xl text-text">{w.stickerHeading}</h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-text-muted">{withBold(w.stickerBody1, "text-text")}</p>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-text-muted">{w.stickerBody2}</p>

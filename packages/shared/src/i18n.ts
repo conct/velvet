@@ -403,6 +403,9 @@ export interface Translations {
       }[];
       previewAlt: string;
       downloadButton: string;
+      guestInfoHeading: string;
+      guestInfoBody: string;
+      guestInfoButton: string;
       stickerHeading: string;
       stickerBody1: string;
       stickerBody2: string;
@@ -1151,6 +1154,10 @@ const de: Translations = {
       ],
       previewAlt: "Vorschau",
       downloadButton: "Herunterladen",
+      guestInfoHeading: "Info-Seite für eure Gäste",
+      guestInfoBody:
+        "Eine Seite in einfacher Sprache: wie VELVET funktioniert, was gespeichert wird und wer es sieht. Gedacht zum Weitergeben — als Link, QR-Code am Einlass oder Aushang. Sie ist bewusst nicht über Suchmaschinen auffindbar.",
+      guestInfoButton: "Seite ansehen",
       stickerHeading: "Sticker & individuelles Merch",
       stickerBody1: "Über die PDFs hinaus können wir für eure Location auch **Sticker** sowie **Print-on-Demand-Artikel** (z. B. Tischaufsteller, Garderobenmarken, Merchandise mit eurem Logo kombiniert mit VELVET) produzieren und liefern lassen.",
       stickerBody2: "Meldet euch einfach formlos, dann besprechen wir Format, Menge und Gestaltung.",
@@ -2064,6 +2071,10 @@ const en: Translations = {
       ],
       previewAlt: "Preview",
       downloadButton: "Download",
+      guestInfoHeading: "An info page for your guests",
+      guestInfoBody:
+        "A page in plain language: how VELVET works, what is stored and who sees it. Made to be passed on — as a link, a QR code at the door or a printout. It is deliberately not findable through search engines.",
+      guestInfoButton: "View the page",
       stickerHeading: "Stickers & custom merch",
       stickerBody1: "Beyond the PDFs, we can also produce and ship **stickers** and **print-on-demand items** for your venue (e.g. table stands, coat check tags, merch combining your logo with VELVET).",
       stickerBody2: "Just reach out, no formal request needed, and we'll discuss format, quantity, and design.",
@@ -2976,6 +2987,10 @@ const pl: Translations = {
       ],
       previewAlt: "Podgląd",
       downloadButton: "Pobierz",
+      guestInfoHeading: "Strona informacyjna dla gości",
+      guestInfoBody:
+        "Strona napisana prostym językiem: jak działa VELVET, co jest zapisywane i kto to widzi. Do przekazywania dalej — jako link, kod QR przy wejściu albo wydruk. Celowo nie jest wyszukiwalna w wyszukiwarkach.",
+      guestInfoButton: "Zobacz stronę",
       stickerHeading: "Naklejki i indywidualny merch",
       stickerBody1: "Oprócz plików PDF możemy dla Waszego lokalu wyprodukować i dostarczyć również **naklejki** oraz **produkty print-on-demand** (np. stojaki na stoliki, znaczki do szatni, gadżety łączące Wasze logo z VELVET).",
       stickerBody2: "Po prostu się odezwijcie, bez formalności, a omówimy format, ilość i design.",
@@ -3889,6 +3904,10 @@ const es: Translations = {
       ],
       previewAlt: "Vista previa",
       downloadButton: "Descargar",
+      guestInfoHeading: "Página informativa para tus invitados",
+      guestInfoBody:
+        "Una página en lenguaje sencillo: cómo funciona VELVET, qué se guarda y quién lo ve. Pensada para compartir — como enlace, código QR en la puerta o impresa. A propósito no aparece en los buscadores.",
+      guestInfoButton: "Ver la página",
       stickerHeading: "Pegatinas y merchandising personalizado",
       stickerBody1: "Más allá de los PDF, también podemos producir y enviar **pegatinas** y **artículos bajo demanda** para tu local (p. ej. atriles de mesa, tarjetas de guardarropa, merchandising que combine tu logo con VELVET).",
       stickerBody2: "Escríbenos sin compromiso y hablamos sobre formato, cantidad y diseño.",
