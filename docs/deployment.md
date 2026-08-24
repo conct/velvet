@@ -99,6 +99,37 @@ Kein automatisiertes Deployment — Builds werden lokal erzeugt und per
    `dist/`-Inhalt nach `~/html/velvet-app/` (Zielordner vorher leeren, nicht
    nur überlagern), `systemctl --user restart velvet-app`.
 
+## Universal Links (iOS) / App Links (Android)
+
+Seit 2026-08-24 konfiguriert, damit ein gescannter `/invite/<code>`-Link auf
+einem Gerät mit installierter App die App direkt öffnet statt nur den
+Browser-Fallback. Setup:
+
+- `apps/mobile/app.json`: `ios.associatedDomains` (`applinks:web.velvet-network.app`)
+  und `android.intentFilters` (autoVerify, `host: web.velvet-network.app`,
+  `pathPrefix: /invite`) — beides native Manifest-Einträge, werden nur bei
+  einem **neuen EAS-Build + Store-Submission** wirksam, ein reiner
+  Web-Redeploy reicht nicht.
+- `apps/mobile/public/.well-known/apple-app-site-association` — statischer
+  JSON-Inhalt, `appIDs` braucht die Apple **Team-ID** (`2MYFL39UG2` für
+  `space.feif.velvet`, aus dem `embedded.mobileprovision` eines bestehenden
+  EAS-iOS-Builds extrahiert — steht sonst nirgends im Repo).
+- `apps/mobile/public/.well-known/assetlinks.json` — den
+  **SHA-256-Zertifikats-Fingerabdruck des Play-App-Signing-Keys** (nicht des
+  Upload-Keys) liefert Play Console unter **"Mit Google Play geschützt" →
+  Google Play Store-Schutz (aufklappen)** direkt als fertiges JSON-Snippet
+  unter "Digital Asset Links-JSON-Datei" — die alte
+  Setup-→-App-Integrität-Seite leitet dorthin um. Dieser Wert ist über keine
+  API abrufbar, nur über die Play-Console-UI.
+- **`express.static()`-Falle**: ignoriert Dotfiles/-Verzeichnisse
+  standardmäßig (`dotfiles: 'ignore'`) — `~/velvet-app-server/server.js`
+  (dieses Skript existiert nur auf dem Server, nicht im Repo) hat deshalb
+  explizite Routes für beide `.well-known`-Dateien vor der
+  `express.static`-Middleware, sonst liefert Apple/Google beim
+  Verifizieren die `index.html` statt der echten JSON-Datei.
+- Verifizieren: `curl -sI https://web.velvet-network.app/.well-known/apple-app-site-association`
+  muss `200` + `Content-Type: application/json` liefern, kein Redirect.
+
 `@velvet/shared` braucht dafür einen echten Build-Schritt (`npm run build`
 dort), da `server`, `apps/dashboard` und `apps/mobile` es als kompiliertes
 Package konsumieren, nicht als rohe TypeScript-Quelle. Beide Server-Deploy-

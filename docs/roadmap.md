@@ -94,6 +94,11 @@ vorbehalten bleiben?
 - ~~Pflicht-Profilfoto mit Qualitätscheck~~ — live seit 2026-08-21.
 - ~~Personalisiertes Email-Relay (`<code>@velvet-network.app`)~~ — voll live seit
   2026-08-24, inkl. per-Nutzer-IMAP-Ordnern für Accountlöschung.
+- ~~iOS Universal Links / Android App Links für Invite-Scans~~ — Server-seitige
+  Config (`app.json`, `.well-known/apple-app-site-association`,
+  `.well-known/assetlinks.json`) live seit 2026-08-24. **Wirkt aber erst nach
+  einem neuen `eas build` + Store-Review** — bewusst zurückgestellt auf den
+  nächsten Release-Durchlauf, nicht isoliert dafür released.
 - ~~Kleine Bars/Pubs unterstützen~~ — Entscheidung von Daniel (2026-08-24):
   Self-Service-Formular, aber mit Verifizierung per Gewerbeanmeldung; angelegt wird
   die Location weiterhin von uns. Umgesetzt als öffentliches Formular

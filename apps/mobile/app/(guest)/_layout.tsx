@@ -15,7 +15,18 @@ export default function GuestLayout() {
   const { t } = useLocale();
 
   if (!ready) return null;
-  if (kind !== "guest") return <Redirect href="/(auth)/welcome" />;
+  if (kind !== "guest") {
+    // A logged-out visitor who opened someone's shared invite link (scanned
+    // with any QR reader, not necessarily this app -- the QR just encodes a
+    // plain https://web.velvet-network.app/invite/<code> URL) lands here
+    // before ever reaching invite/[code].tsx, since this layout gates every
+    // /(guest) route on being authenticated. The pending invite code is
+    // captured much earlier, at the root layout's module load, and resumed
+    // by guest-login after sign-in -- see app/_layout.tsx for why: by the
+    // time this component runs, React Navigation has already resynced the
+    // address bar and even window.location can no longer be trusted here.
+    return <Redirect href="/(auth)/welcome" />;
+  }
 
   return (
     <Tabs

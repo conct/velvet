@@ -7,6 +7,8 @@ import { GoldButton, Heading, Input, Label, LanguageSwitcher, PasswordInput, Scr
 import { ApiError } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useLocale } from "../../lib/locale-context";
+import { getItem, deleteItem } from "../../lib/storage";
+import { PENDING_INVITE_CODE_KEY } from "../../lib/invite-storage";
 
 export default function GuestLogin() {
   const { loginGuest, registerGuest, resendVerification } = useAuth();
@@ -30,7 +32,13 @@ export default function GuestLogin() {
     try {
       if (mode === "login") {
         await loginGuest(email.trim(), password);
-        router.replace("/(guest)");
+        const pendingInviteCode = await getItem(PENDING_INVITE_CODE_KEY);
+        if (pendingInviteCode) {
+          await deleteItem(PENDING_INVITE_CODE_KEY);
+          router.replace(`/(guest)/invite/${encodeURIComponent(pendingInviteCode)}`);
+        } else {
+          router.replace("/(guest)");
+        }
       } else {
         await registerGuest({ email: email.trim(), password, firstName, lastName });
         setInfo(t.mobile.guestLogin.registerSuccess);
