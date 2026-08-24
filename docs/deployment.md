@@ -292,17 +292,21 @@ einer Stelle: `apps/dashboard/lib/app-downloads.ts`. Die Seite rendert nur
 konfigurierte Quellen, eine nicht freigeschaltete Listing-URL wird also nie
 als toter Link ausgeliefert.
 
-- **App Store:** braucht die numerische Apple-ID (App Store Connect →
-  App-Informationen → Allgemein → Apple-ID) in `APPLE_APP_ID`. Es gibt keinen
-  Apple-Link ohne diese ID, deshalb bleibt die Kachel bis dahin ausgeblendet.
+- **App Store:** `APPLE_APP_ID` ist die numerische Apple-ID (App Store
+  Connect → App-Informationen → Allgemein). Einen Apple-Link ohne diese ID
+  gibt es nicht; auf `null` gesetzt verschwindet die Kachel.
 - **Google Play:** die URL ergibt sich aus `android.package` in
-  `apps/mobile/app.json`, es ist nichts nachzuschlagen. `ANDROID_LISTING_LIVE`
-  auf `true` setzen, sobald das Listing öffentlich ist.
-- **Web-App:** immer sichtbar, damit der Abschnitt nie leer ist.
+  `apps/mobile/app.json`, es ist nichts nachzuschlagen. Schalter ist
+  `ANDROID_LISTING_LIVE`.
+- **APK:** wird **auf Anfrage** herausgegeben, nicht zum Download gehostet —
+  die Kachel ist ein `mailto:` an die Impressums-Adresse. Schalter ist
+  `APK_ON_REQUEST`.
+- **Web-App:** immer sichtbar, als Rückfalloption für alle, die keinen der
+  beiden Stores nutzen können.
 
-### APK direkt anbieten
+### APK für eine Anfrage bauen
 
-Das `preview`-Profil in `apps/mobile/eas.json` baut bereits ein APK (das
+Das `preview`-Profil in `apps/mobile/eas.json` baut ein APK (das
 `production`-Profil dagegen ein App Bundle, das sich nicht installieren
 lässt):
 
@@ -311,14 +315,9 @@ cd apps/mobile
 eas build -p android --profile preview
 ```
 
-Die fertige Datei herunterladen und wie die Werbematerial-PDFs per `scp` nach
-`apps/dashboard/public/app/velvet-<version>.apk` hochladen — **nicht ins Git**,
-sie ist zweistellig megabytegroß und ändert sich mit jedem Release
-(`apps/dashboard/public/app/*.apk` steht deshalb in `.gitignore`, das
-Verzeichnis selbst liegt mit einer `.gitkeep` bereits im Repo). Danach
-`APK_FILE` in `app-downloads.ts` auf Pfad und Version setzen und das Dashboard
-neu deployen. Ist gerade kein aktuelles APK hochgeladen, `APK_FILE` wieder auf
-`null` setzen, damit die Kachel verschwindet statt zu 404en.
+Die fertige Datei aus EAS herunterladen und der anfragenden Person direkt
+schicken. Bewusst nicht öffentlich gehostet und nicht im Git — beides würde
+Kopien in Umlauf bringen, von denen niemand weiß, wer sie hat.
 
 Drei Dinge, die dabei bekannt sein müssen:
 
@@ -329,12 +328,10 @@ Drei Dinge, die dabei bekannt sein müssen:
    benutzen, nicht neu generieren lassen.
 2. **Keine automatischen Updates.** Ein sideloadetes APK aktualisiert sich
    nie von selbst. Bei einer Pflicht-Änderung an der API bleibt es auf dem
-   alten Stand — also entweder aktuell halten oder bewusst als Notlösung
-   kommunizieren.
-3. **Warnhinweise sind normal.** Der Browser warnt beim Download, Android
-   verlangt „Installation aus unbekannten Quellen erlauben", und Play Protect
-   zeigt beim Installieren einen Hinweis. Das lässt sich nicht abstellen; der
-   Text auf der Kachel weist vorab darauf hin.
+   alten Stand — deshalb notieren, wer eins bekommen hat.
+3. **Warnhinweise sind normal.** Android verlangt „Installation aus
+   unbekannten Quellen erlauben", und Play Protect zeigt beim Installieren
+   einen Hinweis. Das lässt sich nicht abstellen.
 
 ## Native Android-Build
 

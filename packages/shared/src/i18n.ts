@@ -784,7 +784,7 @@ const de: Translations = {
     downloadSources: {
       ios: { title: "App Store", body: "Für iPhone und iPad." },
       android: { title: "Google Play", body: "Für Android-Geräte." },
-      apk: { title: "APK direkt laden", body: "Ohne Play Store — Installation aus unbekannten Quellen erlauben." },
+      apk: { title: "APK auf Anfrage", body: "Ohne Play Store — schreib uns kurz, dann schicken wir dir die Datei." },
       web: { title: "Im Browser öffnen", body: "Ohne Installation, funktioniert auf jedem Handy." },
     },
     closingEyebrow: "VELVET",
@@ -1690,7 +1690,7 @@ const en: Translations = {
     downloadSources: {
       ios: { title: "App Store", body: "For iPhone and iPad." },
       android: { title: "Google Play", body: "For Android devices." },
-      apk: { title: "Download the APK", body: "Without the Play Store — you'll need to allow installs from unknown sources." },
+      apk: { title: "APK on request", body: "Without the Play Store — drop us a line and we'll send you the file." },
       web: { title: "Open in the browser", body: "No install needed, works on any phone." },
     },
     closingEyebrow: "VELVET",
@@ -2595,7 +2595,7 @@ const pl: Translations = {
     downloadSources: {
       ios: { title: "App Store", body: "Na iPhone'a i iPada." },
       android: { title: "Google Play", body: "Na urządzenia z Androidem." },
-      apk: { title: "Pobierz plik APK", body: "Bez Sklepu Play — trzeba zezwolić na instalację z nieznanych źródeł." },
+      apk: { title: "APK na życzenie", body: "Bez Sklepu Play — napisz do nas, a wyślemy Ci plik." },
       web: { title: "Otwórz w przeglądarce", body: "Bez instalacji, działa na każdym telefonie." },
     },
     closingEyebrow: "VELVET",
@@ -3501,7 +3501,7 @@ const es: Translations = {
     downloadSources: {
       ios: { title: "App Store", body: "Para iPhone y iPad." },
       android: { title: "Google Play", body: "Para dispositivos Android." },
-      apk: { title: "Descargar el APK", body: "Sin Play Store — hay que permitir instalaciones de origen desconocido." },
+      apk: { title: "APK a petición", body: "Sin Play Store — escríbenos y te enviamos el archivo." },
       web: { title: "Abrir en el navegador", body: "Sin instalar nada, funciona en cualquier móvil." },
     },
     closingEyebrow: "VELVET",

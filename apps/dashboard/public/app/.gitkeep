@@ -1,3 +1,0 @@
-Upload target for the directly downloadable Android APK.
-The APK itself is never committed -- see "Download-Quellen der Gast-App" in
-docs/deployment.md for how it is built and uploaded.
