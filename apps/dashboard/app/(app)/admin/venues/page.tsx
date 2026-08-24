@@ -13,6 +13,9 @@ export default function AdminVenuesPage() {
   const [venues, setVenues] = useState<AdminVenue[]>([]);
   const [loading, setLoading] = useState(true);
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [suspendingId, setSuspendingId] = useState<string | null>(null);
+  const [suspendReason, setSuspendReason] = useState("");
   const [error, setError] = useState<string | null>(null);
   // Bumped after a verify to re-run the fetch below. A shared load() called
   // from both the effect and the handlers would have to set state
@@ -54,6 +57,36 @@ export default function AdminVenuesPage() {
     }
   };
 
+  const suspend = async (id: string) => {
+    if (!token || !suspendReason.trim()) return;
+    setBusyId(id);
+    setError(null);
+    try {
+      await apiFetch(`/admin/venues/${id}/suspend`, { method: "POST", token, body: { reason: suspendReason.trim() } });
+      setSuspendingId(null);
+      setSuspendReason("");
+      setReloadCount((n) => n + 1);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : t.pages.adminVenues.suspendFailed);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const reactivate = async (id: string) => {
+    if (!token) return;
+    setBusyId(id);
+    setError(null);
+    try {
+      await apiFetch(`/admin/venues/${id}/reactivate`, { method: "POST", token });
+      setReloadCount((n) => n + 1);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : t.pages.adminVenues.reactivateFailed);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   if (staff && !staff.isPlatformAdmin) {
     return (
       <div>
@@ -65,6 +98,7 @@ export default function AdminVenuesPage() {
 
   const pending = venues.filter((v) => v.status === "PENDING");
   const verified = venues.filter((v) => v.status === "VERIFIED");
+  const suspended = venues.filter((v) => v.status === "SUSPENDED");
 
   return (
     <div>
@@ -112,9 +146,80 @@ export default function AdminVenuesPage() {
           <Card className="mt-4 p-0">
             <ul className="divide-y divide-border">
               {verified.map((v) => (
-                <li key={v.id} className="flex items-center justify-between px-6 py-3 text-sm">
-                  <span className="text-text">{v.name}</span>
-                  <span className="text-xs text-text-muted">{v.address}</span>
+                <li key={v.id} className="flex flex-col gap-3 px-6 py-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-sm text-text">{v.name}</div>
+                      <div className="text-xs text-text-muted">{v.address}</div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSuspendingId(suspendingId === v.id ? null : v.id);
+                        setSuspendReason("");
+                      }}
+                      className="shrink-0 text-sm text-text-muted hover:text-danger"
+                    >
+                      {t.pages.adminVenues.suspend}
+                    </button>
+                  </div>
+                  {suspendingId === v.id && (
+                    <div className="flex flex-col gap-3 rounded-xl border border-border bg-background p-4">
+                      <textarea
+                        placeholder={t.pages.adminVenues.suspendReasonPlaceholder}
+                        value={suspendReason}
+                        onChange={(e) => setSuspendReason(e.target.value)}
+                        rows={2}
+                        maxLength={500}
+                        className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text placeholder-text-muted outline-none focus:border-gold"
+                      />
+                      <div className="flex flex-wrap gap-3">
+                        <Button
+                          variant="outline"
+                          disabled={busyId === v.id || !suspendReason.trim()}
+                          onClick={() => suspend(v.id)}
+                        >
+                          {busyId === v.id ? t.pages.adminVenues.suspending : t.pages.adminVenues.suspendConfirm}
+                        </Button>
+                        <button
+                          onClick={() => setSuspendingId(null)}
+                          className="text-sm text-text-muted hover:text-text"
+                        >
+                          {t.pages.adminVenues.cancel}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </div>
+      )}
+
+      {suspended.length > 0 && (
+        <div className="mt-10">
+          <h2 className="font-heading text-lg text-gold">{t.pages.adminVenues.suspendedHeading}</h2>
+          <Card className="mt-4 p-0">
+            <ul className="divide-y divide-border">
+              {suspended.map((v) => (
+                <li key={v.id} className="flex flex-col gap-2 px-6 py-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <div className="text-sm text-text">{v.name}</div>
+                    <div className="text-xs text-text-muted">{v.address}</div>
+                    {v.suspendedAt && (
+                      <div className="mt-1 text-xs text-text-muted">
+                        {t.pages.adminVenues.suspendedSinceLabel}: {new Date(v.suspendedAt).toLocaleDateString()}
+                      </div>
+                    )}
+                    {v.suspendedReason && (
+                      <div className="text-xs text-text-muted">
+                        {t.pages.adminVenues.suspendedReasonLabel}: {v.suspendedReason}
+                      </div>
+                    )}
+                  </div>
+                  <Button variant="outline" disabled={busyId === v.id} onClick={() => reactivate(v.id)}>
+                    {busyId === v.id ? t.pages.adminVenues.reactivating : t.pages.adminVenues.reactivate}
+                  </Button>
                 </li>
               ))}
             </ul>

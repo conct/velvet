@@ -59,6 +59,8 @@ interface Translations {
   "venues.emailAlreadyTaken": string;
 
   "admin.venueNotFound": string;
+  "admin.venueNotVerified": string;
+  "admin.venueNotSuspended": string;
   "admin.applicationNotFound": string;
   "admin.applicationAlreadyReviewed": string;
   "admin.applicationDocumentMissing": string;
@@ -151,6 +153,8 @@ const de: Translations = {
   "venues.emailAlreadyTaken": "E-Mail bereits vergeben",
 
   "admin.venueNotFound": "Location nicht gefunden",
+  "admin.venueNotVerified": "Location ist nicht freigegeben",
+  "admin.venueNotSuspended": "Location ist nicht stillgelegt",
   "admin.applicationNotFound": "Bewerbung nicht gefunden",
   "admin.applicationAlreadyReviewed": "Bewerbung wurde bereits bearbeitet",
   "admin.applicationDocumentMissing": "Dokument nicht mehr vorhanden",
@@ -252,6 +256,8 @@ const en: Translations = {
   "venues.emailAlreadyTaken": "Email already taken",
 
   "admin.venueNotFound": "Venue not found",
+  "admin.venueNotVerified": "Venue is not verified",
+  "admin.venueNotSuspended": "Venue is not suspended",
   "admin.applicationNotFound": "Application not found",
   "admin.applicationAlreadyReviewed": "Application has already been reviewed",
   "admin.applicationDocumentMissing": "Document is no longer available",

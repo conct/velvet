@@ -360,6 +360,7 @@ export interface Translations {
       websiteLabel: string;
       messageLabel: string;
       documentLabel: string;
+      documentDeleted: string;
       openDocument: string;
       opening: string;
       openFailed: string;
@@ -383,10 +384,22 @@ export interface Translations {
       adminOnly: string;
       pendingHeading: string;
       verifiedHeading: string;
+      suspendedHeading: string;
       verifying: string;
       verify: string;
       loadFailed: string;
       verifyFailed: string;
+      suspend: string;
+      suspendReasonPlaceholder: string;
+      suspendConfirm: string;
+      suspending: string;
+      suspendFailed: string;
+      cancel: string;
+      reactivate: string;
+      reactivating: string;
+      reactivateFailed: string;
+      suspendedSinceLabel: string;
+      suspendedReasonLabel: string;
     };
     werbematerial: {
       eyebrow: string;
@@ -1046,6 +1059,7 @@ const de: Translations = {
       websiteLabel: "Web",
       messageLabel: "Nachricht",
       documentLabel: "Gewerbeanmeldung",
+      documentDeleted: "Dokument nach Ablauf der 6-monatigen Aufbewahrungsfrist gelöscht",
       openDocument: "Dokument öffnen",
       opening: "Öffne…",
       openFailed: "Dokument konnte nicht geöffnet werden",
@@ -1069,10 +1083,22 @@ const de: Translations = {
       adminOnly: "Nur für Platform-Admins.",
       pendingHeading: "Wartet auf Freigabe",
       verifiedHeading: "Bereits freigegeben",
+      suspendedHeading: "Stillgelegt",
       verifying: "Bestätige…",
       verify: "Bestätigen",
       loadFailed: "Laden fehlgeschlagen",
       verifyFailed: "Bestätigen fehlgeschlagen",
+      suspend: "Stilllegen",
+      suspendReasonPlaceholder: "Grund für die Stilllegung",
+      suspendConfirm: "Stilllegen bestätigen",
+      suspending: "Lege still…",
+      suspendFailed: "Stilllegen fehlgeschlagen",
+      cancel: "Abbrechen",
+      reactivate: "Reaktivieren",
+      reactivating: "Reaktiviere…",
+      reactivateFailed: "Reaktivieren fehlgeschlagen",
+      suspendedSinceLabel: "Stillgelegt seit",
+      suspendedReasonLabel: "Grund",
     },
     werbematerial: {
       eyebrow: "Für Clubbetreiber",
@@ -1963,6 +1989,7 @@ const en: Translations = {
       websiteLabel: "Web",
       messageLabel: "Message",
       documentLabel: "Business registration",
+      documentDeleted: "Document deleted after the 6-month retention period",
       openDocument: "Open document",
       opening: "Opening…",
       openFailed: "Could not open the document",
@@ -1986,10 +2013,22 @@ const en: Translations = {
       adminOnly: "Platform admins only.",
       pendingHeading: "Awaiting approval",
       verifiedHeading: "Already approved",
+      suspendedHeading: "Suspended",
       verifying: "Approving…",
       verify: "Approve",
       loadFailed: "Failed to load",
       verifyFailed: "Failed to approve",
+      suspend: "Suspend",
+      suspendReasonPlaceholder: "Reason for suspension",
+      suspendConfirm: "Confirm suspension",
+      suspending: "Suspending…",
+      suspendFailed: "Failed to suspend",
+      cancel: "Cancel",
+      reactivate: "Reactivate",
+      reactivating: "Reactivating…",
+      reactivateFailed: "Failed to reactivate",
+      suspendedSinceLabel: "Suspended since",
+      suspendedReasonLabel: "Reason",
     },
     werbematerial: {
       eyebrow: "For venue operators",
@@ -2879,6 +2918,7 @@ const pl: Translations = {
       websiteLabel: "Web",
       messageLabel: "Wiadomość",
       documentLabel: "Dokument rejestracyjny",
+      documentDeleted: "Dokument usunięty po upływie 6-miesięcznego okresu przechowywania",
       openDocument: "Otwórz dokument",
       opening: "Otwieranie…",
       openFailed: "Nie udało się otworzyć dokumentu",
@@ -2902,10 +2942,22 @@ const pl: Translations = {
       adminOnly: "Tylko dla administratorów platformy.",
       pendingHeading: "Oczekuje na zatwierdzenie",
       verifiedHeading: "Już zatwierdzone",
+      suspendedHeading: "Zawieszone",
       verifying: "Zatwierdzanie…",
       verify: "Zatwierdź",
       loadFailed: "Nie udało się załadować",
       verifyFailed: "Nie udało się zatwierdzić",
+      suspend: "Zawieś",
+      suspendReasonPlaceholder: "Powód zawieszenia",
+      suspendConfirm: "Potwierdź zawieszenie",
+      suspending: "Zawieszanie…",
+      suspendFailed: "Nie udało się zawiesić",
+      cancel: "Anuluj",
+      reactivate: "Przywróć",
+      reactivating: "Przywracanie…",
+      reactivateFailed: "Nie udało się przywrócić",
+      suspendedSinceLabel: "Zawieszone od",
+      suspendedReasonLabel: "Powód",
     },
     werbematerial: {
       eyebrow: "Dla właścicieli lokali",
@@ -3796,6 +3848,7 @@ const es: Translations = {
       websiteLabel: "Web",
       messageLabel: "Mensaje",
       documentLabel: "Alta de actividad",
+      documentDeleted: "Documento eliminado tras el plazo de conservación de 6 meses",
       openDocument: "Abrir documento",
       opening: "Abriendo…",
       openFailed: "No se pudo abrir el documento",
@@ -3819,10 +3872,22 @@ const es: Translations = {
       adminOnly: "Solo para administradores de la plataforma.",
       pendingHeading: "Pendiente de aprobación",
       verifiedHeading: "Ya aprobados",
+      suspendedHeading: "Suspendidos",
       verifying: "Aprobando…",
       verify: "Aprobar",
       loadFailed: "Error al cargar",
       verifyFailed: "Error al aprobar",
+      suspend: "Suspender",
+      suspendReasonPlaceholder: "Motivo de la suspensión",
+      suspendConfirm: "Confirmar suspensión",
+      suspending: "Suspendiendo…",
+      suspendFailed: "Error al suspender",
+      cancel: "Cancelar",
+      reactivate: "Reactivar",
+      reactivating: "Reactivando…",
+      reactivateFailed: "Error al reactivar",
+      suspendedSinceLabel: "Suspendido desde",
+      suspendedReasonLabel: "Motivo",
     },
     werbematerial: {
       eyebrow: "Para propietarios de locales",

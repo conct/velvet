@@ -159,11 +159,15 @@ export default function AdminApplicationsPage() {
                 </dl>
 
                 <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <Button variant="outline" disabled={openingId === a.id} onClick={() => openDocument(a.id)}>
-                    {openingId === a.id
-                      ? t.pages.adminApplications.opening
-                      : t.pages.adminApplications.openDocument}
-                  </Button>
+                  {a.documentDeletedAt ? (
+                    <p className="text-xs text-text-muted">{t.pages.adminApplications.documentDeleted}</p>
+                  ) : (
+                    <Button variant="outline" disabled={openingId === a.id} onClick={() => openDocument(a.id)}>
+                      {openingId === a.id
+                        ? t.pages.adminApplications.opening
+                        : t.pages.adminApplications.openDocument}
+                    </Button>
+                  )}
                   <Button disabled={busyId === a.id} onClick={() => approve(a.id)}>
                     {busyId === a.id && rejectingId !== a.id
                       ? t.pages.adminApplications.approving

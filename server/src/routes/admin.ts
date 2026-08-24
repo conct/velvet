@@ -12,12 +12,25 @@ import { t } from "../lib/i18n";
 
 export const adminRouter = Router();
 
+const VENUE_STATUSES = ["PENDING", "VERIFIED", "SUSPENDED"] as const;
+
 adminRouter.get("/venues", requireAuth, requirePlatformAdmin, async (req, res) => {
-  const status = req.query.status === "VERIFIED" || req.query.status === "PENDING" ? req.query.status : undefined;
+  const status = (VENUE_STATUSES as readonly string[]).includes(req.query.status as string)
+    ? (req.query.status as (typeof VENUE_STATUSES)[number])
+    : undefined;
 
   const venues = await prisma.venue.findMany({
     where: status ? { status } : undefined,
-    select: { id: true, name: true, slug: true, address: true, status: true, createdAt: true },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      address: true,
+      status: true,
+      suspendedAt: true,
+      suspendedReason: true,
+      createdAt: true,
+    },
     orderBy: { createdAt: "desc" },
   });
   res.json(venues);
@@ -27,7 +40,48 @@ adminRouter.post("/venues/:id/verify", requireAuth, requirePlatformAdmin, async 
   const venue = await prisma.venue.findUnique({ where: { id: req.params.id } });
   if (!venue) return res.status(404).json({ error: t(req.locale, "admin.venueNotFound") });
 
-  const updated = await prisma.venue.update({ where: { id: venue.id }, data: { status: "VERIFIED" } });
+  const updated = await prisma.venue.update({
+    where: { id: venue.id },
+    data: { status: "VERIFIED", suspendedAt: null, suspendedReason: null },
+  });
+  res.json(updated);
+});
+
+const suspendSchema = z.object({ reason: z.string().trim().min(1).max(500) });
+
+// Suspending is deliberately not the same as set-demo (see docs/roadmap.md,
+// "Locations stilllegen können"): ratings/history already made at this venue
+// stay exactly as they are and keep counting towards guests' trust scores --
+// only new scans/ratings and public visibility are blocked, same as a
+// PENDING venue.
+adminRouter.post("/venues/:id/suspend", requireAuth, requirePlatformAdmin, async (req, res) => {
+  const parsed = suspendSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
+  const venue = await prisma.venue.findUnique({ where: { id: req.params.id } });
+  if (!venue) return res.status(404).json({ error: t(req.locale, "admin.venueNotFound") });
+  if (venue.status !== "VERIFIED") {
+    return res.status(409).json({ error: t(req.locale, "admin.venueNotVerified") });
+  }
+
+  const updated = await prisma.venue.update({
+    where: { id: venue.id },
+    data: { status: "SUSPENDED", suspendedAt: new Date(), suspendedReason: parsed.data.reason },
+  });
+  res.json(updated);
+});
+
+adminRouter.post("/venues/:id/reactivate", requireAuth, requirePlatformAdmin, async (req, res) => {
+  const venue = await prisma.venue.findUnique({ where: { id: req.params.id } });
+  if (!venue) return res.status(404).json({ error: t(req.locale, "admin.venueNotFound") });
+  if (venue.status !== "SUSPENDED") {
+    return res.status(409).json({ error: t(req.locale, "admin.venueNotSuspended") });
+  }
+
+  const updated = await prisma.venue.update({
+    where: { id: venue.id },
+    data: { status: "VERIFIED", suspendedAt: null, suspendedReason: null },
+  });
   res.json(updated);
 });
 
@@ -79,6 +133,7 @@ adminRouter.get("/venue-applications", requireAuth, requirePlatformAdmin, async 
       status: true,
       reviewNote: true,
       reviewedAt: true,
+      documentDeletedAt: true,
       createdVenueId: true,
       createdAt: true,
     },

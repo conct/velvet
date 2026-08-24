@@ -6,7 +6,7 @@ import path from "path";
 import { z } from "zod";
 import { prisma } from "../db";
 import { venueApplicationRateLimit } from "../middleware/rateLimit";
-import { sendVenueApplicationReceivedEmail } from "../lib/mailer";
+import { sendCustomEmail, sendVenueApplicationReceivedEmail } from "../lib/mailer";
 import { t } from "../lib/i18n";
 
 export const venueApplicationsRouter = Router();
@@ -115,6 +115,20 @@ venueApplicationsRouter.post("/", venueApplicationRateLimit, uploadDocumentMiddl
   sendVenueApplicationReceivedEmail(data.contactEmail, data.venueName, req.locale).catch((err) =>
     console.error("Failed to send venue application confirmation", err)
   );
+
+  // Otherwise a new application only surfaces when someone happens to open
+  // /admin/applications -- a Friday-night submission could sit unseen for
+  // days with nothing but the applicant's own auto-reply sent so far.
+  sendCustomEmail(
+    "mail@velvet-network.app",
+    `Neue Location-Bewerbung: ${data.venueName}`,
+    `${data.venueName} (${data.venueType}) hat sich über /location-anmelden beworben.\n\n` +
+      `Kontakt: ${data.contactName} <${data.contactEmail}>${data.contactPhone ? `, ${data.contactPhone}` : ""}\n` +
+      `Adresse: ${data.address}\n` +
+      (data.website ? `Website: ${data.website}\n` : "") +
+      (data.message ? `Nachricht: ${data.message}\n` : "") +
+      `\nPrüfen unter https://velvet-network.app/admin/applications`
+  ).catch((err) => console.error("Failed to send venue application admin notification", err));
 
   res.status(201).json({ ok: true, message: t(req.locale, "venueApplications.received") });
 });

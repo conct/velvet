@@ -43,7 +43,13 @@ model Venue {
   slug      String   @unique
   address   String   @db.Text
   logoUrl   String?  @db.Text
-  status    String   @default("PENDING") // "PENDING" | "VERIFIED"
+  status    String   @default("PENDING") // "PENDING" | "VERIFIED" | "SUSPENDED"
+  // Set when a VERIFIED venue is suspended (misuse, closed down). Existing
+  // ratings/history stay untouched -- they were valid when they were made --
+  // but scanning, rating and the public venue list all treat it as if it
+  // were PENDING again (both already gate on status !== "VERIFIED").
+  suspendedAt     DateTime?
+  suspendedReason String?   @db.Text
   // A sandbox venue: hidden from the public venue list, and nothing that
   // happens there counts towards anyone's trust score or history.
   isDemo    Boolean  @default(false)
@@ -271,6 +277,11 @@ model VenueApplication {
   reviewNote     String?   @db.Text
   reviewedAt     DateTime?
   reviewedById   String?
+  // Set once the retention period has purged the uploaded document (see
+  // scripts/purge-expired-applications.ts). reviewedAt/reviewedById stay as
+  // the permanent record that the check happened; only the document itself
+  // is time-limited.
+  documentDeletedAt DateTime?
   createdVenueId String?
   createdAt      DateTime  @default(now())
 

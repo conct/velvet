@@ -30,7 +30,7 @@ export function canScanAndRate(role: StaffRole): boolean {
   return staffRolePermissions[role].scanAndRate;
 }
 
-export type VenueStatus = "PENDING" | "VERIFIED";
+export type VenueStatus = "PENDING" | "VERIFIED" | "SUSPENDED";
 
 export type VenueType = "CLUB" | "BAR" | "PUB" | "OTHER";
 
@@ -55,6 +55,7 @@ export interface AdminVenueApplication {
   status: VenueApplicationStatus;
   reviewNote: string | null;
   reviewedAt: string | null;
+  documentDeletedAt: string | null;
   createdVenueId: string | null;
   createdAt: string;
 }
@@ -80,6 +81,8 @@ export interface AdminVenue {
   slug: string;
   address: string;
   status: VenueStatus;
+  suspendedAt: string | null;
+  suspendedReason: string | null;
   createdAt: string;
 }
 
