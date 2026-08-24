@@ -55,6 +55,31 @@ Ein `npm run check-schemas`, das beide Dateien parst und Models und Felder
 vergleicht (Typ-Attribute wie `@db.Text` bewusst ignorierend), würde das vorher
 abfangen. Kein CI nötig, ein Skript reicht, das man vor dem Deploy laufen lässt.
 
+### Locations stilllegen können
+**Status:** offen.
+
+Eine freigegebene Location lässt sich heute weder deaktivieren noch löschen.
+Alle Schreibzugriffe auf `Venue` legen an, benennen um oder setzen `status` auf
+`VERIFIED` — zurück geht es nie. Wenn eine Location Hausverbote missbraucht
+oder schlicht zumacht, gibt es keinen Schalter, nur Handarbeit in der
+Datenbank.
+
+Als Notbehelf wirkt `npm run set-demo -- venue <slug>`: Die Location
+verschwindet aus der öffentlichen Liste, ihr Personal kann keine echten Gäste
+mehr scannen, ihre Bewertungen zählen nicht mehr. Das ist aber ein
+Vorschlaghammer — es entwertet **rückwirkend** die gesamte Bewertungshistorie
+dieser Location, auch die berechtigte.
+
+Gebraucht wird ein eigener Zustand, etwa `status: "SUSPENDED"`: Location aus
+der öffentlichen Liste nehmen, Scans und Bewertungen dort ablehnen, bereits
+vergebene Bewertungen aber **stehen lassen** — sie waren zu ihrer Zeit gültig.
+Bedienbar unter `/admin/venues` neben „Freigeben", mit Grund und Datum am
+Datensatz.
+
+Löschen im Wortsinn ist die schwierigere Frage und kann warten: An einer
+Location hängen Bewertungen, Einlass-Historie und Beziehungen, deren Wegfall
+Gäste-Scores verändern würde. Stilllegen deckt den dringenden Fall ab.
+
 ### Aufbewahrungsfrist für Gewerbeanmeldungen
 **Status:** blocked — braucht eine Datenschutz-Entscheidung.
 
