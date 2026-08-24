@@ -85,7 +85,7 @@ den Vorschlaghammer, weil ihre Bewertungen zur Historie der Gäste gehören und
 deren Score verändern würden. Stilllegen deckt den dringenden Fall ab.
 
 ### Aufbewahrungsfrist für Gewerbeanmeldungen
-**Status:** blocked — braucht eine Datenschutz-Entscheidung.
+**Status:** offen.
 
 Wird eine Bewerbung abgelehnt, löschen wir das hochgeladene Dokument sofort.
 Wird sie freigegeben, bleibt es dagegen unbefristet in
@@ -93,44 +93,35 @@ Wird sie freigegeben, bleibt es dagegen unbefristet in
 ohne definierte Löschfrist — genau das, was eine Datenschutzerklärung
 normalerweise benennen muss, und unsere benennt es bisher nicht.
 
-**Offene Frage an Daniel:** Wie lange sollen wir die Gewerbeanmeldung einer
-freigegebenen Location aufbewahren — dauerhaft als Nachweis der Prüfung, oder
-nach einer Frist löschen und nur vermerken, dass geprüft wurde (Datum plus
-prüfende Person)? Die zweite Variante wäre datensparsamer und würde als Nachweis
-in aller Regel genügen.
+**Entscheidung von Daniel (2026-08-24):** nach Ablauf einer Frist löschen, nicht
+dauerhaft aufbewahren — datensparsamer, ein Prüfvermerk genügt als Nachweis.
+**Frist: 6 Monate** ab Freigabe der Location. Danach das Dokument aus
+`server/private-uploads/` entfernen und stattdessen an der Location Datum der
+Prüfung plus prüfende Person vermerken (dieser Vermerk bleibt dauerhaft, nur
+das Dokument selbst hat die Frist).
 
 ### Instagram-Posting automatisieren
-**Status:** blocked — braucht eine technische Entscheidung.
+**Status:** offen — vorerst zurückgestellt.
 
 Die wöchentliche Social-Media-Routine liefert bisher nur Text-Entwürfe (siehe
-Trigger "VELVET Social-Media-Entwürfe"), gepostet wird von Hand. Für echtes
-automatisches Posten gibt es keinen fertigen Instagram/Meta-Connector in der
-Umgebung — das müsste als eigene Integration gebaut werden.
+Trigger "VELVET Social-Media-Entwürfe"), gepostet wird von Hand.
 
-**Offene Frage an Daniel:** Welcher Weg?
-1. **Meta Graph API direkt** — Integration im VELVET-Server, braucht ein
-   Instagram-Business-Konto verknüpft mit einer Facebook-Seite, eine Meta-App
-   samt App-Review für `instagram_content_publish`, und Token-Verwaltung auf
-   dem Server. Kein Abo, aber App-Review kann Tage/Wochen dauern.
-2. **Drittanbieter-Scheduler** (z.B. Buffer/Later/Metricool) — deren API
-   übernimmt die Meta-Freigabe-Hürde, braucht aber ein Abo dort plus einen
-   API-Key. Deutlich schneller startklar.
-3. Vorerst so lassen (nur Entwürfe, manuelles Posten) — falls der Aufwand für
-   beide Wege gerade nicht gewollt ist.
+**Entscheidung von Daniel (2026-08-24):** wird nach hinten geschoben, aktuell kein
+Interesse an der Integration (weder Meta Graph API direkt noch ein
+Drittanbieter-Scheduler). Bleibt bei Text-Entwürfen + manuellem Posten. Diesen
+Punkt nicht von selbst wieder aufgreifen — erst wenn Daniel ihn erneut anstößt.
 
-### Rechte der Rolle `SERVICE` enger fassen
-**Status:** blocked — braucht eine Produktentscheidung.
+### Rechte der Rolle `SERVICE`
+**Status:** erledigt — keine Änderung nötig.
 
 `SERVICE` darf heute exakt dasselbe wie `DOORMAN`: Gäste ansehen, scannen,
-bewerten — inklusive `setLocalFlag: "BANNED"`. Damit kann eine Servicekraft an
-einer kleinen Bar ein Hausverbot vergeben, und zwei solcher Hausverbote sperren
-einen Gast netzwerkweit (`isNetworkBanned`). Die Rolle existiert als eigene,
-damit sich ihre Rechte später verschieben lassen; die Tabelle dafür steht an
-einer Stelle (`staffRolePermissions` in `packages/shared/src/types.ts`).
+bewerten — inklusive `setLocalFlag: "BANNED"`.
 
-**Offene Frage an Daniel:** Soll `SERVICE` weiterhin Hausverbote vergeben
-dürfen, oder nur bewerten und das Flaggen den Rollen `DOORMAN`/`MANAGER`
-vorbehalten bleiben?
+**Entscheidung von Daniel (2026-08-24):** so lassen. Ein Hausverbot durch eine
+Servicekraft muss für spätere Türsteher sichtbar sein — würde `SERVICE` das
+Flaggen fehlen, wüsste ein `DOORMAN` an anderer Stelle nichts von einem bereits
+erteilten Hausverbot. Keine Code-Änderung nötig, die aktuelle Berechtigung
+(`staffRolePermissions` in `packages/shared/src/types.ts`) bleibt wie sie ist.
 
 ## Done
 
