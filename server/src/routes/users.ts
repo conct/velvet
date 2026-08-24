@@ -10,6 +10,7 @@ import { getUserTrust } from "../lib/trust";
 import { verifyProfilePhoto } from "../lib/photo-verification";
 import { t } from "../lib/i18n";
 import { deleteRelayFolders } from "../lib/mailer";
+import { world, worldOf } from "../lib/demo";
 
 export const usersRouter = Router();
 
@@ -121,8 +122,11 @@ usersRouter.delete("/me", requireAuth, requireUser, async (req, res) => {
 });
 
 usersRouter.get("/me/venues", requireAuth, requireUser, async (req, res) => {
+  // A sandbox venue never shows up in a real guest's history, and a real one
+  // never in a sandbox guest's.
+  const filters = world(await worldOf(req.auth!.sub));
   const relationships = await prisma.venueRelationship.findMany({
-    where: { userId: req.auth!.sub },
+    where: { userId: req.auth!.sub, ...filters.venue },
     include: { venue: true },
     orderBy: { lastVisitAt: "desc" },
   });

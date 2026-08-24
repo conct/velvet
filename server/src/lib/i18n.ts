@@ -37,6 +37,7 @@ interface Translations {
   "qr.guestNotFound": string;
   "qr.venueNotVerified": string;
   "qr.entryLogNotFound": string;
+  "qr.demoWorldMismatch": string;
 
   "messages.notEligiblePeer": string;
   "messages.noExistingStaffContact": string;
@@ -127,6 +128,7 @@ const de: Translations = {
   "qr.guestNotFound": "Gast nicht gefunden",
   "qr.venueNotVerified": "Location noch nicht freigegeben",
   "qr.entryLogNotFound": "Einlass-Eintrag nicht gefunden",
+  "qr.demoWorldMismatch": "Test-Zugänge können nur Test-Gäste scannen. Dieser Scan wurde nicht gespeichert.",
 
   "messages.notEligiblePeer": "Nachricht nicht möglich — kein gemeinsamer Location-Besuch als Premium-Mitglieder",
   "messages.noExistingStaffContact": "Kein bestehender Kontakt mit diesem Team",
@@ -226,6 +228,7 @@ const en: Translations = {
   "qr.guestNotFound": "Guest not found",
   "qr.venueNotVerified": "Venue not yet approved",
   "qr.entryLogNotFound": "Entry log not found",
+  "qr.demoWorldMismatch": "Test logins can only scan test guests. This scan was not recorded.",
 
   "messages.notEligiblePeer": "Can't message — no shared venue visit as Premium members",
   "messages.noExistingStaffContact": "No existing contact with this team",

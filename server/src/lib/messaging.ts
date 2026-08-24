@@ -1,4 +1,5 @@
 import { prisma } from "../db";
+import { world, worldOf } from "./demo";
 import { isPremium } from "./premium";
 import { getUserTrust } from "./trust";
 
@@ -20,9 +21,19 @@ async function isBlocked(userIdA: string, userIdB: string): Promise<boolean> {
 }
 
 async function sharedNightExists(userIdA: string, userIdB: string): Promise<boolean> {
+  // Both sides are filtered to A's world: a visit logged in the sandbox must
+  // never make a real guest messageable, or the other way round.
+  const filters = world(await worldOf(userIdA));
+
   const [entriesA, entriesB] = await Promise.all([
-    prisma.entryLog.findMany({ where: { userId: userIdA }, select: { venueId: true, scannedAt: true } }),
-    prisma.entryLog.findMany({ where: { userId: userIdB }, select: { venueId: true, scannedAt: true } }),
+    prisma.entryLog.findMany({
+      where: { userId: userIdA, ...filters.entry },
+      select: { venueId: true, scannedAt: true },
+    }),
+    prisma.entryLog.findMany({
+      where: { userId: userIdB, ...filters.entry },
+      select: { venueId: true, scannedAt: true },
+    }),
   ]);
 
   return entriesA.some((a) =>
@@ -45,15 +56,16 @@ export interface SharedNightCandidate {
 // who shares a night+venue with `userId`, most recent shared encounter per
 // person. Does not filter by premium/block status — callers do that.
 export async function findSharedNightCandidates(userId: string): Promise<SharedNightCandidate[]> {
+  const filters = world(await worldOf(userId));
   const myEntries = await prisma.entryLog.findMany({
-    where: { userId },
+    where: { userId, ...filters.entry },
     select: { venueId: true, scannedAt: true },
   });
   if (myEntries.length === 0) return [];
 
   const venueIds = [...new Set(myEntries.map((e) => e.venueId))];
   const otherEntries = await prisma.entryLog.findMany({
-    where: { venueId: { in: venueIds }, userId: { not: userId } },
+    where: { venueId: { in: venueIds }, userId: { not: userId }, ...filters.entry },
     select: { userId: true, venueId: true, scannedAt: true, venue: { select: { name: true } } },
   });
 
@@ -112,7 +124,7 @@ export async function canMessage(userIdA: string, userIdB: string): Promise<bool
 // (at least one recorded visit), not just anyone in the network.
 export async function canStaffMessage(venueId: string, userId: string): Promise<boolean> {
   const [relationship, { tier }, premium] = await Promise.all([
-    prisma.venueRelationship.findUnique({ where: { userId_venueId: { userId, venueId } } }),
+    prisma.venueRelationship.findFirst({ where: { userId, venueId } }),
     getUserTrust(userId),
     isPremium(userId),
   ]);

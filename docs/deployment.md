@@ -285,6 +285,57 @@ serverseitig greifen — direkt danach getestete SMTP-Auth kann kurz mit `535
 Authentication failed` fehlschlagen, obwohl das Passwort korrekt ist. Vor
 einem erneuten Reset lieber 10-15s warten und nochmal testen.
 
+## Test-Zugänge: die Sandbox-Welt
+
+Die Zugangsdaten der App-Store-Reviewer-Accounts stehen in Formularen bei
+Google und Apple. Sie sind damit faktisch öffentlich — und ein öffentlicher
+Login darf keine echten Gäste anfassen können. Ungeschützt könnte er einen
+beliebigen Gast scannen, mit einem Stern bewerten und als `BANNED` flaggen;
+zwei sperrende Locations lösen `isNetworkBanned()` aus und der Mensch kommt an
+keiner Tür des Netzwerks mehr rein.
+
+Deshalb gibt es ein `isDemo`-Flag auf `User`, `StaffAccount` und `Venue`. Die
+Logik dazu steht vollständig in `server/src/lib/demo.ts`. Das Modell sind zwei
+parallele Welten, nicht „echte Daten plus ein paar Zeilen zum Ignorieren":
+
+- **Abschottung beim Schreiben:** `assertSameWorld()` lehnt jeden Scan ab, bei
+  dem Location und Gast nicht dieselbe Welt haben — in beide Richtungen, und
+  bevor irgendetwas geschrieben wird. Das gilt auch fürs Bestätigen eines
+  Profilfotos.
+- **Scoping beim Lesen:** Trust-Score, Netzwerksperre, Gästelisten, die eigene
+  Location-Historie und das Chat-Matching bleiben in der Welt der jeweils
+  fragenden Person.
+
+Gefiltert wird bewusst über das *aktuelle* Flag statt über eine Kopie auf
+jeder Zeile. Ein Account nachträglich als Demo zu markieren entwertet damit
+rückwirkend alles, was er bereits geschrieben hat — genau der Fall bei den
+Reviewer-Accounts, die es vor diesem Feature schon gab.
+
+Die Sandbox bleibt dabei voll benutzbar: Ein Reviewer scannt, wird bewertet,
+sieht seinen Status wandern und die Location in seiner Historie. Nur ist
+nichts davon von außen sichtbar oder zählt irgendwo mit.
+
+### Einrichten
+
+```bash
+npm run set-demo -- venue <slug-oder-id>        # Location zur Sandbox machen
+npm run set-demo -- staff <email>               # Staff-Login
+npm run set-demo -- user  <email>               # Gast-Login
+npm run set-demo -- staff <email> off           # zurücknehmen
+```
+
+Für die Produktion heißt das konkret: eine eigene Sandbox-Location anlegen,
+sie und die beiden Reviewer-Accounts (`staff-review@feif.space`,
+`playstore-review@feif.space`) als Demo markieren und **den Staff-Reviewer aus
+jeder echten Location entfernen** — solange er Mitglied einer echten Location
+ist, arbeitet er in deren Welt. Das Skript weist nach dem Markieren einer
+Location auf deren noch nicht markierte Staff-Accounts hin.
+
+Sandbox-Locations tauchen nicht in der öffentlichen Location-Liste der Gast-App
+auf. Lokal legt `npm run seed` bereits eine an (`VELVET Testbühne` mit
+`review@velvet-network.app` / `review123` und dem Gast
+`review-gast@velvet-network.app`), damit sich die Abschottung testen lässt.
+
 ## Download-Quellen der Gast-App
 
 Welche Bezugsquellen die Landingpage unter `/#app` anzeigt, steht an genau

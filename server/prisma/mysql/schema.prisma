@@ -17,6 +17,11 @@ model User {
   photoUrl         String?   @db.Text
   photoConfirmedAt DateTime?
   emailVerifiedAt  DateTime?
+  // Marks a sandbox account (app-store reviewers, internal test logins).
+  // Demo and production are kept as two disjoint worlds -- see
+  // server/src/lib/demo.ts for what that means on both the read and the
+  // write side.
+  isDemo           Boolean   @default(false)
   createdAt        DateTime  @default(now())
 
   relationships          VenueRelationship[]
@@ -39,6 +44,9 @@ model Venue {
   address   String   @db.Text
   logoUrl   String?  @db.Text
   status    String   @default("PENDING") // "PENDING" | "VERIFIED"
+  // A sandbox venue: hidden from the public venue list, and nothing that
+  // happens there counts towards anyone's trust score or history.
+  isDemo    Boolean  @default(false)
   createdAt DateTime @default(now())
 
   memberships   StaffVenueMembership[]
@@ -53,6 +61,9 @@ model StaffAccount {
   passwordHash    String
   name            String
   isPlatformAdmin Boolean  @default(false)
+  // Sandbox staff account. May only scan and rate demo guests, and its
+  // ratings never count towards a real guest's score.
+  isDemo          Boolean  @default(false)
   createdAt       DateTime @default(now())
 
   memberships      StaffVenueMembership[]

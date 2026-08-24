@@ -116,7 +116,9 @@ Haus aus. Einmalig setzen:
 cd server && npm run set-platform-admin -- manager@noir.club
 ```
 
-**Gäste (Mobile-App)** — alle mit `guest1234`, jeweils ein Tier abgedeckt:
+**Gäste (Mobile-App)** — alle mit `guest1234`, jeweils ein Tier abgedeckt. Sie
+sind bereits verifiziert und haben ein Platzhalter-Profilfoto, sonst käme man
+weder am Login noch am QR-Code vorbei:
 
 | Konto | Stufe |
 | --- | --- |
@@ -126,10 +128,23 @@ cd server && npm run set-platform-admin -- manager@noir.club
 | `tom@example.com` | Beobachtung |
 | `ben@example.com` | Gesperrt (an zwei Locations als BANNED geflaggt) |
 
+**Sandbox** — eine zweite, vollständig abgeschottete Welt, in der nichts
+zählt, was dort passiert:
+
+| Konto | Rolle | Passwort |
+| --- | --- | --- |
+| `review@velvet-network.app` | Manager der Location „VELVET Testbühne" | `review123` |
+| `review-gast@velvet-network.app` | Gast | `review123` |
+
+Ein Sandbox-Login kann keinen echten Gast scannen, bewerten oder sperren — und
+umgekehrt. Warum das nötig ist und wie man es produktiv einrichtet, steht unter
+„Test-Zugänge: die Sandbox-Welt" in [`deployment.md`](deployment.md).
+
 **Store-Reviewer** (`playstore-review@feif.space`,
 `staff-review@feif.space`) sind echte Produktions-Accounts für die
 Google-/Apple-Prüfer. Sie stehen absichtlich nicht im Seed; ihre Passwörter
-liegen in der Google Play Console bzw. App Store Connect.
+liegen in der Google Play Console bzw. App Store Connect. Sie gehören in die
+Sandbox — siehe oben.
 
 ## Rollen
 
