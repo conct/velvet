@@ -93,9 +93,22 @@ eintragen.
 
 ## Test-Zugangsdaten
 
-Die legt `server/prisma/seed.ts` an. Sie gelten **nur für die lokale
-SQLite-Datenbank** — nichts davon existiert produktiv, und die Passwörter
-stehen ohnehin im Klartext im Repo. Nie für echte Accounts wiederverwenden.
+Die legt `server/prisma/seed.ts` an, und ihre Passwörter stehen im Klartext in
+diesem öffentlichen Repo. Nie für echte Accounts wiederverwenden.
+
+**Sie existieren auch produktiv.** Der Seed ist dort irgendwann mitgelaufen:
+`manager@noir.club`, `tuer@noir.club`, `manager@velvet-hh.club`,
+`tuer@velvet-hh.club` und die fünf `@example.com`-Gäste sind auf
+`velvet-network.app` echte Logins mit öffentlich bekanntem Passwort. Seit dem
+24.08.2026 stehen sie samt ihrer Locations (Noir Club Berlin, Velvet Lounge
+Hamburg) alle auf `isDemo=1`, also in der Sandbox: Wer sich damit anmeldet,
+kann keinen echten Gast scannen, bewerten oder sperren, und nichts davon zählt
+irgendwo mit. Das ist der Grund, warum sie stehenbleiben dürfen — nicht, weil
+sie produktiv fehlen würden.
+
+Wird der Seed auf einer echten Datenbank erneut ausgeführt, sind die Konten
+wieder da und wieder auf `isDemo=0`. Danach also `npm run set-demo` hinterher
+(siehe „Test-Zugänge: die Sandbox-Welt" in [`deployment.md`](deployment.md)).
 
 **Staff (Dashboard, `/login`)**
 
@@ -143,8 +156,8 @@ umgekehrt. Warum das nötig ist und wie man es produktiv einrichtet, steht unter
 **Store-Reviewer** (`playstore-review@feif.space`,
 `staff-review@feif.space`) sind echte Produktions-Accounts für die
 Google-/Apple-Prüfer. Sie stehen absichtlich nicht im Seed; ihre Passwörter
-liegen in der Google Play Console bzw. App Store Connect. Sie gehören in die
-Sandbox — siehe oben.
+liegen in der Google Play Console bzw. App Store Connect. Beide sind seit dem
+24.08.2026 in der Sandbox — siehe oben.
 
 ## Rollen
 
