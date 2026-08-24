@@ -182,6 +182,42 @@ sind.
 Daneben gibt es das Flag `isPlatformAdmin` auf `StaffAccount` — unabhängig von
 der Venue-Rolle, schaltet die beiden Admin-Bereiche frei.
 
+## Wer darf freischalten (Platform-Admin)
+
+Freischalten darf kein bestimmter E-Mail-Absender, sondern jedes Staff-Konto mit
+dem Flag `isPlatformAdmin`. Es hängt am `StaffAccount`, ist unabhängig von der
+Venue-Rolle und schaltet drei Bereiche frei: `/admin/applications`
+(Bewerbungen), `/admin/venues` (Locations freigeben und stilllegen) und
+`/admin/hidden-venues`. Serverseitig hängt alles an `requirePlatformAdmin`
+(`server/src/middleware/auth.ts`), es gibt keine Liste erlaubter Adressen.
+
+Es können beliebig viele Konten das Flag haben. Nur: **eine Oberfläche zum
+Vergeben gibt es nicht** — es geht ausschließlich per Skript, und zwar dort, wo
+die jeweilige Datenbank liegt.
+
+In der Produktion (Datenbank auf `u8`):
+
+```bash
+ssh u8
+cd ~/velvet-api/server
+npm run set-platform-admin -- <email>        # vergeben
+npm run set-platform-admin -- <email> off    # entziehen
+```
+
+Lokal genügt `cd server && npm run set-platform-admin -- <email>`; das trifft
+dann die lokale SQLite-Datei.
+
+Zwei Dinge, die dabei leicht übersehen werden:
+
+- **Produktiv hat das Flag zurzeit genau ein Konto: `daniel.l@conct.de`.** Geht
+  der Zugang verloren, kommt niemand mehr an Bewerbungen und Freigaben — dann
+  hilft nur noch das Skript per SSH. Ein zweites Admin-Konto ist deshalb keine
+  schlechte Idee.
+- Das Flag allein reicht nicht zum Einloggen: Ein Staff-Konto ohne
+  Venue-Mitgliedschaft wird am Login mit `staffNoVenue` abgewiesen. Ein
+  Admin-Konto braucht also mindestens eine Location, an der es hängt — und sei
+  es die Sandbox.
+
 ## Wie eine Location reinkommt
 
 Zwei Wege, beide enden bei einer geprüften `Venue`:
