@@ -150,8 +150,22 @@ ungefährlich.
 drüberkopieren), dann **manuell** testen, bevor `systemctl` angefasst wird:
 `ssh u8 "cd velvet-api/server && node dist_new/src/index.js"` — ein
 `EADDRINUSE`-Fehler ist normal (der alte Prozess läuft ja noch) und bestätigt
-nur, dass der neue Code sauber startet. Danach `dist` → `dist.bak`,
-`dist_new` → `dist`, erst dann `systemctl --user restart velvet-api`.
+nur, dass der neue Code sauber startet. Danach tauschen, erst dann
+`systemctl --user restart velvet-api`:
+
+```bash
+cd ~/velvet-api/server
+mv dist dist.bak-$(date +%Y%m%d-%H%M)
+mv dist_new dist
+systemctl --user restart velvet-api
+```
+
+**Der Backup-Name braucht den Zeitstempel.** Mit dem festen Namen `dist.bak`
+geht das genau einmal gut: Beim zweiten Deploy existiert `dist.bak` schon, und
+`mv dist dist.bak` verschiebt dann nicht *nach* `dist.bak`, sondern *hinein* —
+`mv: cannot overwrite 'dist.bak/dist': Directory not empty`. Der Befehl bricht
+folgenlos ab (nichts wird verschoben, die alte API läuft weiter), aber der
+Deploy steht. Alte `dist.bak-*`-Verzeichnisse gelegentlich aufräumen.
 
 **`npm install` auf U8 kann Postinstall-Skripte stillschweigend blockieren**
 (`npm warn install-scripts` statt eines harten Fehlers) — betrifft u.a.
