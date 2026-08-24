@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { canManageVenue, canScanAndRate, type StaffRole } from "@velvet/shared";
 import { t } from "../lib/i18n";
 
 export interface AuthClaims {
   sub: string;
   type: "user" | "staff" | "staff-pending-venue";
   venueId?: string;
-  role?: "DOORMAN" | "MANAGER";
+  role?: StaffRole;
   isPlatformAdmin?: boolean;
 }
 
@@ -46,9 +47,22 @@ export function requireStaff(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+// Venue administration (team, settings, guest list, guest messaging). Only
+// MANAGER passes -- DOORMAN and SERVICE are door-level roles.
 export function requireManager(req: Request, res: Response, next: NextFunction) {
-  if (req.auth?.type !== "staff" || req.auth.role !== "MANAGER") {
+  if (req.auth?.type !== "staff" || !req.auth.role || !canManageVenue(req.auth.role)) {
     return res.status(403).json({ error: t(req.locale, "auth.managerOnly") });
+  }
+  next();
+}
+
+// Door-level work: scanning a guest QR and rating the visit. Every current
+// staff role may do this, but gating it explicitly (instead of on
+// requireStaff alone) keeps the capability tied to the role table in
+// packages/shared/src/types.ts rather than to "is logged in as staff".
+export function requireScanner(req: Request, res: Response, next: NextFunction) {
+  if (req.auth?.type !== "staff" || !req.auth.role || !canScanAndRate(req.auth.role)) {
+    return res.status(403).json({ error: t(req.locale, "auth.scanNotAllowed") });
   }
   next();
 }

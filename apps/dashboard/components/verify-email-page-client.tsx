@@ -14,7 +14,10 @@ export function VerifyEmailPageClient() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
   const [status, setStatus] = useState<Status>(token ? "verifying" : "error");
-  const [error, setError] = useState<string | null>(null);
+  // The raw failure rather than a ready-made message: the verification token
+  // is single-use, so this effect must not re-run just because the language
+  // changed -- which it would have to if it read a translation itself.
+  const [failure, setFailure] = useState<Error | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -23,11 +26,17 @@ export function VerifyEmailPageClient() {
         await apiFetch("/auth/verify-email", { method: "POST", body: { token } });
         setStatus("done");
       } catch (err) {
-        setError(err instanceof ApiError ? err.message : t.common.genericError);
+        setFailure(err instanceof Error ? err : new Error("verification failed"));
         setStatus("error");
       }
     })();
   }, [token]);
+
+  const failureMessage = failure
+    ? failure instanceof ApiError
+      ? failure.message
+      : t.common.genericError
+    : t.authFlow.invalidVerifyLink;
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
@@ -48,7 +57,7 @@ export function VerifyEmailPageClient() {
             </>
           )}
           {status === "error" && (
-            <p className="text-sm text-danger">{error ?? t.authFlow.invalidVerifyLink}</p>
+            <p className="text-sm text-danger">{failureMessage}</p>
           )}
         </div>
       </div>

@@ -9,6 +9,7 @@ import { QrCheckinExplainer } from "./qr-checkin-explainer";
 import { PremiumMatchExplainer } from "./premium-match-explainer";
 import { MultiVenueExplainer } from "./multi-venue-explainer";
 import { TrustScoreExplainer } from "./trust-score-explainer";
+import { DownloadSources } from "./download-sources";
 import { useAuth } from "../lib/auth-context";
 import { useLocale } from "../lib/locale-context";
 import { LanguageSwitcher } from "./language-switcher";
@@ -68,7 +69,6 @@ export function LandingPageClient() {
   const router = useRouter();
   const { ready, token } = useAuth();
   const { t } = useLocale();
-  const [showMobileOnlyNotice, setShowMobileOnlyNotice] = useState(false);
   const [activeExplainer, setActiveExplainer] = useState(0);
 
   useEffect(() => {
@@ -83,30 +83,17 @@ export function LandingPageClient() {
         <span className="font-heading text-lg tracking-[0.2em] text-gold">VELVET</span>
         <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher />
-          <a
-            href="https://web.velvet-network.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sm:hidden"
-          >
+          <a href="#app" className="sm:hidden">
             <button
-              aria-label="App"
+              aria-label={t.landing.downloadTitle}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-gold text-gold transition hover:bg-gold/10"
             >
               <AppIcon />
             </button>
           </a>
-          <a
-            href="https://web.velvet-network.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex md:hidden"
-          >
+          <a href="#app" className="hidden sm:inline-flex">
             <Button variant="outline">App</Button>
           </a>
-          <Button variant="outline" className="hidden md:inline-flex" onClick={() => setShowMobileOnlyNotice(true)}>
-            App
-          </Button>
           <Link href="/login" className="sm:hidden">
             <button
               aria-label={t.landing.ctaLogin}
@@ -120,24 +107,6 @@ export function LandingPageClient() {
           </Link>
         </div>
       </header>
-
-      {showMobileOnlyNotice && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6"
-          onClick={() => setShowMobileOnlyNotice(false)}
-        >
-          <div
-            className="w-full max-w-sm rounded-2xl border border-border bg-surface p-8 text-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="font-heading text-lg text-gold">{t.landing.mobileOnlyTitle}</p>
-            <p className="mt-3 text-sm text-text-muted">{t.landing.mobileOnlyBody}</p>
-            <Button className="mt-6" onClick={() => setShowMobileOnlyNotice(false)}>
-              {t.landing.mobileOnlyConfirm}
-            </Button>
-          </div>
-        </div>
-      )}
 
       <main className="mx-auto max-w-5xl px-6 md:px-10">
         {/* Hero */}
@@ -367,6 +336,14 @@ export function LandingPageClient() {
           </div>
         </section>
 
+        {/* Where to get the app */}
+        <section id="app" className="scroll-mt-20 border-t border-border py-20">
+          <p className="text-xs uppercase tracking-[0.18em] text-gold-muted">{t.landing.downloadEyebrow}</p>
+          <h2 className="mt-3 font-heading text-3xl text-text">{t.landing.downloadTitle}</h2>
+          <p className="mt-2 max-w-xl text-sm text-text-muted">{t.landing.downloadBody}</p>
+          <DownloadSources />
+        </section>
+
         {/* Closing */}
         <section className="border-t border-border py-20 text-center">
           <p className="text-xs uppercase tracking-[0.18em] text-gold-muted">{t.landing.closingEyebrow}</p>
@@ -391,6 +368,9 @@ export function LandingPageClient() {
           </Link>
           <Link href="/werbematerial" className="hover:text-text">
             {t.landing.footerWerbematerial}
+          </Link>
+          <Link href="/location-anmelden" className="hover:text-text">
+            {t.landing.footerApply}
           </Link>
         </span>
       </footer>

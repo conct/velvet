@@ -66,7 +66,11 @@ model StaffVenueMembership {
   id             String   @id @default(cuid())
   staffAccountId String
   venueId        String
-  role           String // "DOORMAN" | "MANAGER"
+  // "DOORMAN" | "MANAGER" | "SERVICE" -- see staffRolePermissions in
+  // packages/shared/src/types.ts for what each one may do. SERVICE is the
+  // slimmer role for bar/service staff at small locations: it may look guests
+  // up and scan/rate them like DOORMAN, but never manage the team.
+  role           String
   createdAt      DateTime @default(now())
 
   staffAccount StaffAccount @relation(fields: [staffAccountId], references: [id])
@@ -224,4 +228,35 @@ model ConnectionRequest {
   invitee User @relation("ConnectionInvitee", fields: [inviteeId], references: [id])
 
   @@unique([inviterId, inviteeId])
+}
+
+// A small bar/pub applying to join VELVET through the public self-service
+// form (apps/dashboard/app/location-anmelden) instead of being set up by
+// hand. Nothing here grants access on its own: the business-registration
+// document is reviewed by a platform admin, who then creates the actual
+// Venue and its first MANAGER account (see routes/admin.ts). The uploaded
+// document is deliberately NOT stored under server/uploads (that directory
+// is served publicly at /uploads) but under server/private-uploads, and is
+// only readable through the admin-only download route.
+model VenueApplication {
+  id             String    @id @default(cuid())
+  venueName      String
+  venueType      String // "CLUB" | "BAR" | "PUB" | "OTHER"
+  address        String    @db.Text
+  website        String?   @db.Text
+  contactName    String
+  contactEmail   String
+  contactPhone   String?
+  message        String?   @db.Text
+  documentName   String    @db.Text // original filename, for the admin list only
+  documentPath   String // filename inside server/private-uploads
+  documentMime   String
+  status         String    @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED"
+  reviewNote     String?   @db.Text
+  reviewedAt     DateTime?
+  reviewedById   String?
+  createdVenueId String?
+  createdAt      DateTime  @default(now())
+
+  @@index([status, createdAt])
 }

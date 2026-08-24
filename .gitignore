@@ -13,3 +13,11 @@ server/uploads/*
 .DS_Store
 .claude/scheduled_tasks.lock
 docs/play-store-listing.md
+
+# Uploaded business registrations from the public venue-application form.
+# Never served statically (see server/src/routes/venue-applications.ts).
+server/private-uploads/*
+!server/private-uploads/.gitkeep
+
+# Directly hosted Android APK -- uploaded by scp, never committed.
+apps/dashboard/public/app/*.apk

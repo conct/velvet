@@ -2,7 +2,7 @@ import { Router } from "express";
 import crypto from "crypto";
 import { z } from "zod";
 import { prisma } from "../db";
-import { requireAuth, requireStaff, requireUser } from "../middleware/auth";
+import { requireAuth, requireScanner, requireUser } from "../middleware/auth";
 import { qrVerifyRateLimit } from "../middleware/rateLimit";
 import { getUserTrust } from "../lib/trust";
 import { t } from "../lib/i18n";
@@ -52,7 +52,7 @@ qrRouter.post("/token", requireAuth, requireUser, async (req, res) => {
 
 const verifySchema = z.object({ code: z.string().trim() });
 
-qrRouter.post("/verify", requireAuth, requireStaff, qrVerifyRateLimit, async (req, res) => {
+qrRouter.post("/verify", requireAuth, requireScanner, qrVerifyRateLimit, async (req, res) => {
   const parsed = verifySchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
 
@@ -108,7 +108,7 @@ const confirmPhotoSchema = z.object({ entryLogId: z.string().min(1) });
 // server/src/lib/photo-verification.ts) -- actually confirming the photo
 // shows the person holding it happens here instead, in person, the first
 // time staff scans someone with an unconfirmed picture.
-qrRouter.post("/confirm-photo", requireAuth, requireStaff, async (req, res) => {
+qrRouter.post("/confirm-photo", requireAuth, requireScanner, async (req, res) => {
   const parsed = confirmPhotoSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
 

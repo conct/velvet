@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import type { StaffLoginResponse, StaffProfile, VenueSummary } from "@velvet/shared";
 import { apiFetch } from "./api";
 
@@ -19,6 +19,11 @@ export class NeedsVenueSelectionError extends Error {
   }
 }
 
+interface Session {
+  token: string;
+  staff: StaffProfile;
+}
+
 interface AuthState {
   ready: boolean;
   token: string | null;
@@ -31,28 +36,68 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
-  const [staff, setStaff] = useState<StaffProfile | null>(null);
+// The signed-in session lives in localStorage, i.e. outside React. Reading it
+// in an effect and calling setState renders the app once as signed out and
+// then again as signed in -- a cascading render, and the reason a separate
+// `ready` flag was needed to keep the layout from bouncing to /login in
+// between. Both are read through useSyncExternalStore instead: `ready` is
+// simply "are we past hydration", since that is exactly when the stored
+// session becomes readable.
+const listeners = new Set<() => void>();
 
-  useEffect(() => {
-    const raw = typeof window !== "undefined" ? localStorage.getItem(STORE_KEY) : null;
-    if (raw) {
-      const parsed = JSON.parse(raw) as { token: string; staff: StaffProfile };
-      setToken(parsed.token);
-      setStaff(parsed.staff);
-    }
-    setReady(true);
-  }, []);
+// getSnapshot must return the same reference until the session actually
+// changes, so the parsed session is held in memory rather than re-parsed on
+// every render.
+let loaded = false;
+let session: Session | null = null;
 
-  const applySession = (session: { token: string; staff: StaffProfile }) => {
-    localStorage.setItem(STORE_KEY, JSON.stringify(session));
-    setToken(session.token);
-    setStaff(session.staff);
+function subscribe(onStoreChange: () => void) {
+  listeners.add(onStoreChange);
+  return () => {
+    listeners.delete(onStoreChange);
   };
+}
 
-  const login = async (email: string, password: string) => {
+function getSession(): Session | null {
+  if (!loaded) {
+    loaded = true;
+    try {
+      const raw = window.localStorage.getItem(STORE_KEY);
+      session = raw ? (JSON.parse(raw) as Session) : null;
+    } catch {
+      // Unreadable or unparseable storage means "not signed in". This runs
+      // during render, so throwing here would take the whole dashboard down.
+      session = null;
+    }
+  }
+  return session;
+}
+
+function getServerSession(): Session | null {
+  return null;
+}
+
+function getReady() {
+  return true;
+}
+
+function getServerReady() {
+  return false;
+}
+
+function setSession(next: Session | null) {
+  loaded = true;
+  session = next;
+  if (next) window.localStorage.setItem(STORE_KEY, JSON.stringify(next));
+  else window.localStorage.removeItem(STORE_KEY);
+  for (const listener of listeners) listener();
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const ready = useSyncExternalStore(subscribe, getReady, getServerReady);
+  const current = useSyncExternalStore(subscribe, getSession, getServerSession);
+
+  const login = useCallback(async (email: string, password: string) => {
     const res = await apiFetch<StaffLoginResponse>("/auth/staff/login", {
       method: "POST",
       body: { email, password },
@@ -60,37 +105,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if ("needsVenueSelection" in res) {
       throw new NeedsVenueSelectionError(res.venues, res.preAuthToken);
     }
-    applySession(res);
-  };
+    setSession(res);
+  }, []);
 
-  const selectVenue = async (preAuthToken: string, venueId: string) => {
-    const res = await apiFetch<{ token: string; staff: StaffProfile }>("/auth/staff/select-venue", {
+  const selectVenue = useCallback(async (preAuthToken: string, venueId: string) => {
+    const res = await apiFetch<Session>("/auth/staff/select-venue", {
       method: "POST",
       token: preAuthToken,
       body: { venueId },
     });
-    applySession(res);
-  };
+    setSession(res);
+  }, []);
 
-  const switchVenue = async (venueId: string) => {
-    if (!token) return;
-    const res = await apiFetch<{ token: string; staff: StaffProfile }>("/auth/staff/switch-venue", {
-      method: "POST",
-      token,
-      body: { venueId },
-    });
-    applySession(res);
-  };
+  const switchVenue = useCallback(
+    async (venueId: string) => {
+      if (!current) return;
+      const res = await apiFetch<Session>("/auth/staff/switch-venue", {
+        method: "POST",
+        token: current.token,
+        body: { venueId },
+      });
+      setSession(res);
+    },
+    [current]
+  );
 
-  const logout = () => {
-    localStorage.removeItem(STORE_KEY);
-    setToken(null);
-    setStaff(null);
-  };
+  const logout = useCallback(() => setSession(null), []);
 
-  const value = useMemo(
-    () => ({ ready, token, staff, login, selectVenue, switchVenue, logout }),
-    [ready, token, staff]
+  const value = useMemo<AuthState>(
+    () => ({
+      ready,
+      token: current?.token ?? null,
+      staff: current?.staff ?? null,
+      login,
+      selectVenue,
+      switchVenue,
+      logout,
+    }),
+    [ready, current, login, selectVenue, switchVenue, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

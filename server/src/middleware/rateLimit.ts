@@ -25,3 +25,15 @@ export const qrVerifyRateLimit = rateLimit({
   legacyHeaders: false,
   message: (req: Request) => ({ error: t(req.locale, "auth.tooManyRequests") }),
 });
+
+// The public venue-application form is unauthenticated and accepts a file
+// upload, so it's the one endpoint where an anonymous caller can write to
+// disk. Deliberately much tighter than authRateLimit: a real bar owner fills
+// this in once, never five times an hour.
+export const venueApplicationRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: (req: Request) => ({ error: t(req.locale, "auth.tooManyRequests") }),
+});

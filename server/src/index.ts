@@ -11,6 +11,7 @@ import { subscriptionsRouter, stripeWebhookHandler } from "./routes/subscription
 import { messagesRouter } from "./routes/messages";
 import { adminRouter } from "./routes/admin";
 import { invitesRouter } from "./routes/invites";
+import { venueApplicationsRouter } from "./routes/venue-applications";
 import { localeMiddleware } from "./lib/i18n";
 
 // Only the actual browser-facing VELVET clients need cross-origin access;
@@ -71,6 +72,7 @@ app.use("/subscriptions", subscriptionsRouter);
 app.use("/messages", messagesRouter);
 app.use("/admin", adminRouter);
 app.use("/invites", invitesRouter);
+app.use("/venue-applications", venueApplicationsRouter);
 
 const port = Number(process.env.PORT ?? 4000);
 app.listen(port, () => {

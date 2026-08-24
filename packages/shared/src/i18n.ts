@@ -32,6 +32,7 @@ export interface Translations {
     settings: string;
     addVenue: string;
     reviewVenues: string;
+    reviewApplications: string;
     logout: string;
     openMenu: string;
   };
@@ -53,9 +54,6 @@ export interface Translations {
     heroBody: string;
     ctaLogin: string;
     ctaForTeam: string;
-    mobileOnlyTitle: string;
-    mobileOnlyBody: string;
-    mobileOnlyConfirm: string;
 
     heroEyebrow: string;
     heroCardVerified: string;
@@ -108,6 +106,15 @@ export interface Translations {
     statusBody: string;
     tierPath: { tier: string; body: string }[];
 
+    downloadEyebrow: string;
+    downloadTitle: string;
+    downloadBody: string;
+    downloadSources: {
+      ios: { title: string; body: string };
+      android: { title: string; body: string };
+      apk: { title: string; body: string };
+      web: { title: string; body: string };
+    };
     closingEyebrow: string;
     closingTitle: string;
 
@@ -115,12 +122,19 @@ export interface Translations {
     footerImpressum: string;
     footerDatenschutz: string;
     footerWerbematerial: string;
+    footerApply: string;
   };
   common: {
     genericError: string;
     loading: string;
     showPassword: string;
     hidePassword: string;
+  };
+  venueTypes: {
+    CLUB: string;
+    BAR: string;
+    PUB: string;
+    OTHER: string;
   };
   tiers: {
     VIP: string;
@@ -252,6 +266,7 @@ export interface Translations {
       colRole: string;
       roleManager: string;
       roleDoorman: string;
+      roleService: string;
       newMember: string;
       namePlaceholder: string;
       emailPlaceholder: string;
@@ -304,6 +319,63 @@ export interface Translations {
       selectConversation: string;
       loadHistoryFailed: string;
       sendFailed: string;
+    };
+    venueApplication: {
+      eyebrow: string;
+      title: string;
+      intro: string;
+      verifyTitle: string;
+      verifyBody: string;
+      sectionVenue: string;
+      sectionContact: string;
+      sectionDocument: string;
+      venueName: string;
+      venueType: string;
+      address: string;
+      website: string;
+      contactName: string;
+      contactEmail: string;
+      contactPhone: string;
+      message: string;
+      documentHint: string;
+      documentChoose: string;
+      documentNone: string;
+      privacyHint: string;
+      submit: string;
+      submitting: string;
+      submitFailed: string;
+      successTitle: string;
+      successBody: string;
+      backHome: string;
+    };
+    adminApplications: {
+      title: string;
+      subtitle: string;
+      adminOnly: string;
+      loadFailed: string;
+      pendingHeading: string;
+      decidedHeading: string;
+      nothingPending: string;
+      contactLabel: string;
+      websiteLabel: string;
+      messageLabel: string;
+      documentLabel: string;
+      openDocument: string;
+      opening: string;
+      openFailed: string;
+      approve: string;
+      approving: string;
+      approveFailed: string;
+      approveHint: string;
+      reject: string;
+      rejecting: string;
+      rejectFailed: string;
+      rejectReason: string;
+      rejectConfirm: string;
+      cancel: string;
+      statusApproved: string;
+      statusRejected: string;
+      reviewNoteLabel: string;
     };
     adminVenues: {
       title: string;
@@ -602,6 +674,7 @@ const de: Translations = {
     settings: "Einstellungen",
     addVenue: "Standort hinzufügen",
     reviewVenues: "Locations prüfen",
+    reviewApplications: "Bewerbungen",
     logout: "Abmelden",
     openMenu: "Menü öffnen",
   },
@@ -624,9 +697,6 @@ const de: Translations = {
       "VELVET ersetzt die Papierliste und das Bauchgefühl am Einlass durch ein Profil, das mitwächst: Gäste bauen sich eine Reputation auf, die über einen einzelnen Club hinausreicht. Türsteher sehen beim Scan sofort, wen sie vor sich haben. Betreiber schützen ihr Haus, ohne jeden Abend bei null anzufangen.",
     ctaLogin: "Anmelden",
     ctaForTeam: "Für Team & Management teilnehmender Locations",
-    mobileOnlyTitle: "Nur auf dem Handy",
-    mobileOnlyBody: "Die VELVET-App ist für Smartphones gebaut — ruf velvet-network.app einfach auf deinem Handy auf und starte die App von dort.",
-    mobileOnlyConfirm: "Verstanden",
 
     heroEyebrow: "Geteiltes Vertrauensnetzwerk für den Türstand",
     heroCardVerified: "Verifiziert am Einlass",
@@ -707,6 +777,16 @@ const de: Translations = {
       { tier: "BANNED", body: "Netzwerkweite Sperre. Ein Hausverbot an einem Standort ist an jeder Tür im Netzwerk sichtbar." },
     ],
 
+    downloadEyebrow: "Gast-App",
+    downloadTitle: "VELVET aufs Handy",
+    downloadBody:
+      "Dein Status, dein QR-Code am Einlass, deine Locations — such dir aus, woher du die App holst.",
+    downloadSources: {
+      ios: { title: "App Store", body: "Für iPhone und iPad." },
+      android: { title: "Google Play", body: "Für Android-Geräte." },
+      apk: { title: "APK direkt laden", body: "Ohne Play Store — Installation aus unbekannten Quellen erlauben." },
+      web: { title: "Im Browser öffnen", body: "Ohne Installation, funktioniert auf jedem Handy." },
+    },
     closingEyebrow: "VELVET",
     closingTitle: "Ein Türstand, der sich erinnert.",
 
@@ -714,12 +794,19 @@ const de: Translations = {
     footerImpressum: "Impressum",
     footerDatenschutz: "Datenschutz",
     footerWerbematerial: "Werbematerial",
+    footerApply: "Location anmelden",
   },
   common: {
     genericError: "Verbindung fehlgeschlagen",
     loading: "Lädt…",
     showPassword: "Passwort anzeigen",
     hidePassword: "Passwort verbergen",
+  },
+  venueTypes: {
+    CLUB: "Club",
+    BAR: "Bar",
+    PUB: "Kneipe/Pub",
+    OTHER: "Andere",
   },
   tiers: {
     VIP: "VIP",
@@ -851,6 +938,7 @@ const de: Translations = {
       colRole: "Rolle",
       roleManager: "Manager",
       roleDoorman: "Türsteher",
+      roleService: "Servicekraft",
       newMember: "Neues Teammitglied",
       namePlaceholder: "Name",
       emailPlaceholder: "E-Mail",
@@ -904,6 +992,67 @@ const de: Translations = {
       selectConversation: "Wähle links eine Unterhaltung oder einen Gast aus.",
       loadHistoryFailed: "Verlauf konnte nicht geladen werden",
       sendFailed: "Nachricht konnte nicht gesendet werden",
+    },
+    venueApplication: {
+      eyebrow: "Für Locations",
+      title: "Location bei VELVET anmelden",
+      intro:
+        "Club, Bar oder Kneipe — trag hier deine Location ein. Wir prüfen die Angaben von Hand und legen dich frei, sobald alles passt.",
+      verifyTitle: "Warum wir eine Gewerbeanmeldung brauchen",
+      verifyBody:
+        "VELVET-Locations sehen Gästeprofile und vergeben Bewertungen. Deshalb schalten wir nur echte Betriebe frei — die Gewerbeanmeldung ist unser Nachweis dafür. Sie wird nur intern geprüft und nie veröffentlicht.",
+      sectionVenue: "Deine Location",
+      sectionContact: "Ansprechpartner:in",
+      sectionDocument: "Nachweis",
+      venueName: "Name der Location",
+      venueType: "Art der Location",
+      address: "Adresse",
+      website: "Website oder Instagram (optional)",
+      contactName: "Vor- und Nachname",
+      contactEmail: "E-Mail-Adresse",
+      contactPhone: "Telefon (optional)",
+      message: "Kurz zu deiner Location (optional)",
+      documentHint: "Gewerbeanmeldung als PDF, JPEG oder PNG — maximal 10 MB.",
+      documentChoose: "Datei wählen",
+      documentNone: "Keine Datei gewählt",
+      privacyHint:
+        "Mit dem Absenden stimmst du zu, dass wir deine Angaben zur Prüfung speichern. Details in der Datenschutzerklärung.",
+      submit: "Bewerbung absenden",
+      submitting: "Wird gesendet…",
+      submitFailed: "Senden fehlgeschlagen",
+      successTitle: "Danke — wir haben deine Bewerbung",
+      successBody:
+        "Wir prüfen deine Angaben und die Gewerbeanmeldung und melden uns per E-Mail. Wenn alles passt, bekommst du einen Link, um dein Passwort zu setzen.",
+      backHome: "Zurück zur Startseite",
+    },
+    adminApplications: {
+      title: "Bewerbungen",
+      subtitle: "Self-Service-Anmeldungen prüfen: Gewerbeanmeldung ansehen, dann Location anlegen oder ablehnen.",
+      adminOnly: "Nur für Platform-Admins.",
+      loadFailed: "Laden fehlgeschlagen",
+      pendingHeading: "Wartet auf Prüfung",
+      decidedHeading: "Bereits entschieden",
+      nothingPending: "Nichts zu prüfen.",
+      contactLabel: "Kontakt",
+      websiteLabel: "Web",
+      messageLabel: "Nachricht",
+      documentLabel: "Gewerbeanmeldung",
+      openDocument: "Dokument öffnen",
+      opening: "Öffne…",
+      openFailed: "Dokument konnte nicht geöffnet werden",
+      approve: "Freigeben",
+      approving: "Gebe frei…",
+      approveFailed: "Freigabe fehlgeschlagen",
+      approveHint: "Legt die Location an und schickt dem Kontakt einen Link zum Passwort-Setzen.",
+      reject: "Ablehnen",
+      rejecting: "Lehne ab…",
+      rejectFailed: "Ablehnen fehlgeschlagen",
+      rejectReason: "Grund für die Absage (geht per E-Mail raus)",
+      rejectConfirm: "Absage senden",
+      cancel: "Abbrechen",
+      statusApproved: "Freigegeben",
+      statusRejected: "Abgelehnt",
+      reviewNoteLabel: "Notiz",
     },
     adminVenues: {
       title: "Locations prüfen",
@@ -1431,6 +1580,7 @@ const en: Translations = {
     settings: "Settings",
     addVenue: "Add Location",
     reviewVenues: "Review Locations",
+    reviewApplications: "Applications",
     logout: "Log out",
     openMenu: "Open menu",
   },
@@ -1453,9 +1603,6 @@ const en: Translations = {
       "VELVET replaces the paper list and gut feeling at the door with a profile that grows over time: guests build a reputation that carries beyond a single club. Doormen see who they're dealing with the moment they scan. Operators protect their venue without starting from zero every night.",
     ctaLogin: "Sign in",
     ctaForTeam: "For team & management of participating locations",
-    mobileOnlyTitle: "Mobile only",
-    mobileOnlyBody: "The VELVET app is built for smartphones — just open velvet-network.app on your phone and launch the app from there.",
-    mobileOnlyConfirm: "Got it",
 
     heroEyebrow: "Shared trust network for the door",
     heroCardVerified: "Verified at the door",
@@ -1536,6 +1683,16 @@ const en: Translations = {
       { tier: "BANNED", body: "Network-wide ban. A ban at one location is visible at every door in the network." },
     ],
 
+    downloadEyebrow: "Guest app",
+    downloadTitle: "Get VELVET on your phone",
+    downloadBody:
+      "Your status, your QR code at the door, your locations — pick where you'd like to get the app.",
+    downloadSources: {
+      ios: { title: "App Store", body: "For iPhone and iPad." },
+      android: { title: "Google Play", body: "For Android devices." },
+      apk: { title: "Download the APK", body: "Without the Play Store — you'll need to allow installs from unknown sources." },
+      web: { title: "Open in the browser", body: "No install needed, works on any phone." },
+    },
     closingEyebrow: "VELVET",
     closingTitle: "A door that remembers.",
 
@@ -1543,6 +1700,13 @@ const en: Translations = {
     footerImpressum: "Legal notice",
     footerDatenschutz: "Privacy",
     footerWerbematerial: "Promo material",
+    footerApply: "Register a location",
+  },
+  venueTypes: {
+    CLUB: "Club",
+    BAR: "Bar",
+    PUB: "Pub",
+    OTHER: "Other",
   },
   tiers: {
     VIP: "VIP",
@@ -1680,6 +1844,7 @@ const en: Translations = {
       colRole: "Role",
       roleManager: "Manager",
       roleDoorman: "Door staff",
+      roleService: "Service staff",
       newMember: "New team member",
       namePlaceholder: "Name",
       emailPlaceholder: "Email",
@@ -1733,6 +1898,67 @@ const en: Translations = {
       selectConversation: "Select a conversation or guest on the left.",
       loadHistoryFailed: "Couldn't load history",
       sendFailed: "Couldn't send message",
+    },
+    venueApplication: {
+      eyebrow: "For locations",
+      title: "Register your location with VELVET",
+      intro:
+        "Club, bar or pub — tell us about your location here. We review every application by hand and approve you once everything checks out.",
+      verifyTitle: "Why we ask for a business registration",
+      verifyBody:
+        "VELVET locations see guest profiles and hand out ratings, so we only approve real businesses. Your business registration is how we verify that. It is reviewed internally and never published.",
+      sectionVenue: "Your location",
+      sectionContact: "Contact person",
+      sectionDocument: "Proof",
+      venueName: "Location name",
+      venueType: "Type of location",
+      address: "Address",
+      website: "Website or Instagram (optional)",
+      contactName: "First and last name",
+      contactEmail: "Email address",
+      contactPhone: "Phone (optional)",
+      message: "A few words about your location (optional)",
+      documentHint: "Business registration as PDF, JPEG or PNG — 10 MB max.",
+      documentChoose: "Choose file",
+      documentNone: "No file selected",
+      privacyHint:
+        "By submitting you agree that we store your details for review. See the privacy policy for details.",
+      submit: "Send application",
+      submitting: "Sending…",
+      submitFailed: "Failed to send",
+      successTitle: "Thanks — we've got your application",
+      successBody:
+        "We'll review your details and your business registration and get back to you by email. If everything checks out, you'll get a link to set your password.",
+      backHome: "Back to the homepage",
+    },
+    adminApplications: {
+      title: "Applications",
+      subtitle: "Review self-service sign-ups: open the business registration, then create the location or reject it.",
+      adminOnly: "Platform admins only.",
+      loadFailed: "Failed to load",
+      pendingHeading: "Awaiting review",
+      decidedHeading: "Already decided",
+      nothingPending: "Nothing to review.",
+      contactLabel: "Contact",
+      websiteLabel: "Web",
+      messageLabel: "Message",
+      documentLabel: "Business registration",
+      openDocument: "Open document",
+      opening: "Opening…",
+      openFailed: "Could not open the document",
+      approve: "Approve",
+      approving: "Approving…",
+      approveFailed: "Failed to approve",
+      approveHint: "Creates the location and emails the contact a link to set their password.",
+      reject: "Reject",
+      rejecting: "Rejecting…",
+      rejectFailed: "Failed to reject",
+      rejectReason: "Reason for the rejection (this is emailed out)",
+      rejectConfirm: "Send rejection",
+      cancel: "Cancel",
+      statusApproved: "Approved",
+      statusRejected: "Rejected",
+      reviewNoteLabel: "Note",
     },
     adminVenues: {
       title: "Review locations",
@@ -2259,6 +2485,7 @@ const pl: Translations = {
     settings: "Ustawienia",
     addVenue: "Dodaj lokal",
     reviewVenues: "Sprawdź lokale",
+    reviewApplications: "Zgłoszenia",
     logout: "Wyloguj",
     openMenu: "Otwórz menu",
   },
@@ -2281,9 +2508,6 @@ const pl: Translations = {
       "VELVET zastępuje papierową listę i przeczucie przy wejściu profilem, który rośnie razem z gościem: goście budują reputację wykraczającą poza jeden klub. Ochrona od razu widzi przy skanowaniu, z kim ma do czynienia. Właściciele chronią swój lokal, nie zaczynając każdego wieczoru od zera.",
     ctaLogin: "Zaloguj się",
     ctaForTeam: "Dla zespołu i kierownictwa uczestniczących lokali",
-    mobileOnlyTitle: "Tylko na telefonie",
-    mobileOnlyBody: "Aplikacja VELVET jest stworzona na smartfony — otwórz po prostu velvet-network.app na swoim telefonie i uruchom aplikację stamtąd.",
-    mobileOnlyConfirm: "Rozumiem",
 
     heroEyebrow: "Wspólna sieć zaufania dla wejścia",
     heroCardVerified: "Zweryfikowano przy wejściu",
@@ -2364,6 +2588,16 @@ const pl: Translations = {
       { tier: "BANNED", body: "Blokada w całej sieci. Zakaz w jednym lokalu jest widoczny przy każdych drzwiach w sieci." },
     ],
 
+    downloadEyebrow: "Aplikacja dla gości",
+    downloadTitle: "VELVET na telefonie",
+    downloadBody:
+      "Twój status, kod QR przy wejściu, Twoje lokale — wybierz, skąd chcesz pobrać aplikację.",
+    downloadSources: {
+      ios: { title: "App Store", body: "Na iPhone'a i iPada." },
+      android: { title: "Google Play", body: "Na urządzenia z Androidem." },
+      apk: { title: "Pobierz plik APK", body: "Bez Sklepu Play — trzeba zezwolić na instalację z nieznanych źródeł." },
+      web: { title: "Otwórz w przeglądarce", body: "Bez instalacji, działa na każdym telefonie." },
+    },
     closingEyebrow: "VELVET",
     closingTitle: "Wejście, które pamięta.",
 
@@ -2371,6 +2605,13 @@ const pl: Translations = {
     footerImpressum: "Nota prawna",
     footerDatenschutz: "Prywatność",
     footerWerbematerial: "Materiały reklamowe",
+    footerApply: "Zgłoś lokal",
+  },
+  venueTypes: {
+    CLUB: "Klub",
+    BAR: "Bar",
+    PUB: "Pub",
+    OTHER: "Inne",
   },
   tiers: {
     VIP: "VIP",
@@ -2508,6 +2749,7 @@ const pl: Translations = {
       colRole: "Rola",
       roleManager: "Menedżer",
       roleDoorman: "Ochrona",
+      roleService: "Obsługa",
       newMember: "Nowy członek zespołu",
       namePlaceholder: "Imię",
       emailPlaceholder: "E-mail",
@@ -2561,6 +2803,67 @@ const pl: Translations = {
       selectConversation: "Wybierz rozmowę lub gościa po lewej.",
       loadHistoryFailed: "Nie udało się załadować historii",
       sendFailed: "Nie udało się wysłać wiadomości",
+    },
+    venueApplication: {
+      eyebrow: "Dla lokali",
+      title: "Zgłoś swój lokal do VELVET",
+      intro:
+        "Klub, bar albo pub — wpisz tutaj swój lokal. Sprawdzamy każde zgłoszenie ręcznie i zatwierdzamy je, gdy wszystko się zgadza.",
+      verifyTitle: "Dlaczego prosimy o wpis do ewidencji działalności",
+      verifyBody:
+        "Lokale w VELVET widzą profile gości i wystawiają oceny, więc zatwierdzamy tylko prawdziwe firmy. Dokument rejestracyjny jest dla nas potwierdzeniem. Sprawdzamy go wewnętrznie i nigdy nie publikujemy.",
+      sectionVenue: "Twój lokal",
+      sectionContact: "Osoba kontaktowa",
+      sectionDocument: "Potwierdzenie",
+      venueName: "Nazwa lokalu",
+      venueType: "Rodzaj lokalu",
+      address: "Adres",
+      website: "Strona lub Instagram (opcjonalnie)",
+      contactName: "Imię i nazwisko",
+      contactEmail: "Adres e-mail",
+      contactPhone: "Telefon (opcjonalnie)",
+      message: "Kilka słów o lokalu (opcjonalnie)",
+      documentHint: "Dokument rejestracyjny jako PDF, JPEG lub PNG — maksymalnie 10 MB.",
+      documentChoose: "Wybierz plik",
+      documentNone: "Nie wybrano pliku",
+      privacyHint:
+        "Wysyłając zgłoszenie zgadzasz się na przechowywanie danych do weryfikacji. Szczegóły w polityce prywatności.",
+      submit: "Wyślij zgłoszenie",
+      submitting: "Wysyłanie…",
+      submitFailed: "Nie udało się wysłać",
+      successTitle: "Dziękujemy — zgłoszenie dotarło",
+      successBody:
+        "Sprawdzimy Twoje dane i dokument rejestracyjny, a potem odezwiemy się mailem. Jeśli wszystko się zgadza, dostaniesz link do ustawienia hasła.",
+      backHome: "Powrót na stronę główną",
+    },
+    adminApplications: {
+      title: "Zgłoszenia",
+      subtitle: "Sprawdzaj zgłoszenia self-service: otwórz dokument rejestracyjny, potem utwórz lokal albo odrzuć.",
+      adminOnly: "Tylko dla administratorów platformy.",
+      loadFailed: "Nie udało się załadować",
+      pendingHeading: "Czeka na weryfikację",
+      decidedHeading: "Już rozpatrzone",
+      nothingPending: "Nic do sprawdzenia.",
+      contactLabel: "Kontakt",
+      websiteLabel: "Web",
+      messageLabel: "Wiadomość",
+      documentLabel: "Dokument rejestracyjny",
+      openDocument: "Otwórz dokument",
+      opening: "Otwieranie…",
+      openFailed: "Nie udało się otworzyć dokumentu",
+      approve: "Zatwierdź",
+      approving: "Zatwierdzanie…",
+      approveFailed: "Nie udało się zatwierdzić",
+      approveHint: "Tworzy lokal i wysyła kontaktowi link do ustawienia hasła.",
+      reject: "Odrzuć",
+      rejecting: "Odrzucanie…",
+      rejectFailed: "Nie udało się odrzucić",
+      rejectReason: "Powód odmowy (zostanie wysłany mailem)",
+      rejectConfirm: "Wyślij odmowę",
+      cancel: "Anuluj",
+      statusApproved: "Zatwierdzone",
+      statusRejected: "Odrzucone",
+      reviewNoteLabel: "Notatka",
     },
     adminVenues: {
       title: "Weryfikacja lokali",
@@ -3088,6 +3391,7 @@ const es: Translations = {
     settings: "Ajustes",
     addVenue: "Añadir local",
     reviewVenues: "Revisar locales",
+    reviewApplications: "Solicitudes",
     logout: "Cerrar sesión",
     openMenu: "Abrir menú",
   },
@@ -3110,9 +3414,6 @@ const es: Translations = {
       "VELVET sustituye la lista de papel y el instinto en la puerta por un perfil que crece con el tiempo: los invitados construyen una reputación que va más allá de un solo club. El personal de seguridad ve al instante con quién trata al escanear. Los propietarios protegen su local sin empezar de cero cada noche.",
     ctaLogin: "Iniciar sesión",
     ctaForTeam: "Para el equipo y la dirección de los locales participantes",
-    mobileOnlyTitle: "Solo en el móvil",
-    mobileOnlyBody: "La app de VELVET está hecha para smartphones — abre velvet-network.app en tu móvil e inicia la app desde ahí.",
-    mobileOnlyConfirm: "Entendido",
 
     heroEyebrow: "Red de confianza compartida para la puerta",
     heroCardVerified: "Verificado en la puerta",
@@ -3193,6 +3494,16 @@ const es: Translations = {
       { tier: "BANNED", body: "Veto en toda la red. Un veto en un local es visible en cada puerta de la red." },
     ],
 
+    downloadEyebrow: "App para invitados",
+    downloadTitle: "VELVET en tu móvil",
+    downloadBody:
+      "Tu estado, tu código QR en la puerta, tus locales — elige desde dónde quieres conseguir la app.",
+    downloadSources: {
+      ios: { title: "App Store", body: "Para iPhone y iPad." },
+      android: { title: "Google Play", body: "Para dispositivos Android." },
+      apk: { title: "Descargar el APK", body: "Sin Play Store — hay que permitir instalaciones de origen desconocido." },
+      web: { title: "Abrir en el navegador", body: "Sin instalar nada, funciona en cualquier móvil." },
+    },
     closingEyebrow: "VELVET",
     closingTitle: "Una puerta que recuerda.",
 
@@ -3200,6 +3511,13 @@ const es: Translations = {
     footerImpressum: "Aviso legal",
     footerDatenschutz: "Privacidad",
     footerWerbematerial: "Material promocional",
+    footerApply: "Registrar un local",
+  },
+  venueTypes: {
+    CLUB: "Club",
+    BAR: "Bar",
+    PUB: "Pub",
+    OTHER: "Otro",
   },
   tiers: {
     VIP: "VIP",
@@ -3337,6 +3655,7 @@ const es: Translations = {
       colRole: "Rol",
       roleManager: "Encargado",
       roleDoorman: "Seguridad",
+      roleService: "Personal de servicio",
       newMember: "Nuevo miembro del equipo",
       namePlaceholder: "Nombre",
       emailPlaceholder: "Correo",
@@ -3390,6 +3709,67 @@ const es: Translations = {
       selectConversation: "Selecciona una conversación o invitado a la izquierda.",
       loadHistoryFailed: "No se pudo cargar el historial",
       sendFailed: "No se pudo enviar el mensaje",
+    },
+    venueApplication: {
+      eyebrow: "Para locales",
+      title: "Registra tu local en VELVET",
+      intro:
+        "Club, bar o pub — cuéntanos aquí sobre tu local. Revisamos cada solicitud a mano y te damos de alta en cuanto todo encaje.",
+      verifyTitle: "Por qué pedimos el alta de actividad",
+      verifyBody:
+        "Los locales de VELVET ven perfiles de invitados y ponen valoraciones, así que solo aprobamos negocios reales. El alta de actividad es nuestra prueba. Se revisa internamente y nunca se publica.",
+      sectionVenue: "Tu local",
+      sectionContact: "Persona de contacto",
+      sectionDocument: "Justificante",
+      venueName: "Nombre del local",
+      venueType: "Tipo de local",
+      address: "Dirección",
+      website: "Web o Instagram (opcional)",
+      contactName: "Nombre y apellidos",
+      contactEmail: "Correo electrónico",
+      contactPhone: "Teléfono (opcional)",
+      message: "Unas palabras sobre tu local (opcional)",
+      documentHint: "Alta de actividad en PDF, JPEG o PNG — máximo 10 MB.",
+      documentChoose: "Elegir archivo",
+      documentNone: "Ningún archivo elegido",
+      privacyHint:
+        "Al enviar aceptas que guardemos tus datos para revisarlos. Más detalles en la política de privacidad.",
+      submit: "Enviar solicitud",
+      submitting: "Enviando…",
+      submitFailed: "Error al enviar",
+      successTitle: "Gracias — hemos recibido tu solicitud",
+      successBody:
+        "Revisaremos tus datos y el alta de actividad y te escribiremos por correo. Si todo encaja, recibirás un enlace para establecer tu contraseña.",
+      backHome: "Volver al inicio",
+    },
+    adminApplications: {
+      title: "Solicitudes",
+      subtitle: "Revisa las altas por autoservicio: abre el alta de actividad y luego crea el local o recházalo.",
+      adminOnly: "Solo para administradores de la plataforma.",
+      loadFailed: "Error al cargar",
+      pendingHeading: "Pendiente de revisión",
+      decidedHeading: "Ya resueltas",
+      nothingPending: "Nada que revisar.",
+      contactLabel: "Contacto",
+      websiteLabel: "Web",
+      messageLabel: "Mensaje",
+      documentLabel: "Alta de actividad",
+      openDocument: "Abrir documento",
+      opening: "Abriendo…",
+      openFailed: "No se pudo abrir el documento",
+      approve: "Aprobar",
+      approving: "Aprobando…",
+      approveFailed: "Error al aprobar",
+      approveHint: "Crea el local y envía al contacto un enlace para establecer su contraseña.",
+      reject: "Rechazar",
+      rejecting: "Rechazando…",
+      rejectFailed: "Error al rechazar",
+      rejectReason: "Motivo del rechazo (se envía por correo)",
+      rejectConfirm: "Enviar rechazo",
+      cancel: "Cancelar",
+      statusApproved: "Aprobado",
+      statusRejected: "Rechazado",
+      reviewNoteLabel: "Nota",
     },
     adminVenues: {
       title: "Revisar locales",

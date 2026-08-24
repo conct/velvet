@@ -228,6 +228,56 @@ Passwort-Hashes migrieren nicht, d.h. bei einem Neuaufbau werden zwangsläufig
 neue Passwörter fällig, die dann in Google Play Console und App Store
 Connect nachgetragen werden müssen.
 
+## Location-Bewerbungen und `server/private-uploads/`
+
+Kleine Locations (Bars, Kneipen) melden sich selbst über das öffentliche
+Formular `/location-anmelden` an und laden dabei ihre Gewerbeanmeldung hoch.
+Freigegeben wird **nie automatisch**: ein Platform-Admin sieht die Bewerbung
+unter `/admin/applications`, öffnet das Dokument, und erst ein Klick auf
+"Freigeben" legt die `Venue` (direkt als `VERIFIED`) plus einen
+MANAGER-`StaffAccount` für die Kontaktperson an. Der Account bekommt kein
+Passwort per Mail, sondern einen Link zum Selbst-Setzen (derselbe
+`PasswordResetToken`-Mechanismus wie "Passwort vergessen", eine Stunde
+gültig). Existiert die E-Mail schon als Staff-Account, wird nur eine
+MANAGER-Mitgliedschaft ergänzt und keine Mail verschickt.
+
+**Die hochgeladenen Dokumente liegen bewusst nicht in `server/uploads/`.**
+Dieses Verzeichnis wird in `server/src/index.ts` per `express.static` unter
+`/uploads` öffentlich ausgeliefert — eine Gewerbeanmeldung dort wäre für
+jede:n lesbar, der den Dateinamen kennt. Sie landen stattdessen in
+`server/private-uploads/`, das nirgends statisch gemountet ist; der einzige
+Weg heraus ist die Admin-Route
+`GET /admin/venue-applications/:id/document`. Beim Deploy heißt das:
+
+- Das Verzeichnis muss auf dem Server existieren und dem API-User gehören
+  (`mkdir -p ~/velvet-api/private-uploads`) — der Prozess legt es sonst beim
+  ersten Upload selbst an, aber nur wenn er Schreibrechte im Projektordner hat.
+- Es gehört ins Backup neben dem MySQL-Dump; die Datenbank enthält nur den
+  Dateinamen, nicht das Dokument.
+- Bei einer Absage wird die Datei gelöscht, die Entscheidung samt Grund
+  bleibt auf der `VenueApplication`-Zeile stehen.
+
+Das Schema-Update ist rein additiv (neue Tabelle `VenueApplication`), also ein
+normaler `prisma db push` ohne `--accept-data-loss`.
+
+## Rollen im Staff-Bereich
+
+`StaffVenueMembership.role` kennt drei Werte, die Berechtigungstabelle dazu
+steht an einer Stelle: `staffRolePermissions` in
+`packages/shared/src/types.ts`. Server (`requireManager`/`requireScanner` in
+`server/src/middleware/auth.ts`) und Dashboard lesen beide daraus.
+
+| Rolle | Gäste ansehen | Scannen/Bewerten | Team & Einstellungen |
+| --- | --- | --- | --- |
+| `MANAGER` | ja | ja | ja |
+| `DOORMAN` | ja | ja | nein |
+| `SERVICE` | ja | ja | nein |
+
+`SERVICE` ist die schlankere Rolle für Bar-/Servicepersonal an kleinen
+Locations. Sie kann heute dasselbe wie `DOORMAN` und ist trotzdem eine eigene
+Rolle, damit die Teamliste ehrlich bleibt (wer steht an der Tür, wer hinterm
+Tresen) und die Rechte später getrennt verschoben werden können.
+
 ## Personalisiertes E-Mail-Relay
 
 Jede:r Gast hat eine opake `<inviteCode>@velvet-network.app`-Adresse
@@ -265,6 +315,57 @@ also bei einem Hosting-Wechsel neu prüfen.
 serverseitig greifen — direkt danach getestete SMTP-Auth kann kurz mit `535
 Authentication failed` fehlschlagen, obwohl das Passwort korrekt ist. Vor
 einem erneuten Reset lieber 10-15s warten und nochmal testen.
+
+## Download-Quellen der Gast-App
+
+Welche Bezugsquellen die Landingpage unter `/#app` anzeigt, steht an genau
+einer Stelle: `apps/dashboard/lib/app-downloads.ts`. Die Seite rendert nur
+konfigurierte Quellen, eine nicht freigeschaltete Listing-URL wird also nie
+als toter Link ausgeliefert.
+
+- **App Store:** braucht die numerische Apple-ID (App Store Connect →
+  App-Informationen → Allgemein → Apple-ID) in `APPLE_APP_ID`. Es gibt keinen
+  Apple-Link ohne diese ID, deshalb bleibt die Kachel bis dahin ausgeblendet.
+- **Google Play:** die URL ergibt sich aus `android.package` in
+  `apps/mobile/app.json`, es ist nichts nachzuschlagen. `ANDROID_LISTING_LIVE`
+  auf `true` setzen, sobald das Listing öffentlich ist.
+- **Web-App:** immer sichtbar, damit der Abschnitt nie leer ist.
+
+### APK direkt anbieten
+
+Das `preview`-Profil in `apps/mobile/eas.json` baut bereits ein APK (das
+`production`-Profil dagegen ein App Bundle, das sich nicht installieren
+lässt):
+
+```bash
+cd apps/mobile
+eas build -p android --profile preview
+```
+
+Die fertige Datei herunterladen und wie die Werbematerial-PDFs per `scp` nach
+`apps/dashboard/public/app/velvet-<version>.apk` hochladen — **nicht ins Git**,
+sie ist zweistellig megabytegroß und ändert sich mit jedem Release
+(`apps/dashboard/public/app/*.apk` steht deshalb in `.gitignore`, das
+Verzeichnis selbst liegt mit einer `.gitkeep` bereits im Repo). Danach
+`APK_FILE` in `app-downloads.ts` auf Pfad und Version setzen und das Dashboard
+neu deployen. Ist gerade kein aktuelles APK hochgeladen, `APK_FILE` wieder auf
+`null` setzen, damit die Kachel verschwindet statt zu 404en.
+
+Drei Dinge, die dabei bekannt sein müssen:
+
+1. **Derselbe Signaturschlüssel wie im Play Store.** Android verweigert ein
+   Update zwischen unterschiedlich signierten Builds — wer das APK installiert
+   hat, müsste die App deinstallieren (und verliert die lokale Session), um
+   später auf die Play-Version zu wechseln. Also dieselben EAS-Credentials
+   benutzen, nicht neu generieren lassen.
+2. **Keine automatischen Updates.** Ein sideloadetes APK aktualisiert sich
+   nie von selbst. Bei einer Pflicht-Änderung an der API bleibt es auf dem
+   alten Stand — also entweder aktuell halten oder bewusst als Notlösung
+   kommunizieren.
+3. **Warnhinweise sind normal.** Der Browser warnt beim Download, Android
+   verlangt „Installation aus unbekannten Quellen erlauben", und Play Protect
+   zeigt beim Installieren einen Hinweis. Das lässt sich nicht abstellen; der
+   Text auf der Kachel weist vorab darauf hin.
 
 ## Native Android-Build
 

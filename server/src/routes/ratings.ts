@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { z } from "zod";
 import { prisma } from "../db";
-import { requireAuth, requireStaff } from "../middleware/auth";
+import { requireAuth, requireScanner } from "../middleware/auth";
 import { t } from "../lib/i18n";
 
 export const ratingsRouter = Router();
 
-ratingsRouter.get("/pending", requireAuth, requireStaff, async (req, res) => {
+ratingsRouter.get("/pending", requireAuth, requireScanner, async (req, res) => {
   const since = new Date(Date.now() - 6 * 60 * 60 * 1000);
   const entries = await prisma.entryLog.findMany({
     where: { venueId: req.auth!.venueId, rated: false, scannedAt: { gte: since } },
@@ -35,7 +35,7 @@ const createRatingSchema = z.object({
 
 // Ratings are always anchored to an EntryLog (a real scanned visit) rather than
 // a client-supplied userId — staff never need to hold a raw user id to rate someone.
-ratingsRouter.post("/", requireAuth, requireStaff, async (req, res) => {
+ratingsRouter.post("/", requireAuth, requireScanner, async (req, res) => {
   const parsed = createRatingSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { entryLogId, stars, tags, note, setLocalFlag } = parsed.data;

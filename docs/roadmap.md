@@ -14,29 +14,7 @@ die Routine sucht nach genau diesen Begriffen.)
 
 ## Open
 
-### Kleine Bars/Pubs unterstützen
-**Status:** blocked — braucht zuerst eine Produktentscheidung.
-
-VELVET soll nicht nur für Clubs, sondern auch kleinere Locations (Bars, Pubs) nutzbar
-sein. Bisher nur als Idee genannt, nicht spezifiziert: wie eine kleine Bar überhaupt in
-die Plattform kommt (vermutlich über bestehende Nutzer, die "ihre Stammkneipe
-mitbringen", ähnlich einem Self-Service-Venue-Flow), und ob das eigene Anpassungen am
-Venue-Model braucht.
-
-**Offene Frage an Daniel:** Wie soll der Onboarding-Weg für eine kleine Bar konkret
-aussehen — Self-Service-Formular durch einen Gast, oder weiterhin nur durch euch
-angelegt?
-
-### Neue Rolle "Servicekräfte"
-**Status:** blocked — braucht zuerst eine Produktentscheidung.
-
-Eigene, schlankere Rolle für Bar-/Servicepersonal an kleinen Locations, getrennt von
-`DOORMAN`/`MANAGER` (siehe `StaffVenueMembership.role` in `server/prisma/schema.prisma`
-und `server/prisma/mysql/schema.prisma`). Hängt an "Kleine Bars/Pubs unterstützen" oben.
-
-**Offene Frage an Daniel:** Welche Berechtigungen soll diese Rolle genau haben — nur
-Profile ansehen, auch QR-Scans/Bewertungen wie `DOORMAN`, oder auch Team-Verwaltung wie
-`MANAGER`?
+_Aktuell nichts offen._
 
 ## Done
 
@@ -53,6 +31,15 @@ Profile ansehen, auch QR-Scans/Bewertungen wie `DOORMAN`, oder auch Team-Verwalt
   `.well-known/assetlinks.json`) live seit 2026-08-24. **Wirkt aber erst nach
   einem neuen `eas build` + Store-Review** — bewusst zurückgestellt auf den
   nächsten Release-Durchlauf, nicht isoliert dafür released.
+- ~~Kleine Bars/Pubs unterstützen~~ — Entscheidung von Daniel (2026-08-24):
+  Self-Service-Formular, aber mit Verifizierung per Gewerbeanmeldung; angelegt wird
+  die Location weiterhin von uns. Umgesetzt als öffentliches Formular
+  `/location-anmelden` + Admin-Prüfung unter `/admin/applications`, siehe
+  "Location-Bewerbungen" in `docs/deployment.md`.
+- ~~Neue Rolle "Servicekräfte"~~ — Entscheidung von Daniel (2026-08-24): darf Profile
+  ansehen und Scans/Bewertungen vornehmen, keine Team-Verwaltung. Umgesetzt als Rolle
+  `SERVICE`; die Berechtigungstabelle steht in `packages/shared/src/types.ts`
+  (`staffRolePermissions`).
 
 ## Neue Punkte hinzufügen
 
