@@ -78,7 +78,7 @@ Kein automatisiertes Deployment — Builds werden lokal erzeugt und per
    `server/{package.json,dist,src,scripts,prisma}` nach `~/velvet-api/` auf
    `u8`. **`scripts/` gehört ausdrücklich dazu** — die `tsx`-basierten
    Einmal-Skripte (`set-demo`, `sandbox-staff`, `unhide-venue`,
-   `send-email`, `set-platform-admin`) liegen dort, nicht in `src/`. Fehlen
+   `send-email`, `set-platform-admin`, `create-staff-account`) liegen dort, nicht in `src/`. Fehlen
    sie, scheitert jeder `npm run <skript>` auf dem Server mit
    `ERR_MODULE_NOT_FOUND`, obwohl die API selbst tadellos läuft. `src/` wird
    zusätzlich gebraucht, weil die Skripte von dort importieren. `npm install` auf dem Server (volle Installation, nicht
@@ -397,6 +397,39 @@ steht an einer Stelle: `staffRolePermissions` in
 Locations. Sie kann heute dasselbe wie `DOORMAN` und ist trotzdem eine eigene
 Rolle, damit die Teamliste ehrlich bleibt (wer steht an der Tür, wer hinterm
 Tresen) und die Rechte später getrennt verschoben werden können.
+
+## Ausgesperrt: Staff-Konto per Kommandozeile anlegen
+
+Neue Staff-Konten entstehen normalerweise im Dashboard unter *Team*. Das geht
+über `POST /venues/me/staff` und setzt voraus, dass jemand als `MANAGER`
+dieser Location eingeloggt ist. Geht genau dieses letzte Konto verloren, ist
+der Weg zu — und `set-platform-admin` hilft nicht, weil es ein bereits
+existierendes Konto braucht. Für den Fall gibt es die Hintertür:
+
+```bash
+cd ~/velvet-api/server
+npm run create-staff-account -- <email> "<Name>" <venue-slug> [MANAGER|DOORMAN|SERVICE] [--admin]
+```
+
+Rolle ist ohne Angabe `MANAGER`. Ein falscher Slug beantwortet sich selbst —
+das Skript listet dann alle vorhandenen auf.
+
+Ein paar bewusste Entscheidungen dahinter:
+
+- **Das Passwort wird erzeugt, nicht übergeben.** Ein Passwort als Argument
+  landet in der Shell-History und ist in `ps` für jeden auf dem Server
+  sichtbar. Es wird einmal ausgegeben und ist danach nicht mehr auslesbar
+  (in der Datenbank steht nur der bcrypt-Hash). Nach dem ersten Login über
+  „Passwort vergessen" ändern.
+- **Es wird keine E-Mail verschickt.** Wer ausgesperrt ist, sollte sich nicht
+  auch noch darauf verlassen müssen, dass SMTP gerade läuft.
+- **`isDemo` wird von der Location geerbt.** Ein echter Login in einer
+  Sandbox-Location (oder umgekehrt) könnte niemanden scannen — siehe
+  „Test-Zugänge" weiter unten.
+- **`--admin` wird an einer Sandbox-Location abgelehnt.** `isPlatformAdmin`
+  kennt keine Welten: `requirePlatformAdmin` prüft nur das Flag. Ein
+  Sandbox-Konto mit `--admin` könnte also echte Location-Bewerbungen
+  freigeben und echte Gewerbeanmeldungen herunterladen.
 
 ## Personalisiertes E-Mail-Relay
 
