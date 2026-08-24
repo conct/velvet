@@ -67,10 +67,63 @@ Stripe- und PayPal-Zugangsdaten sind Live-Zahlungsanbieter-Credentials und
 wurden 1:1 vom alten Server übernommen (nicht rotiert) — anders als
 JWT/SMTP/DB sind das keine host-spezifischen Secrets.
 
-## Deploy-Ablauf (manuell, kein CI/CD)
+## Automatisiertes Deployment (GitHub Actions, self-hosted Runner)
 
-Kein automatisiertes Deployment — Builds werden lokal erzeugt und per
-`scp`/`tar` auf den Server kopiert:
+Seit 2026-08-24 läuft der Deploy-Ablauf unten (Backend, Dashboard,
+Mobile-Web) automatisiert über `.github/workflows/deploy.yml`, ausgeführt
+von einem **self-hosted GitHub-Actions-Runner, der dauerhaft auf U8 selbst
+läuft** — kein SSH von außen nötig, der Runner holt sich seine Jobs aktiv
+bei GitHub ab (ausgehende Verbindung). Jeder Push auf `master` löst
+automatisch Build + Deploy für alle drei Ziele aus.
+
+**Bewusst weiterhin manuell** (der Workflow greift hier nicht ein):
+- Destruktive Schema-Änderungen (Spalten droppen/umbenennen) — der Workflow
+  pusht nur additiv (kein `--accept-data-loss`) und **bricht bei einer
+  destruktiven Änderung ab**. Die zweistufige Prozedur weiter unten
+  ("Schema-Änderungen mit Data Loss") bleibt Handarbeit.
+- Native Mobile-Builds (`eas build`/`eas submit`) und alles Store-seitige.
+- `apps/dashboard/public/material/` (Werbematerial-PDFs, `chmod 500`) und das
+  sideloadbare APK — beide werden vom Workflow bewusst ausgenommen
+  (`rsync --exclude`), damit ein normaler Deploy sie nicht anfasst.
+- Erstmaliges Anlegen neuer `.env`-Werte auf dem Server (neue Secrets landen
+  nicht automatisch, nur bereits vorhandene `.env`-Dateien werden weiter
+  benutzt).
+
+**Einmaliges Setup des Runners auf U8** (per SSH, von einer Session mit
+Server-Zugriff auszuführen — nicht von hier aus möglich, siehe unten):
+
+```bash
+ssh u8
+mkdir -p ~/actions-runner && cd ~/actions-runner
+# Aktuelle Version/URL: https://github.com/conct/velvet/settings/actions/runners/new
+curl -o actions-runner.tar.gz -L <URL von der obigen Seite>
+tar xzf actions-runner.tar.gz
+# Registrierungs-Token von derselben Seite (läuft nach kurzer Zeit ab, direkt
+# im Anschluss verwenden):
+./config.sh --url https://github.com/conct/velvet --token <TOKEN> \
+  --labels uberspace --name u8-velvet --unattended
+./svc.sh install
+./svc.sh start
+```
+
+`./svc.sh install` richtet den Runner als `systemctl --user`-Service ein —
+genau wie `velvet-api`/`velvet-dashboard`/`velvet-app`, läuft also im selben
+Modell weiter. Zusätzlich muss der Runner-User dieselben Tools wie beim
+bisherigen manuellen Deploy zur Verfügung haben: Node 22, `rsync`. Node wird
+zusätzlich vom Workflow selbst über `actions/setup-node` bereitgestellt.
+
+**Wichtig, bevor der erste automatische Deploy vertraut wird:** Dieser
+Workflow wurde aus dem manuellen Ablauf unten abgeleitet, konnte aber nie
+gegen den echten Server getestet werden (aus der Umgebung, die ihn geschrieben
+hat, ist U8 über SSH/Port 22 gar nicht erreichbar). Die Pfadannahmen
+(`~/velvet-api`, `~/velvet-dashboard`, `~/html/velvet-app`) stammen aus den
+Beschreibungen unten — vor dem ersten scharfen Push den ersten Lauf in den
+GitHub-Actions-Logs beobachten und bei Bedarf mit echtem Server-Zugriff
+nachjustieren.
+
+## Deploy-Ablauf (Referenz — was der Workflow oben automatisiert)
+
+Builds werden erzeugt und per `scp`/`tar` auf den Server kopiert:
 
 1. **Backend**: `npm run build` in `packages/shared/` und `server/`, dann
    Upload von Root-`package.json`+`package-lock.json` +

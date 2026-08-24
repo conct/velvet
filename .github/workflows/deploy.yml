@@ -1,0 +1,140 @@
+name: Deploy to Uberspace
+
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, uberspace]
+    env:
+      API_DIR: ${{ github.workspace }}/../../velvet-api
+      DASHBOARD_DIR: ${{ github.workspace }}/../../velvet-dashboard
+      MOBILE_WEB_DIR: ${{ github.workspace }}/../../html/velvet-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install root workspace deps
+        run: npm install
+
+      - name: Build @velvet/shared
+        working-directory: packages/shared
+        run: npm run build
+
+      - name: Build server
+        working-directory: server
+        run: npm run build
+
+      # ---- Backend (velvet-api) ----------------------------------------
+      # Mirrors docs/deployment.md "Deploy-Ablauf" step 1, including the
+      # dist_new -> smoke-test -> swap dance so a broken build never
+      # replaces the running one.
+      - name: Sync backend sources to live directory
+        run: |
+          set -euo pipefail
+          mkdir -p "$API_DIR/packages/shared" "$API_DIR/server"
+          cp package.json package-lock.json "$API_DIR/"
+          cp packages/shared/package.json "$API_DIR/packages/shared/"
+          rsync -a --delete packages/shared/dist/ "$API_DIR/packages/shared/dist/"
+          cp server/package.json "$API_DIR/server/"
+          rsync -a --delete server/src/ "$API_DIR/server/src/"
+          rsync -a --delete server/prisma/ "$API_DIR/server/prisma/"
+          rm -rf "$API_DIR/server/dist_new"
+          rsync -a server/dist/ "$API_DIR/server/dist_new/"
+
+      - name: npm install + prisma generate on server
+        run: |
+          set -euo pipefail
+          cd "$API_DIR"
+          npm install
+          # Uberspace's npm blocks postinstall scripts silently on the first
+          # install of a package (npm warn install-scripts) instead of
+          # failing hard -- approve the known offenders up front and
+          # reinstall so prisma/tsx actually work, see docs/deployment.md.
+          npm install-scripts approve @prisma/client @prisma/engines prisma esbuild 2>/dev/null || true
+          npm install
+          npx prisma generate --schema=server/prisma/mysql/schema.prisma
+
+      - name: Push additive schema changes only
+        run: |
+          set -euo pipefail
+          cd "$API_DIR/server"
+          # No --accept-data-loss: a destructive change (dropped/renamed
+          # column) makes this step fail on purpose. Follow the manual
+          # backup+backfill procedure in docs/deployment.md for those,
+          # this workflow only auto-applies safe additive changes.
+          npx prisma db push --schema=prisma/mysql/schema.prisma --skip-generate
+
+      - name: Smoke-test the new backend build
+        run: |
+          set +e
+          cd "$API_DIR/server"
+          timeout 6 node dist_new/src/index.js > /tmp/velvet-api-smoke.log 2>&1
+          EXIT=$?
+          set -e
+          if grep -qi "EADDRINUSE" /tmp/velvet-api-smoke.log; then
+            echo "OK: new build starts cleanly (port taken by the still-running instance, as expected)."
+          elif [ "$EXIT" -eq 124 ]; then
+            echo "OK: process stayed up for the whole smoke-test window without crashing."
+          else
+            echo "Smoke test failed, new build did not start cleanly:"
+            cat /tmp/velvet-api-smoke.log
+            exit 1
+          fi
+
+      - name: Swap in the new backend build and restart
+        run: |
+          set -euo pipefail
+          cd "$API_DIR/server"
+          rm -rf dist.bak
+          [ -d dist ] && mv dist dist.bak
+          mv dist_new dist
+          systemctl --user restart velvet-api
+
+      # ---- Dashboard (velvet-dashboard) ---------------------------------
+      - name: Build dashboard
+        working-directory: apps/dashboard
+        run: |
+          set -euo pipefail
+          mv .env.local .env.local.bak 2>/dev/null || true
+          NEXT_PUBLIC_API_URL=https://api.velvet-network.app npx next build
+          grep -rl "api.velvet-network.app" .next/static/chunks/*.js > /dev/null
+
+      - name: Sync dashboard and restart
+        run: |
+          set -euo pipefail
+          mkdir -p "$DASHBOARD_DIR/apps/dashboard" "$DASHBOARD_DIR/packages/shared"
+          rsync -a --delete --exclude cache apps/dashboard/.next/ "$DASHBOARD_DIR/apps/dashboard/.next/"
+          rsync -a --delete apps/dashboard/app/ "$DASHBOARD_DIR/apps/dashboard/app/"
+          rsync -a --delete apps/dashboard/components/ "$DASHBOARD_DIR/apps/dashboard/components/"
+          rsync -a --delete apps/dashboard/lib/ "$DASHBOARD_DIR/apps/dashboard/lib/"
+          # public/ deliberately excludes the locked material/ dir (chmod
+          # 500, see docs/deployment.md) and the uploaded APK, neither of
+          # which live in this repo checkout anyway.
+          rsync -a --delete --exclude material --exclude 'app/*.apk' apps/dashboard/public/ "$DASHBOARD_DIR/apps/dashboard/public/"
+          rsync -a --delete packages/shared/dist/ "$DASHBOARD_DIR/packages/shared/dist/"
+          systemctl --user restart velvet-dashboard
+
+      # ---- Mobile web export (velvet-app) -------------------------------
+      - name: Build mobile web export
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          EXPO_PUBLIC_API_URL=https://api.velvet-network.app npx expo export --platform web --clear
+          grep -o "api\.velvet-network\.app\|localhost:4000" dist/_expo/static/js/web/*.js || true
+
+      - name: Sync mobile web export and restart
+        run: |
+          set -euo pipefail
+          mkdir -p "$MOBILE_WEB_DIR"
+          rm -rf "${MOBILE_WEB_DIR:?}"/*
+          rsync -a apps/mobile/dist/ "$MOBILE_WEB_DIR/"
+          systemctl --user restart velvet-app
