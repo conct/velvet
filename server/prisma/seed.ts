@@ -1,3 +1,7 @@
+// The seed builds its own client instead of going through src/db.ts, so it
+// needs to read server/.env itself -- otherwise `npm run seed` fails on a
+// fresh checkout with a confusing Prisma error.
+import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
