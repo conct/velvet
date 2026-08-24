@@ -211,6 +211,9 @@ export function VenueApplicationClient() {
         <Link href="/datenschutz" className="hover:text-text">
           {t.landing.footerDatenschutz}
         </Link>
+        <Link href="/location-bedingungen" className="hover:text-text">
+          {t.landing.footerLocationTerms}
+        </Link>
       </div>
     </div>
   );

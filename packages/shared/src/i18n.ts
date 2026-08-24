@@ -123,6 +123,9 @@ export interface Translations {
     footerImpressum: string;
     footerDatenschutz: string;
     footerWerbematerial: string;
+    footerAgb: string;
+    footerWiderruf: string;
+    footerLocationTerms: string;
     footerApply: string;
   };
   common: {
@@ -446,6 +449,8 @@ export interface Translations {
       staffLogin: string;
       impressum: string;
       datenschutz: string;
+      agb: string;
+      widerruf: string;
     };
     guestLogin: {
       welcomeBack: string;
@@ -832,6 +837,9 @@ const de: Translations = {
     footerImpressum: "Impressum",
     footerDatenschutz: "Datenschutz",
     footerWerbematerial: "Werbematerial",
+    footerAgb: "AGB",
+    footerWiderruf: "Widerruf",
+    footerLocationTerms: "Bedingungen für Locations",
     footerApply: "Location anmelden",
   },
   common: {
@@ -1226,6 +1234,8 @@ const de: Translations = {
       staffLogin: "Staff-Login",
       impressum: "Impressum",
       datenschutz: "Datenschutz",
+      agb: "AGB",
+      widerruf: "Widerruf",
     },
     guestLogin: {
       welcomeBack: "Willkommen zurück",
@@ -1777,6 +1787,9 @@ const en: Translations = {
     footerImpressum: "Legal notice",
     footerDatenschutz: "Privacy",
     footerWerbematerial: "Promo material",
+    footerAgb: "Terms",
+    footerWiderruf: "Withdrawal",
+    footerLocationTerms: "Terms for locations",
     footerApply: "Register a location",
   },
   venueTypes: {
@@ -2171,6 +2184,8 @@ const en: Translations = {
       staffLogin: "Staff login",
       impressum: "Imprint",
       datenschutz: "Privacy",
+      agb: "Terms",
+      widerruf: "Withdrawal",
     },
     guestLogin: {
       welcomeBack: "Welcome back",
@@ -2721,6 +2736,9 @@ const pl: Translations = {
     footerImpressum: "Nota prawna",
     footerDatenschutz: "Prywatność",
     footerWerbematerial: "Materiały reklamowe",
+    footerAgb: "Regulamin",
+    footerWiderruf: "Odstąpienie",
+    footerLocationTerms: "Warunki dla lokali",
     footerApply: "Zgłoś lokal",
   },
   venueTypes: {
@@ -3115,6 +3133,8 @@ const pl: Translations = {
       staffLogin: "Logowanie personelu",
       impressum: "Nota prawna",
       datenschutz: "Prywatność",
+      agb: "Regulamin",
+      widerruf: "Odstąpienie",
     },
     guestLogin: {
       welcomeBack: "Witaj ponownie",
@@ -3666,6 +3686,9 @@ const es: Translations = {
     footerImpressum: "Aviso legal",
     footerDatenschutz: "Privacidad",
     footerWerbematerial: "Material promocional",
+    footerAgb: "Condiciones",
+    footerWiderruf: "Desistimiento",
+    footerLocationTerms: "Condiciones para locales",
     footerApply: "Registrar un local",
   },
   venueTypes: {
@@ -4060,6 +4083,8 @@ const es: Translations = {
       staffLogin: "Acceso del personal",
       impressum: "Aviso legal",
       datenschutz: "Privacidad",
+      agb: "Condiciones",
+      widerruf: "Desistimiento",
     },
     guestLogin: {
       welcomeBack: "Bienvenido de nuevo",

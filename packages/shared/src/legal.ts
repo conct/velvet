@@ -89,6 +89,15 @@ export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
     ],
   },
   {
+    heading: "Gemeinsame Verantwortlichkeit mit den teilnehmenden Locations",
+    paragraphs: [
+      "Eine teilnehmende Location entscheidet selbst, ob sie einen Gast einlässt, und vergibt Bewertungen, Merkmale und Hausverbote in eigener Verantwortung. Sie verfolgt damit einen eigenen Zweck — die Ausübung ihres Hausrechts. VELVET und die jeweilige Location sind für diese Verarbeitung deshalb gemeinsam Verantwortliche im Sinne des Art. 26 DSGVO.",
+      "Der wesentliche Inhalt der dazu geschlossenen Vereinbarung ist unter velvet-network.app/location-bedingungen als Anlage 1 abrufbar. Danach betreibt VELVET die Plattform, berechnet Status und Score, erfüllt die Informationspflichten und ist zentrale Anlaufstelle für Anfragen; die Location verantwortet die Richtigkeit ihrer Einträge und die Zugänge ihres Personals.",
+      `Unabhängig von dieser Aufteilung können Sie Ihre Rechte gegenüber jedem der beiden Verantwortlichen geltend machen. Als gemeinsame Anlaufstelle steht Ihnen ${LEGAL_OPERATOR.email} zur Verfügung; Anfragen, die eine einzelne Location betreffen, leiten wir dorthin weiter und holen eine Stellungnahme ein.`,
+      "Halten Sie eine Bewertung oder ein Hausverbot für unzutreffend, prüfen wir den Sachverhalt gemeinsam mit der Location. Ein unzutreffender Eintrag wird berichtigt oder gelöscht.",
+    ],
+  },
+  {
     heading: "Premium-Abonnement & Zahlungen",
     paragraphs: [
       "Für das kostenpflichtige Premium-Abonnement (monatlich oder jährlich) bieten wir Zahlungen über Stripe und PayPal an. Zahlungsdaten (z. B. Kartennummern oder PayPal-Zugangsdaten) werden ausschließlich von Stripe bzw. PayPal als Zahlungsdienstleister verarbeitet — VELVET selbst sieht oder speichert diese Daten nicht, sondern erhält von Stripe/PayPal nur den Abo-Status, die Laufzeit (monatlich/jährlich) und das Verlängerungsdatum.",

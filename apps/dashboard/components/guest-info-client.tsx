@@ -277,6 +277,12 @@ export function GuestInfoClient() {
           <Link href="/impressum" className="hover:text-text">
             Impressum
           </Link>
+          <Link href="/agb" className="hover:text-text">
+            AGB
+          </Link>
+          <Link href="/widerruf" className="hover:text-text">
+            Widerruf
+          </Link>
         </span>
       </footer>
     </div>

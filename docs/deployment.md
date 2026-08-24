@@ -381,6 +381,34 @@ Weg heraus ist die Admin-Route
 Das Schema-Update ist rein additiv (neue Tabelle `VenueApplication`), also ein
 normaler `prisma db push` ohne `--accept-data-loss`.
 
+## Rechtstexte und ihre Fassungen
+
+Alle Rechtstexte stehen als `LegalSection[]` im geteilten Package, damit Dashboard
+und App denselben Wortlaut zeigen:
+
+| Text | Konstante | Seite |
+| --- | --- | --- |
+| Impressum | `IMPRESSUM_SECTIONS` (`legal.ts`) | `/impressum` |
+| Datenschutzerklärung | `DATENSCHUTZ_SECTIONS` (`legal.ts`) | `/datenschutz` |
+| Nutzungsbedingungen für Locations | `LOCATION_TERMS_SECTIONS` (`terms.ts`) | `/location-bedingungen` |
+| Anlage 1, Art. 26 DSGVO | `JOINT_CONTROLLER_SECTIONS` (`terms.ts`) | dieselbe Seite, unten |
+| AGB für Gäste | `GUEST_TERMS_SECTIONS` (`guest-terms.ts`) | `/agb` |
+| Widerrufsbelehrung | `WIDERRUF_SECTIONS` (`guest-terms.ts`) | `/widerruf` |
+
+Die vier neuen Texte sind **Entwürfe ohne anwaltliche Prüfung**. Gesteuert wird das
+über `TERMS_DRAFT` in `packages/shared/src/terms.ts`: solange die Konstante `true`
+ist, blenden alle vier Seiten (Web und App) einen Hinweisbalken ein. Nach der Prüfung
+`TERMS_DRAFT` auf `false` setzen und `TERMS_VERSION` hochzählen.
+
+`TERMS_VERSION` ist bewusst schon vorhanden, obwohl noch nichts sie speichert: Sobald
+die Zustimmung einer Location erfasst wird (Roadmap-Punkt), ist sie der Wert, der
+zusammen mit dem Zeitpunkt abgelegt wird — sonst ist später nicht nachweisbar, welcher
+Fassung zugestimmt wurde.
+
+Nach jeder Textänderung `npm run build --workspace=@velvet/shared`, sonst zeigen die
+Apps den alten Stand. Betrifft eine Änderung die App-Texte, wirkt sie im Web-Export
+sofort, in der nativen App aber erst mit dem nächsten EAS-Build.
+
 ## Rollen im Staff-Bereich
 
 `StaffVenueMembership.role` kennt drei Werte, die Berechtigungstabelle dazu

@@ -366,6 +366,9 @@ export function LandingPageClient() {
           <Link href="/datenschutz" className="hover:text-text">
             {t.landing.footerDatenschutz}
           </Link>
+          <Link href="/agb" className="hover:text-text">
+            {t.landing.footerAgb}
+          </Link>
           <Link href="/werbematerial" className="hover:text-text">
             {t.landing.footerWerbematerial}
           </Link>

@@ -14,6 +14,46 @@ die Routine sucht nach genau diesen Begriffen.)
 
 ## Open
 
+### Zustimmung zu den Location-Nutzungsbedingungen erfassen
+**Status:** offen.
+
+Die Texte stehen (`/location-bedingungen`, Entwurf vom 24.08.2026), aber sie werden
+beim Onboarding noch nirgends akzeptiert. Nötig: Pflicht-Checkbox im Formular
+`/location-anmelden` mit Link auf die Bedingungen, dazu `acceptedTermsVersion` und
+`acceptedTermsAt` auf `VenueApplication` (beide Prisma-Schemas), Anzeige der
+akzeptierten Fassung unter `/admin/applications` und Übernahme auf die `Venue` bei
+der Freigabe. Ohne diese Felder ist nicht nachweisbar, welcher Fassung eine Location
+zugestimmt hat.
+
+### Widerrufs-Zustimmung im Premium-Checkout
+**Status:** offen.
+
+Das Premium-Abo ist eine digitale Dienstleistung: Das Widerrufsrecht erlischt nur,
+wenn der Kunde vor dem sofortigen Start ausdrücklich zustimmt *und* bestätigt, dass er
+es dadurch verliert (§ 356 Abs. 5 BGB). Beides muss der Checkout abfragen und
+protokollieren, sonst läuft die 14-Tage-Frist trotz sofortiger Freischaltung weiter.
+Text steht unter `/widerruf`.
+
+### Mindestalter bei der Registrierung
+**Status:** blocked — Entscheidung von Daniel nötig.
+
+Die Gäste-AGB setzen Volljährigkeit voraus, technisch wird das Alter nirgends erfasst
+oder geprüft (`User` hat kein Geburtsdatum).
+
+**Offene Frage an Daniel:** Reicht eine Bestätigungs-Checkbox bei der Registrierung
+("Ich bin über 18"), oder soll ein Geburtsdatum erfasst und gespeichert werden? Ein
+gespeichertes Geburtsdatum ist beweiskräftiger, aber ein zusätzliches
+personenbezogenes Datum, das dann auch in Datenschutzerklärung und Löschkonzept muss.
+
+### Anwaltliche Prüfung der Rechtstexte
+**Status:** blocked — liegt bei Daniel, nicht bei der Routine.
+
+`LOCATION_TERMS_SECTIONS`, `JOINT_CONTROLLER_SECTIONS`, `GUEST_TERMS_SECTIONS` und
+`WIDERRUF_SECTIONS` (in `packages/shared/src/terms.ts` und `guest-terms.ts`) sind
+Entwürfe. Solange `TERMS_DRAFT = true` ist, tragen alle vier Seiten einen sichtbaren
+Entwurfshinweis. Nach der Prüfung: Text ersetzen, `TERMS_DRAFT` auf `false`,
+`TERMS_VERSION` hochzählen. Diesen Punkt nicht automatisiert umsetzen.
+
 ### Instagram-Posting automatisieren
 **Status:** offen — vorerst zurückgestellt.
 

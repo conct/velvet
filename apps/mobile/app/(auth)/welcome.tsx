@@ -31,6 +31,12 @@ export default function Welcome() {
             <Link href="/(auth)/datenschutz">
               <Text style={styles.legalLink}>{t.mobile.welcome.datenschutz}</Text>
             </Link>
+            <Link href="/(auth)/agb">
+              <Text style={styles.legalLink}>{t.mobile.welcome.agb}</Text>
+            </Link>
+            <Link href="/(auth)/widerruf">
+              <Text style={styles.legalLink}>{t.mobile.welcome.widerruf}</Text>
+            </Link>
           </View>
           <View style={styles.langRow}>
             <LanguageSwitcher style={{ alignSelf: "center" }} />
@@ -48,7 +54,7 @@ const styles = StyleSheet.create({
   rule: { width: 60, height: 1, backgroundColor: colors.gold, marginTop: 18, marginBottom: 18 },
   subtitle: { fontFamily: fonts.headingRegular, color: colors.textMuted, fontSize: 16, fontStyle: "italic" },
   actions: { gap: 14 },
-  legalRow: { flexDirection: "row", justifyContent: "center", gap: 20, marginTop: 20 },
+  legalRow: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 20, marginTop: 20 },
   langRow: { marginTop: 20, alignItems: "center" },
   legalLink: { fontFamily: fonts.body, color: colors.textMuted, fontSize: 12 },
 });
