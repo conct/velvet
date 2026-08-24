@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import type { StaffLoginResponse, StaffProfile, VenueSummary } from "@velvet/shared";
 import { apiFetch } from "./api";
 
@@ -131,6 +131,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const logout = useCallback(() => setSession(null), []);
+
+  // The stored session is a snapshot from the moment of login. A venue that is
+  // verified (or suspended) afterwards never reaches a dashboard that is
+  // already open -- reloading only re-reads the same localStorage copy, so the
+  // "not approved yet" banner in (app)/layout.tsx keeps claiming the old
+  // status until the next sign-in. Re-read the venue once per mount and patch
+  // the stored copy when it has moved on.
+  useEffect(() => {
+    if (!current) return;
+    let cancelled = false;
+    apiFetch<StaffProfile["venue"]>("/venues/me", { token: current.token })
+      .then((venue) => {
+        if (cancelled) return;
+        const stored = current.staff.venue;
+        if (
+          stored.status === venue.status &&
+          stored.name === venue.name &&
+          stored.address === venue.address &&
+          stored.logoUrl === venue.logoUrl
+        ) {
+          return;
+        }
+        setSession({
+          ...current,
+          staff: {
+            ...current.staff,
+            venue: {
+              id: venue.id,
+              name: venue.name,
+              address: venue.address,
+              logoUrl: venue.logoUrl,
+              status: venue.status,
+            },
+          },
+        });
+      })
+      // A failed refresh must not sign anyone out: the stored session stays as
+      // it is and the next mount tries again.
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [current]);
 
   const value = useMemo<AuthState>(
     () => ({
