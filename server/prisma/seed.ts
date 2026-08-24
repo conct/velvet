@@ -24,7 +24,40 @@ function avatar(initials: string): string {
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 
+// The seed writes logins whose passwords are printed in this repo, so running
+// it against the production database hands anyone who reads GitHub a working
+// account. That is not hypothetical: it happened once, and the accounts were
+// still there weeks later (see "Test-Zugangsdaten" in docs/handoff.md).
+//
+// The local database is SQLite and production is MySQL, so the connection
+// string alone tells the two apart. Refusing is the right default here because
+// this project has exactly one non-SQLite database, and it is the live one.
+function assertLocalDatabase() {
+  const url = process.env.DATABASE_URL ?? "";
+  if (url.startsWith("file:")) return;
+  if (process.argv.includes("--force")) {
+    console.warn("WARNUNG: --force -- der Seed laeuft gegen eine Nicht-SQLite-Datenbank.\n");
+    return;
+  }
+
+  console.error("Abgebrochen: DATABASE_URL zeigt nicht auf eine lokale SQLite-Datei.");
+  console.error(`  ${url.replace(/\/\/[^@]*@/, "//***@") || "(nicht gesetzt)"}`);
+  console.error("");
+  console.error("Der Seed legt Konten an, deren Passwoerter im oeffentlichen Repo stehen");
+  console.error("(manager123, doorman123, guest1234). Auf einer echten Datenbank sind das");
+  console.error("funktionierende Logins fuer jeden, der GitHub lesen kann.");
+  console.error("");
+  console.error("Wenn das wirklich gewollt ist: dieselbe Zeile mit --force. Danach");
+  console.error("gehoert jedes angelegte Konto in die Sandbox:");
+  console.error("  npm run set-demo -- venue noir-club-berlin");
+  console.error("  npm run set-demo -- venue velvet-lounge-hamburg");
+  console.error("  npm run set-demo -- staff <email>   # je Konto");
+  console.error("  npm run set-demo -- user  <email>   # je Gast");
+  process.exit(1);
+}
+
 async function main() {
+  assertLocalDatabase();
   console.log("Seeding VELVET demo data...");
 
   const noir = await prisma.venue.create({

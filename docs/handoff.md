@@ -106,9 +106,12 @@ kann keinen echten Gast scannen, bewerten oder sperren, und nichts davon zählt
 irgendwo mit. Das ist der Grund, warum sie stehenbleiben dürfen — nicht, weil
 sie produktiv fehlen würden.
 
-Wird der Seed auf einer echten Datenbank erneut ausgeführt, sind die Konten
-wieder da und wieder auf `isDemo=0`. Danach also `npm run set-demo` hinterher
-(siehe „Test-Zugänge: die Sandbox-Welt" in [`deployment.md`](deployment.md)).
+Damit das nicht noch einmal passiert, bricht `npm run seed` seit dem
+24.08.2026 ab, sobald `DATABASE_URL` nicht auf eine lokale SQLite-Datei zeigt.
+Lokal ändert sich nichts. Wer es auf einer echten Datenbank trotzdem braucht,
+muss `-- --force` anhängen — und danach jedes angelegte Konto per
+`npm run set-demo` in die Sandbox holen (siehe „Test-Zugänge: die
+Sandbox-Welt" in [`deployment.md`](deployment.md)).
 
 **Staff (Dashboard, `/login`)**
 
