@@ -100,8 +100,26 @@ Kein automatisiertes Deployment — Builds werden lokal erzeugt und per
    übergibt. Danach mit
    `grep -o "api\.velvet-network\.app\|localhost:4000" dist/_expo/static/js/web/*.js`
    verifizieren, was tatsächlich eingebacken wurde, bevor hochgeladen wird.
-   `dist/`-Inhalt nach `~/html/velvet-app/` (Zielordner vorher leeren, nicht
-   nur überlagern), `systemctl --user restart velvet-app`.
+   `dist/`-Inhalt nach `~/html/velvet-app/`, `systemctl --user restart
+   velvet-app`. **Nicht mit `rm -rf ~/html/velvet-app/*` leeren** — der Glob
+   trifft `.well-known/` nicht, und ein Fehlschlag mittendrin liefert einen
+   halben Stand aus. Stattdessen daneben entpacken und das Verzeichnis
+   tauschen (macht das Skript unten so).
+
+Für Dashboard und Mobile-Web gibt es je ein Skript, das den ganzen Ablauf
+inklusive aller Fallstricke abbildet:
+
+```powershell
+.\scripts\deploy\dashboard.ps1   # Punkt 2
+.\scripts\deploypp.ps1         # Punkt 3
+```
+
+`app.ps1` schiebt zusätzlich `apps/mobile/.env` weg (sie zeigt auf
+`http://localhost:4000` und würde die Produktions-URL verdrängen), bricht ab,
+wenn `localhost:4000` im gebauten Bundle auftaucht oder `.well-known/` im
+Export fehlt, und prüft nach dem Neustart, ob `web.velvet-network.app` und die
+`apple-app-site-association` mit `200` antworten. Für das Backend (Punkt 1)
+gibt es kein Skript.
 
 ## Universal Links (iOS) / App Links (Android)
 
