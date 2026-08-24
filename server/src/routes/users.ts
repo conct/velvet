@@ -101,6 +101,11 @@ usersRouter.delete("/me", requireAuth, requireUser, async (req, res) => {
     prisma.rating.deleteMany({ where: { userId } }),
     prisma.entryLog.deleteMany({ where: { userId } }),
     prisma.venueRelationship.deleteMany({ where: { userId } }),
+    // Die Widerrufs-Zustimmung ist ein Nachweis zum Abo, kein eigener
+    // Bestand -- mit dem Konto verschwindet auch das Abo, also verschwindet
+    // sie mit. (Ohne dieses deleteMany scheitert die Löschung ohnehin am
+    // Fremdschlüssel.)
+    prisma.withdrawalConsent.deleteMany({ where: { userId } }),
     prisma.user.delete({ where: { id: userId } }),
   ]);
 

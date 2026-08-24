@@ -4,6 +4,7 @@ import type Stripe from "stripe";
 import { prisma } from "../db";
 import { requireAuth, requireUser } from "../middleware/auth";
 import { getPremiumStatus } from "../lib/premium";
+import { LOCALES, WITHDRAWAL_CONSENT_TEXT, WITHDRAWAL_CONSENT_VERSION, type Locale } from "@velvet/shared";
 import { t } from "../lib/i18n";
 import * as stripe from "../lib/payments/stripe";
 import * as paypal from "../lib/payments/paypal";
@@ -29,13 +30,40 @@ subscriptionsRouter.get("/me", requireAuth, requireUser, async (req, res) => {
 const checkoutSchema = z.object({
   provider: z.enum(["STRIPE", "PAYPAL"]),
   interval: z.enum(["MONTH", "YEAR"]),
+  // Zustimmung zum sofortigen Beginn plus Bestätigung, das Widerrufsrecht
+  // dadurch zu verlieren (§ 356 Abs. 5 BGB). Beides steckt in einer einzigen
+  // Pflicht-Checkbox, deren Wortlaut in WITHDRAWAL_CONSENT_TEXT steht.
+  withdrawalConsent: z.boolean(),
+  // Sprachfassung, in der die Checkbox angezeigt wurde -- protokolliert wird
+  // der Text, den die Person tatsächlich gelesen hat, nicht die deutsche
+  // Fassung als Ersatz dafür.
+  consentLocale: z.enum(LOCALES as [Locale, ...Locale[]]).optional(),
 });
 
 subscriptionsRouter.post("/checkout", requireAuth, requireUser, async (req, res) => {
   const parsed = checkoutSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
-  const { provider, interval } = parsed.data;
+  const { provider, interval, withdrawalConsent } = parsed.data;
   const userId = req.auth!.sub;
+
+  if (!withdrawalConsent) {
+    return res.status(400).json({ error: t(req.locale, "subscriptions.withdrawalConsentRequired"), code: "WITHDRAWAL_CONSENT_REQUIRED" });
+  }
+
+  // Vor dem Weiterleiten zum Zahlungsdienstleister festgehalten: die
+  // Erklärung ist mit dem Klick abgegeben, unabhängig davon, ob der Checkout
+  // danach durchläuft oder abgebrochen wird.
+  const consentLocale = parsed.data.consentLocale ?? (req.locale as Locale);
+  await prisma.withdrawalConsent.create({
+    data: {
+      userId,
+      provider,
+      interval,
+      version: WITHDRAWAL_CONSENT_VERSION,
+      locale: consentLocale,
+      text: WITHDRAWAL_CONSENT_TEXT[consentLocale],
+    },
+  });
 
   try {
     const checkoutUrl =

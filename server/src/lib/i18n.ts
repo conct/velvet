@@ -31,6 +31,8 @@ interface Translations {
   "auth.noVenueAccess": string;
   "auth.tooManyRequests": string;
   "auth.scanNotAllowed": string;
+  "auth.dateOfBirthInvalid": string;
+  "auth.dateOfBirthUnderage": string;
 
   "qr.photoRequired": string;
   "qr.codeInvalidOrExpired": string;
@@ -47,6 +49,7 @@ interface Translations {
 
   "subscriptions.checkoutFailed": string;
   "subscriptions.noActiveSubscription": string;
+  "subscriptions.withdrawalConsentRequired": string;
 
   "users.notFound": string;
   "users.uploadFailed": string;
@@ -127,6 +130,8 @@ const de: Translations = {
   "auth.noVenueAccess": "Kein Zugriff auf diese Location",
   "auth.tooManyRequests": "Zu viele Versuche. Bitte später erneut versuchen.",
   "auth.scanNotAllowed": "Diese Rolle darf keine Gäste scannen oder bewerten",
+  "auth.dateOfBirthInvalid": "Bitte gib dein Geburtsdatum als TT.MM.JJJJ an",
+  "auth.dateOfBirthUnderage": "VELVET ist ab 18 Jahren — mit diesem Geburtsdatum lässt sich kein Konto anlegen",
 
   "qr.photoRequired": "Bitte lade zuerst ein Profilfoto hoch",
   "qr.codeInvalidOrExpired": "Code ist ungültig oder abgelaufen",
@@ -143,6 +148,7 @@ const de: Translations = {
 
   "subscriptions.checkoutFailed": "Checkout konnte nicht gestartet werden",
   "subscriptions.noActiveSubscription": "Kein aktives Abo gefunden",
+  "subscriptions.withdrawalConsentRequired": "Ohne die Zustimmung zum sofortigen Beginn kann das Abo nicht abgeschlossen werden",
 
   "users.notFound": "Nicht gefunden",
   "users.uploadFailed": "Upload fehlgeschlagen",
@@ -232,6 +238,8 @@ const en: Translations = {
   "auth.noVenueAccess": "No access to this venue",
   "auth.tooManyRequests": "Too many attempts. Please try again later.",
   "auth.scanNotAllowed": "This role cannot scan or rate guests",
+  "auth.dateOfBirthInvalid": "Please enter your date of birth as DD.MM.YYYY",
+  "auth.dateOfBirthUnderage": "VELVET is for ages 18 and up — no account can be created with this date of birth",
 
   "qr.photoRequired": "Please upload a profile photo first",
   "qr.codeInvalidOrExpired": "Code is invalid or has expired",
@@ -248,6 +256,7 @@ const en: Translations = {
 
   "subscriptions.checkoutFailed": "Couldn't start checkout",
   "subscriptions.noActiveSubscription": "No active subscription found",
+  "subscriptions.withdrawalConsentRequired": "The subscription cannot be completed without consenting to the immediate start",
 
   "users.notFound": "Not found",
   "users.uploadFailed": "Upload failed",

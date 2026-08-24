@@ -1,4 +1,6 @@
 import { LEGAL_OPERATOR, type LegalSection } from "./legal";
+import { TERMS_VERSION } from "./terms";
+import type { Locale } from "./i18n";
 
 // ---------------------------------------------------------------------------
 // ENTWURFSFASSUNG — siehe Kopf von terms.ts. Diese AGB richten sich an
@@ -21,8 +23,8 @@ export const GUEST_TERMS_SECTIONS: LegalSection[] = [
   {
     heading: "§ 2 Konto und Mindestalter",
     paragraphs: [
-      "Die Nutzung setzt ein Konto voraus. Erforderlich sind Vor- und Nachname, eine E-Mail-Adresse und ein Profilfoto; die E-Mail-Adresse muss vor der ersten Anmeldung bestätigt werden.",
-      "Das Konto ist volljährigen Personen vorbehalten. Mit der Registrierung bestätigst du, dass du das 18. Lebensjahr vollendet hast.",
+      "Die Nutzung setzt ein Konto voraus. Erforderlich sind Vor- und Nachname, das Geburtsdatum, eine E-Mail-Adresse und ein Profilfoto; die E-Mail-Adresse muss vor der ersten Anmeldung bestätigt werden.",
+      "Das Konto ist volljährigen Personen vorbehalten. Bei der Registrierung wird dein Geburtsdatum erfasst; liegt es weniger als 18 Jahre zurück, kann kein Konto angelegt werden. Das Geburtsdatum dient allein diesem Nachweis und ist für teilnehmende Locations nicht sichtbar.",
       "Angaben müssen wahr sein. Das Profilfoto muss dich erkennbar zeigen, weil es am Einlass zum Abgleich dient — ein Foto, das eine andere Person, eine Sachaufnahme oder eine Grafik zeigt, ist nicht zulässig.",
       "Das Konto ist persönlich. Zugangsdaten dürfen nicht weitergegeben werden, der QR-Code nicht für den Einlass einer anderen Person verwendet werden.",
     ],
@@ -59,6 +61,7 @@ export const GUEST_TERMS_SECTIONS: LegalSection[] = [
     heading: "§ 6 Widerrufsrecht",
     paragraphs: [
       "Als Verbraucher steht dir beim Abschluss des Premium-Abonnements ein gesetzliches Widerrufsrecht zu. Die Einzelheiten und die Folgen ergeben sich aus der Widerrufsbelehrung, die als eigener Text abrufbar ist und dir bei Vertragsschluss übermittelt wird.",
+      "Das Premium-Abonnement ist eine digitale Dienstleistung, die sofort freigeschaltet wird. Damit das möglich ist, fragt der Bestellvorgang deine ausdrückliche Zustimmung zum sofortigen Beginn ab, verbunden mit der Bestätigung, dass du dein Widerrufsrecht mit der vollständigen Vertragserfüllung verlierst (§ 356 Abs. 5 BGB). Ohne diese Zustimmung kann das Abo nicht abgeschlossen werden; erteilst du sie, halten wir ihren Wortlaut und den Zeitpunkt fest.",
     ],
   },
   {
@@ -155,3 +158,30 @@ export const WIDERRUF_SECTIONS: LegalSection[] = [
     ],
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Zustimmung zum sofortigen Beginn im Premium-Checkout
+// ---------------------------------------------------------------------------
+// § 356 Abs. 5 BGB verlangt zweierlei, bevor das Widerrufsrecht bei einer
+// digitalen Dienstleistung vorzeitig erlöschen kann: die ausdrückliche
+// Zustimmung zum Beginn vor Ablauf der Frist *und* die Bestätigung, das
+// Widerrufsrecht dadurch zu verlieren. Beides steht deshalb in einem Satz
+// zusammen in einer Pflicht-Checkbox, die der Checkout abfragt.
+//
+// Protokolliert wird nicht nur „hat zugestimmt“, sondern der Wortlaut, den
+// die Person tatsächlich gesehen hat (WITHDRAWAL_CONSENT_TEXT[locale]) plus
+// WITHDRAWAL_CONSENT_VERSION — sonst ist bei einer späteren Textänderung
+// nicht mehr belegbar, worauf sich die Zustimmung bezog.
+
+export const WITHDRAWAL_CONSENT_VERSION = TERMS_VERSION;
+
+export const WITHDRAWAL_CONSENT_TEXT: Record<Locale, string> = {
+  de:
+    "Ich verlange ausdrücklich, dass VELVET mit dem Premium-Abonnement sofort und vor Ablauf der 14-tägigen Widerrufsfrist beginnt. Mir ist bekannt, dass ich mein Widerrufsrecht mit der vollständigen Erfüllung des Vertrags verliere.",
+  en:
+    "I expressly request that VELVET begin the Premium subscription immediately, before the 14-day withdrawal period ends. I am aware that I lose my right of withdrawal once the contract has been fully performed.",
+  pl:
+    "Wyraźnie żądam, aby VELVET rozpoczął świadczenie abonamentu Premium natychmiast, przed upływem 14-dniowego terminu odstąpienia od umowy. Przyjmuję do wiadomości, że wraz z pełnym wykonaniem umowy tracę prawo odstąpienia.",
+  es:
+    "Solicito expresamente que VELVET comience la suscripción Premium de inmediato, antes de que finalice el plazo de desistimiento de 14 días. Soy consciente de que pierdo mi derecho de desistimiento una vez ejecutado íntegramente el contrato.",
+};

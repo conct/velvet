@@ -459,6 +459,10 @@ export interface Translations {
       registerHint: string;
       firstName: string;
       lastName: string;
+      dateOfBirth: string;
+      dateOfBirthHint: string;
+      dateOfBirthInvalid: string;
+      dateOfBirthUnderage: string;
       email: string;
       password: string;
       submitLogin: string;
@@ -648,6 +652,9 @@ export interface Translations {
       statusLoadFailed: string;
       checkoutFailed: string;
       cancelFailed: string;
+      withdrawalConsentHeading: string;
+      withdrawalReadMore: string;
+      withdrawalConsentRequired: string;
       features: { icon: string; title: string; body: string }[];
     };
     premiumSuccess: {
@@ -1244,6 +1251,10 @@ const de: Translations = {
       registerHint: "Registriere dich als Gast.",
       firstName: "Vorname",
       lastName: "Nachname",
+      dateOfBirth: "Geburtsdatum (TT.MM.JJJJ)",
+      dateOfBirthHint: "Damit prüfen wir nur, ob du volljährig bist — Locations sehen dein Geburtsdatum nicht.",
+      dateOfBirthInvalid: "Bitte gib dein Geburtsdatum als TT.MM.JJJJ an.",
+      dateOfBirthUnderage: "VELVET ist ab 18 Jahren. Mit diesem Geburtsdatum lässt sich kein Konto anlegen.",
       email: "E-Mail",
       password: "Passwort",
       submitLogin: "Anmelden",
@@ -1442,6 +1453,9 @@ const de: Translations = {
       statusLoadFailed: "Status konnte nicht geladen werden",
       checkoutFailed: "Checkout konnte nicht gestartet werden",
       cancelFailed: "Kündigung fehlgeschlagen",
+      withdrawalConsentHeading: "Sofortiger Beginn & Widerrufsrecht",
+      withdrawalReadMore: "Widerrufsbelehrung lesen",
+      withdrawalConsentRequired: "Bitte bestätige den sofortigen Beginn, um das Abo abzuschließen.",
       features: [
         {
           icon: "✉",
@@ -2194,6 +2208,10 @@ const en: Translations = {
       registerHint: "Register as a guest.",
       firstName: "First name",
       lastName: "Last name",
+      dateOfBirth: "Date of birth (DD.MM.YYYY)",
+      dateOfBirthHint: "We only use this to check that you are of age — venues never see your date of birth.",
+      dateOfBirthInvalid: "Please enter your date of birth as DD.MM.YYYY.",
+      dateOfBirthUnderage: "VELVET is for ages 18 and up. No account can be created with this date of birth.",
       email: "Email",
       password: "Password",
       submitLogin: "Sign in",
@@ -2391,6 +2409,9 @@ const en: Translations = {
       statusLoadFailed: "Couldn't load status",
       checkoutFailed: "Couldn't start checkout",
       cancelFailed: "Failed to cancel",
+      withdrawalConsentHeading: "Immediate start & right of withdrawal",
+      withdrawalReadMore: "Read the withdrawal policy",
+      withdrawalConsentRequired: "Please confirm the immediate start to complete the subscription.",
       features: [
         {
           icon: "✉",
@@ -3143,6 +3164,10 @@ const pl: Translations = {
       registerHint: "Zarejestruj się jako gość.",
       firstName: "Imię",
       lastName: "Nazwisko",
+      dateOfBirth: "Data urodzenia (DD.MM.RRRR)",
+      dateOfBirthHint: "Sprawdzamy tylko pełnoletność — lokale nie widzą Twojej daty urodzenia.",
+      dateOfBirthInvalid: "Podaj datę urodzenia w formacie DD.MM.RRRR.",
+      dateOfBirthUnderage: "VELVET jest dla osób od 18 lat. Z tą datą urodzenia nie można założyć konta.",
       email: "E-mail",
       password: "Hasło",
       submitLogin: "Zaloguj się",
@@ -3341,6 +3366,9 @@ const pl: Translations = {
       statusLoadFailed: "Nie udało się załadować statusu",
       checkoutFailed: "Nie udało się rozpocząć płatności",
       cancelFailed: "Nie udało się anulować",
+      withdrawalConsentHeading: "Natychmiastowy start a prawo odstąpienia",
+      withdrawalReadMore: "Przeczytaj pouczenie o odstąpieniu",
+      withdrawalConsentRequired: "Potwierdź natychmiastowy start, aby dokończyć subskrypcję.",
       features: [
         {
           icon: "✉",
@@ -4093,6 +4121,10 @@ const es: Translations = {
       registerHint: "Regístrate como invitado.",
       firstName: "Nombre",
       lastName: "Apellido",
+      dateOfBirth: "Fecha de nacimiento (DD.MM.AAAA)",
+      dateOfBirthHint: "Solo la usamos para comprobar que eres mayor de edad — los locales no ven tu fecha de nacimiento.",
+      dateOfBirthInvalid: "Introduce tu fecha de nacimiento como DD.MM.AAAA.",
+      dateOfBirthUnderage: "VELVET es para mayores de 18 años. No se puede crear una cuenta con esta fecha de nacimiento.",
       email: "Correo",
       password: "Contraseña",
       submitLogin: "Iniciar sesión",
@@ -4290,6 +4322,9 @@ const es: Translations = {
       statusLoadFailed: "No se pudo cargar el estado",
       checkoutFailed: "No se pudo iniciar el pago",
       cancelFailed: "Error al cancelar",
+      withdrawalConsentHeading: "Inicio inmediato y derecho de desistimiento",
+      withdrawalReadMore: "Leer la información sobre desistimiento",
+      withdrawalConsentRequired: "Confirma el inicio inmediato para completar la suscripción.",
       features: [
         {
           icon: "✉",

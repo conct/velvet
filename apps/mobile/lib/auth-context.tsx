@@ -38,7 +38,14 @@ interface AuthState {
   guestProfile: GuestProfile | null;
   staffProfile: StaffProfile | null;
   loginGuest: (email: string, password: string) => Promise<void>;
-  registerGuest: (data: { email: string; password: string; firstName: string; lastName: string }) => Promise<void>;
+  registerGuest: (data: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    /** Kalenderdatum als YYYY-MM-DD -- die API prüft daran das Mindestalter. */
+    dateOfBirth: string;
+  }) => Promise<void>;
   resendVerification: (email: string) => Promise<void>;
   loginStaff: (email: string, password: string) => Promise<void>;
   selectStaffVenue: (preAuthToken: string, venueId: string) => Promise<void>;

@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
+import { checkSignupDateOfBirth } from "@velvet/shared";
 import { prisma } from "../db";
 import { requireAuth, requireStaff } from "../middleware/auth";
 import { authRateLimit } from "../middleware/rateLimit";
@@ -63,6 +64,11 @@ const registerSchema = z.object({
   password: z.string().min(8),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
+  // Kalenderdatum als YYYY-MM-DD. Die Gäste-AGB (§ 2) setzen Volljährigkeit
+  // voraus; geprüft wird sie hier gegen das Geburtsdatum statt gegen eine
+  // Bestätigungs-Checkbox, damit später nachweisbar ist, welche Angabe bei
+  // der Registrierung gemacht wurde.
+  dateOfBirth: z.string().trim().min(1),
   phone: z.string().optional(),
 });
 
@@ -71,12 +77,18 @@ authRouter.post("/register", authRateLimit, async (req, res) => {
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { email, password, firstName, lastName, phone } = parsed.data;
 
+  const birthCheck = checkSignupDateOfBirth(parsed.data.dateOfBirth);
+  if (!birthCheck.ok) {
+    const key = birthCheck.reason === "underage" ? "auth.dateOfBirthUnderage" : "auth.dateOfBirthInvalid";
+    return res.status(400).json({ error: t(req.locale, key), code: birthCheck.reason === "underage" ? "UNDERAGE" : "INVALID_DATE_OF_BIRTH" });
+  }
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return res.status(409).json({ error: t(req.locale, "auth.emailAlreadyRegistered") });
 
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
-    data: { email, passwordHash, firstName, lastName, phone },
+    data: { email, passwordHash, firstName, lastName, phone, dateOfBirth: birthCheck.date },
   });
 
   await issueVerificationEmail(user, req.locale);

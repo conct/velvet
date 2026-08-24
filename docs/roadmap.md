@@ -25,26 +25,6 @@ akzeptierten Fassung unter `/admin/applications` und Übernahme auf die `Venue` 
 der Freigabe. Ohne diese Felder ist nicht nachweisbar, welcher Fassung eine Location
 zugestimmt hat.
 
-### Widerrufs-Zustimmung im Premium-Checkout
-**Status:** offen.
-
-Das Premium-Abo ist eine digitale Dienstleistung: Das Widerrufsrecht erlischt nur,
-wenn der Kunde vor dem sofortigen Start ausdrücklich zustimmt *und* bestätigt, dass er
-es dadurch verliert (§ 356 Abs. 5 BGB). Beides muss der Checkout abfragen und
-protokollieren, sonst läuft die 14-Tage-Frist trotz sofortiger Freischaltung weiter.
-Text steht unter `/widerruf`.
-
-### Mindestalter bei der Registrierung
-**Status:** blocked — Entscheidung von Daniel nötig.
-
-Die Gäste-AGB setzen Volljährigkeit voraus, technisch wird das Alter nirgends erfasst
-oder geprüft (`User` hat kein Geburtsdatum).
-
-**Offene Frage an Daniel:** Reicht eine Bestätigungs-Checkbox bei der Registrierung
-("Ich bin über 18"), oder soll ein Geburtsdatum erfasst und gespeichert werden? Ein
-gespeichertes Geburtsdatum ist beweiskräftiger, aber ein zusätzliches
-personenbezogenes Datum, das dann auch in Datenschutzerklärung und Löschkonzept muss.
-
 ### Anwaltliche Prüfung der Rechtstexte
 **Status:** blocked — liegt bei Daniel, nicht bei der Routine.
 
@@ -79,6 +59,19 @@ erteilten Hausverbot. Keine Code-Änderung nötig, die aktuelle Berechtigung
 
 ## Done
 
+- ~~Mindestalter bei der Registrierung~~ — Entscheidung von Daniel (2026-08-25):
+  Geburtsdatum erfassen statt bloßer Checkbox. Umgesetzt als `User.dateOfBirth`,
+  geprüft in `packages/shared/src/age.ts` (`checkSignupDateOfBirth`) — einmal in der
+  App, verbindlich in `POST /auth/register`. Datenschutzerklärung und Gäste-AGB § 2
+  sind mitgezogen; Details in „Mindestalter und Widerrufs-Zustimmung" in
+  `docs/deployment.md`.
+- ~~Widerrufs-Zustimmung im Premium-Checkout~~ — seit 2026-08-25: Pflicht-Checkbox
+  über den Bezahl-Buttons, protokolliert in `WithdrawalConsent` mit Wortlaut,
+  Sprachfassung und `TERMS_VERSION`. Ohne Zustimmung weist auch
+  `POST /subscriptions/checkout` ab, nicht nur die UI.
+- ~~Dashboard-UI für Manager-Nachrichten~~ — `/messages` im Dashboard, manager-only,
+  gegen die bestehenden `/messages/staff/*`-Endpunkte. Damit ist die Funktion auf
+  beiden Seiten bedienbar.
 - ~~Gast-App "Locations"-Liste zu lang~~ — gefiltert auf besuchte Standorte + Suche,
   live seit 2026-08-20.
 - ~~Teilen-Funktion mit QR-Code + Link~~ und ~~Chat erst nach Annahme~~ — Invite-Codes +

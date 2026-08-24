@@ -1,9 +1,16 @@
-import { colors, fonts, type BillingInterval, type PremiumStatus, type SubscriptionProvider } from "@velvet/shared";
+import {
+  colors,
+  fonts,
+  WITHDRAWAL_CONSENT_TEXT,
+  type BillingInterval,
+  type PremiumStatus,
+  type SubscriptionProvider,
+} from "@velvet/shared";
 import * as WebBrowser from "expo-web-browser";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Card, Divider, GoldButton, Heading, Label, Screen } from "../../components/ui";
+import { Card, Checkbox, Divider, GoldButton, Heading, Label, Screen } from "../../components/ui";
 import { ApiError, apiFetch } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useLocale } from "../../lib/locale-context";
@@ -25,12 +32,13 @@ async function openCheckoutUrl(url: string) {
 
 export default function Premium() {
   const { token } = useAuth();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [status, setStatus] = useState<PremiumStatus | null>(null);
   const [interval, setInterval] = useState<BillingInterval>("MONTH");
   const [loadingProvider, setLoadingProvider] = useState<SubscriptionProvider | null>(null);
   const [canceling, setCanceling] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
 
   const loadStatus = async () => {
     if (!token) return;
@@ -48,13 +56,20 @@ export default function Premium() {
 
   const startCheckout = async (provider: SubscriptionProvider) => {
     if (!token) return;
+    // Ohne die Zustimmung nach § 356 Abs. 5 BGB gar nicht erst losschicken --
+    // die API weist denselben Fall ab, aber hier lässt er sich ohne Umweg
+    // erklären.
+    if (!withdrawalConsent) {
+      setError(t.mobile.premium.withdrawalConsentRequired);
+      return;
+    }
     setError(null);
     setLoadingProvider(provider);
     try {
       const { checkoutUrl } = await apiFetch<{ checkoutUrl: string }>("/subscriptions/checkout", {
         method: "POST",
         token,
-        body: { provider, interval },
+        body: { provider, interval, withdrawalConsent: true, consentLocale: locale },
       });
       await openCheckoutUrl(checkoutUrl);
     } catch (e) {
@@ -136,19 +151,31 @@ export default function Premium() {
               })}
             </View>
 
+            <View style={styles.consentBox}>
+              <Label muted>{t.mobile.premium.withdrawalConsentHeading}</Label>
+              <View style={{ marginTop: 12 }}>
+                <Checkbox checked={withdrawalConsent} onChange={setWithdrawalConsent}>
+                  <Text style={styles.consentText}>{WITHDRAWAL_CONSENT_TEXT[locale]}</Text>
+                </Checkbox>
+              </View>
+              <Pressable onPress={() => router.push("/(auth)/widerruf")} style={{ marginTop: 12 }}>
+                <Text style={styles.consentLink}>{t.mobile.premium.withdrawalReadMore} →</Text>
+              </Pressable>
+            </View>
+
             <View style={{ marginTop: 24, gap: 12 }}>
               <GoldButton
                 title={`${t.mobile.premium.subscribeWithStripe} · ${PLAN_PRICING[interval].price}${PLAN_PRICING[interval].per}`}
                 onPress={() => startCheckout("STRIPE")}
                 loading={loadingProvider === "STRIPE"}
-                disabled={loadingProvider !== null}
+                disabled={loadingProvider !== null || !withdrawalConsent}
               />
               <GoldButton
                 title={`${t.mobile.premium.subscribeWithPaypal} · ${PLAN_PRICING[interval].price}${PLAN_PRICING[interval].per}`}
                 variant="outline"
                 onPress={() => startCheckout("PAYPAL")}
                 loading={loadingProvider === "PAYPAL"}
-                disabled={loadingProvider !== null}
+                disabled={loadingProvider !== null || !withdrawalConsent}
               />
             </View>
 
@@ -208,6 +235,16 @@ const styles = StyleSheet.create({
   planPer: { fontFamily: fonts.body, color: colors.textMuted, fontSize: 12, marginTop: 2 },
   planPerActive: { color: colors.textMuted },
   error: { fontFamily: fonts.body, color: colors.danger, fontSize: 13, marginTop: 16 },
+  consentBox: {
+    marginTop: 24,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 14,
+    padding: 16,
+    backgroundColor: colors.surface,
+  },
+  consentText: { fontFamily: fonts.body, color: colors.text, fontSize: 13, lineHeight: 19 },
+  consentLink: { fontFamily: fonts.bodyMedium, color: colors.gold, fontSize: 13 },
   note: { fontFamily: fonts.body, color: colors.textMuted, fontSize: 12, lineHeight: 18 },
   featureList: { marginTop: 28, gap: 12 },
   featureCard: {

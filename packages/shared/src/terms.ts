@@ -13,8 +13,8 @@ import { LEGAL_OPERATOR, type LegalSection } from "./legal";
 // ---------------------------------------------------------------------------
 
 export const TERMS_DRAFT = true;
-export const TERMS_VERSION = "2026-08-24-entwurf";
-export const TERMS_LAST_UPDATED = "24. August 2026";
+export const TERMS_VERSION = "2026-08-25-entwurf";
+export const TERMS_LAST_UPDATED = "25. August 2026";
 
 export const TERMS_DRAFT_NOTICE =
   `Entwurfsfassung vom ${TERMS_LAST_UPDATED}. Dieser Text ist noch nicht anwaltlich geprüft und dient als Arbeitsgrundlage. ` +

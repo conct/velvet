@@ -3,10 +3,25 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import Svg, { Path, Polyline } from "react-native-svg";
 import { Avatar, Card, Divider, GoldButton, Heading, Label, Screen, TierBadge } from "../../components/ui";
 import { ApiError, uploadGuestPhoto } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useLocale } from "../../lib/locale-context";
+
+// Abmelden liegt zusätzlich hier oben, weil der Knopf am Ende der Seite unter
+// Statuskarte, QR-Button, Premium- und Einladungs-Kachel verschwindet -- in
+// der nativen App war er dadurch praktisch nicht auffindbar. Gleiche Stelle
+// und gleiches Symbol wie im Türsteher-Screen.
+function LogoutIcon() {
+  return (
+    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={colors.textMuted} strokeWidth={1.8}>
+      <Path strokeLinecap="round" strokeLinejoin="round" d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+      <Polyline points="16 17 21 12 16 7" fill="none" stroke={colors.textMuted} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      <Path strokeLinecap="round" strokeLinejoin="round" d="M21 12H9" />
+    </Svg>
+  );
+}
 
 export default function GuestHome() {
   const { token, guestProfile, refreshGuestProfile, deleteAccount, logout } = useAuth();
@@ -84,8 +99,15 @@ export default function GuestHome() {
         contentContainerStyle={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.gold} />}
       >
-        <Label muted>{t.mobile.home.welcomeBack}</Label>
-        <Heading>{guestProfile.firstName}</Heading>
+        <View style={styles.headerRow}>
+          <View style={{ flex: 1 }}>
+            <Label muted>{t.mobile.home.welcomeBack}</Label>
+            <Heading>{guestProfile.firstName}</Heading>
+          </View>
+          <Pressable onPress={() => logout()} hitSlop={12} accessibilityLabel={t.mobile.home.logout} style={styles.headerLogout}>
+            <LogoutIcon />
+          </Pressable>
+        </View>
 
         <View style={styles.avatarRow}>
           <Avatar uri={guestProfile.photoUrl} name={guestProfile.firstName} size={72} />
@@ -139,6 +161,8 @@ export default function GuestHome() {
 
 const styles = StyleSheet.create({
   container: { padding: 24, paddingTop: 60, paddingBottom: 60 },
+  headerRow: { flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" },
+  headerLogout: { marginTop: 4 },
   avatarRow: { flexDirection: "row", alignItems: "center", gap: 16, marginTop: 20 },
   photoLink: { fontFamily: fonts.bodyMedium, color: colors.gold, fontSize: 13 },
   uploadingText: { fontFamily: fonts.body, color: colors.textMuted, fontSize: 12, marginTop: 8 },

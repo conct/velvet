@@ -126,6 +126,37 @@ export function PasswordInput(props: TextInputProps) {
   );
 }
 
+export function Checkbox({
+  checked,
+  onChange,
+  children,
+  accessibilityLabel,
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  children: ReactNode;
+  accessibilityLabel?: string;
+}) {
+  return (
+    <Pressable
+      onPress={() => onChange(!checked)}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked }}
+      accessibilityLabel={accessibilityLabel}
+      style={styles.checkboxRow}
+    >
+      <View style={[styles.checkboxBox, checked && styles.checkboxBoxChecked]}>
+        {checked && (
+          <Svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={colors.background} strokeWidth={3}>
+            <Path strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
+          </Svg>
+        )}
+      </View>
+      <View style={{ flex: 1 }}>{children}</View>
+    </Pressable>
+  );
+}
+
 export function TierBadge({ tier, size = "md" }: { tier: string; size?: "sm" | "md" | "lg" }) {
   const { t } = useLocale();
   const color = tierColors[tier] ?? colors.textMuted;
@@ -155,6 +186,19 @@ export function Avatar({ uri, name, size = 64 }: { uri?: string | null; name: st
 }
 
 const styles = StyleSheet.create({
+  checkboxRow: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
+  checkboxBox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
+  },
+  checkboxBoxChecked: { backgroundColor: colors.gold, borderColor: colors.gold },
   screen: { flex: 1, backgroundColor: colors.background },
   langFlag: {
     borderRadius: radii.pill,

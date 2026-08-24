@@ -418,14 +418,52 @@ Die vier neuen Texte sind **Entwürfe ohne anwaltliche Prüfung**. Gesteuert wir
 ist, blenden alle vier Seiten (Web und App) einen Hinweisbalken ein. Nach der Prüfung
 `TERMS_DRAFT` auf `false` setzen und `TERMS_VERSION` hochzählen.
 
-`TERMS_VERSION` ist bewusst schon vorhanden, obwohl noch nichts sie speichert: Sobald
-die Zustimmung einer Location erfasst wird (Roadmap-Punkt), ist sie der Wert, der
-zusammen mit dem Zeitpunkt abgelegt wird — sonst ist später nicht nachweisbar, welcher
-Fassung zugestimmt wurde.
+`TERMS_VERSION` wird bereits gespeichert: Der Premium-Checkout legt sie zusammen mit
+der Widerrufs-Zustimmung ab (siehe unten). Für die Zustimmung einer Location zu den
+Nutzungsbedingungen steht dieselbe Verwendung noch aus (Roadmap-Punkt) — ohne die
+Version ist später nicht nachweisbar, welcher Fassung zugestimmt wurde.
+
+**Nach einer Textänderung `TERMS_VERSION` hochzählen**, auch im Entwurfsstadium. Die
+Konstante hängt an zwei Stellen, die den Wortlaut protokollieren, und ein
+unveränderter Versionsstring nach geändertem Text macht genau diesen Nachweis wertlos.
 
 Nach jeder Textänderung `npm run build --workspace=@velvet/shared`, sonst zeigen die
 Apps den alten Stand. Betrifft eine Änderung die App-Texte, wirkt sie im Web-Export
 sofort, in der nativen App aber erst mit dem nächsten EAS-Build.
+
+## Mindestalter und Widerrufs-Zustimmung
+
+Zwei Erhebungen, die es nur wegen der Rechtslage gibt, mit demselben Muster: Es wird
+nicht nur „hat zugestimmt" gespeichert, sondern das, worauf sich die Angabe bezog.
+
+**Geburtsdatum bei der Registrierung.** `User.dateOfBirth`, gefüllt von
+`POST /auth/register`. Die Prüfung steht in `packages/shared/src/age.ts`
+(`checkSignupDateOfBirth`) und läuft zweimal: einmal in der App, damit ein Tippfehler
+ohne Netzwerk-Roundtrip auffällt, und einmal in der API als verbindliche Instanz.
+Unter 18 gibt es 400 mit `code: "UNDERAGE"`. Die Spalte ist nullable, weil Konten aus
+der Zeit davor keins haben — deren AGB-Zustimmung deckte die Volljährigkeit bereits
+ab, nachträglich abgefragt wird nichts. Das Geburtsdatum ist für Locations nirgends
+sichtbar; es taucht in keiner Gäste-Ansicht und in keinem Scan-Ergebnis auf.
+
+**Widerrufs-Zustimmung im Premium-Checkout.** § 356 Abs. 5 BGB lässt das
+Widerrufsrecht bei einer digitalen Dienstleistung nur erlöschen, wenn ausdrücklich
+dem sofortigen Beginn zugestimmt *und* die Kenntnis vom Verlust bestätigt wurde.
+Beides steckt in einer Pflicht-Checkbox über den beiden Bezahl-Buttons
+(`apps/mobile/app/(guest)/premium.tsx`); ohne Haken sind die Buttons deaktiviert, und
+`POST /subscriptions/checkout` weist die Anfrage zusätzlich mit
+`code: "WITHDRAWAL_CONSENT_REQUIRED"` ab.
+
+Protokolliert wird in `WithdrawalConsent`: Zahlungsanbieter, Laufzeit, `TERMS_VERSION`,
+die Sprachfassung **und der volle Wortlaut**, den die Person gesehen hat
+(`WITHDRAWAL_CONSENT_TEXT[locale]` in `guest-terms.ts`). Der Wortlaut wird kopiert und
+nicht nur referenziert — sonst würde eine spätere Textänderung rückwirkend behaupten,
+jemand hätte etwas anderem zugestimmt. Angelegt wird der Datensatz **vor** der
+Weiterleitung zum Zahlungsdienstleister: Die Erklärung ist mit dem Klick abgegeben,
+unabhängig davon, ob der Checkout danach durchläuft. Bei einer Kontolöschung wird sie
+mitgelöscht (`DELETE /users/me`).
+
+Das Schema-Update ist rein additiv (`User.dateOfBirth`, neue Tabelle
+`WithdrawalConsent`), also ein normaler `prisma db push`.
 
 ## Rollen im Staff-Bereich
 

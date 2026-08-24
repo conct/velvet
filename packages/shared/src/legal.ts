@@ -64,13 +64,15 @@ export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
   {
     heading: "Welche Daten VELVET verarbeitet",
     paragraphs: [
-      "Registrierung & Login: E-Mail-Adresse, Passwort (ausschließlich als Hash gespeichert, im Klartext nicht einsehbar), Vor- und Nachname.",
+      "Registrierung & Login: E-Mail-Adresse, Passwort (ausschließlich als Hash gespeichert, im Klartext nicht einsehbar), Vor- und Nachname sowie das Geburtsdatum.",
+      "Geburtsdatum: bei der Registrierung erhoben, um das in den Nutzungsbedingungen vorausgesetzte Mindestalter von 18 Jahren zu prüfen und nachweisen zu können. Es ist für teilnehmende Locations nicht sichtbar und wird zu keinem anderen Zweck verwendet.",
       "Profilfoto: freiwillig hochgeladen, dient der Identifikation am Einlass.",
       "Bewertungen & Status: von Türsteher:innen vergebene Sterne-Bewertung und Merkmale (z. B. „Freundlich“, „Ärger gemacht“), daraus errechneter globaler Status und Score.",
       "Einlass-Historie: Zeitpunkt und Location eines QR-Scans am Einlass.",
       "Interne Notizen: standortbezogene Vermerke des Personals, für Gäste nicht einsehbar.",
       "Team-Zugänge: E-Mail-Adresse, Name und Rolle von Mitarbeitenden teilnehmender Locations.",
       "Premium-Abonnement: Abo-Status, Laufzeit und Zahlungsanbieter (nicht die Zahlungsdaten selbst, siehe unten).",
+      "Widerrufs-Zustimmung: beim Abschluss eines Premium-Abos der Wortlaut der Zustimmung zum sofortigen Beginn, die gewählte Sprachfassung, Zahlungsanbieter, Laufzeit und Zeitpunkt — als Nachweis nach § 356 Abs. 5 BGB.",
       "Private Nachrichten: Inhalte von Nachrichten zwischen Premium-Mitgliedern, die sich am selben Abend in derselben Location aufgehalten haben.",
     ],
   },
@@ -102,6 +104,7 @@ export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
     paragraphs: [
       "Für das kostenpflichtige Premium-Abonnement (monatlich oder jährlich) bieten wir Zahlungen über Stripe und PayPal an. Zahlungsdaten (z. B. Kartennummern oder PayPal-Zugangsdaten) werden ausschließlich von Stripe bzw. PayPal als Zahlungsdienstleister verarbeitet — VELVET selbst sieht oder speichert diese Daten nicht, sondern erhält von Stripe/PayPal nur den Abo-Status, die Laufzeit (monatlich/jährlich) und das Verlängerungsdatum.",
       "Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Erfüllung des Abo-Vertrags). Stripe und PayPal agieren dabei als eigenständige Verantwortliche bzw. Auftragsverarbeiter außerhalb des VELVET-Standortnetzwerks; je nach vertraglicher Konstellation kann dies eine Datenübermittlung außerhalb der EU einschließen — Details entnehmen Sie den Datenschutzhinweisen von Stripe und PayPal.",
+      "Vor dem Abschluss fragt der Checkout ausdrücklich ab, ob die Leistung sofort — also vor Ablauf der 14-tägigen Widerrufsfrist — beginnen soll und ob die Kenntnis vom Erlöschen des Widerrufsrechts bestätigt wird (§ 356 Abs. 5 BGB). Diese Erklärung wird mit dem angezeigten Wortlaut, der Sprachfassung und dem Zeitpunkt gespeichert; Rechtsgrundlage ist Art. 6 Abs. 1 lit. c DSGVO (rechtliche Verpflichtung) in Verbindung mit dem berechtigten Interesse an der Beweisbarkeit nach Art. 6 Abs. 1 lit. f DSGVO. Die Aufzeichnung wird mit dem Konto gelöscht.",
     ],
   },
   {

@@ -1,4 +1,4 @@
-import { colors, fonts } from "@velvet/shared";
+import { checkSignupDateOfBirth, colors, fonts } from "@velvet/shared";
 import { router } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -10,6 +10,21 @@ import { useLocale } from "../../lib/locale-context";
 import { getItem, deleteItem } from "../../lib/storage";
 import { PENDING_INVITE_CODE_KEY } from "../../lib/invite-storage";
 
+// Das Geburtsdatum wird als TT.MM.JJJJ getippt und als YYYY-MM-DD an die API
+// geschickt. Bewusst ein Textfeld statt eines Date-Pickers: ein Jahrgang wie
+// 1987 ist im Kalender-Rad eine lange Wischerei, und dasselbe Feld muss auch
+// im Web-Export funktionieren.
+function formatDateInput(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 8);
+  const parts = [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 8)].filter((p) => p.length > 0);
+  return parts.join(".");
+}
+
+function toIsoDate(input: string): string | null {
+  const match = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(input);
+  return match ? `${match[3]}-${match[2]}-${match[1]}` : null;
+}
+
 export default function GuestLogin() {
   const { loginGuest, registerGuest, resendVerification } = useAuth();
   const { t } = useLocale();
@@ -18,6 +33,7 @@ export default function GuestLogin() {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [needsVerification, setNeedsVerification] = useState(false);
@@ -40,7 +56,20 @@ export default function GuestLogin() {
           router.replace("/(guest)");
         }
       } else {
-        await registerGuest({ email: email.trim(), password, firstName, lastName });
+        // Vorabprüfung, damit ein Tippfehler oder ein zu junger Jahrgang nicht
+        // erst nach dem Netzwerk-Roundtrip auffällt. Die API prüft dasselbe
+        // noch einmal -- sie ist die verbindliche Instanz.
+        const iso = toIsoDate(dateOfBirth);
+        const check = iso ? checkSignupDateOfBirth(iso) : null;
+        if (!check || !check.ok) {
+          setError(
+            check && check.reason === "underage"
+              ? t.mobile.guestLogin.dateOfBirthUnderage
+              : t.mobile.guestLogin.dateOfBirthInvalid
+          );
+          return;
+        }
+        await registerGuest({ email: email.trim(), password, firstName, lastName, dateOfBirth: iso! });
         setInfo(t.mobile.guestLogin.registerSuccess);
         setMode("login");
       }
@@ -84,6 +113,14 @@ export default function GuestLogin() {
               <>
                 <Input placeholder={t.mobile.guestLogin.firstName} value={firstName} onChangeText={setFirstName} />
                 <Input placeholder={t.mobile.guestLogin.lastName} value={lastName} onChangeText={setLastName} />
+                <Input
+                  placeholder={t.mobile.guestLogin.dateOfBirth}
+                  value={dateOfBirth}
+                  onChangeText={(value) => setDateOfBirth(formatDateInput(value))}
+                  keyboardType="number-pad"
+                  maxLength={10}
+                />
+                <Text style={styles.fieldHint}>{t.mobile.guestLogin.dateOfBirthHint}</Text>
               </>
             )}
             <Input placeholder={t.mobile.guestLogin.email} value={email} onChangeText={setEmail} keyboardType="email-address" />
@@ -131,6 +168,7 @@ const styles = StyleSheet.create({
   container: { padding: 28, paddingTop: 80, gap: 6 },
   hint: { fontFamily: fonts.body, color: colors.textMuted, fontSize: 14, marginBottom: 24 },
   form: { gap: 12 },
+  fieldHint: { fontFamily: fonts.body, color: colors.textMuted, fontSize: 12, lineHeight: 17, marginTop: -4 },
   error: { fontFamily: fonts.body, color: colors.danger, marginTop: 14 },
   info: { fontFamily: fonts.body, color: colors.gold, marginTop: 14 },
   actions: { marginTop: 28, gap: 16 },

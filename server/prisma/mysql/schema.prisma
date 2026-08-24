@@ -17,6 +17,7 @@ model User {
   photoUrl         String?   @db.Text
   photoConfirmedAt DateTime?
   emailVerifiedAt  DateTime?
+  dateOfBirth      DateTime?
   // Marks a sandbox account (app-store reviewers, internal test logins).
   // Demo and production are kept as two disjoint worlds -- see
   // server/src/lib/demo.ts for what that means on both the read and the
@@ -35,6 +36,7 @@ model User {
   inviteCode             UserInviteCode?
   connectionsSent        ConnectionRequest[] @relation("ConnectionInvitee")
   connectionsReceived    ConnectionRequest[] @relation("ConnectionInviter")
+  withdrawalConsents     WithdrawalConsent[]
 }
 
 model Venue {
@@ -286,4 +288,23 @@ model VenueApplication {
   createdAt      DateTime  @default(now())
 
   @@index([status, createdAt])
+}
+
+// Zustimmung zum sofortigen Beginn des Premium-Abos, erhoben im Checkout.
+// Gespeichert wird der Wortlaut, den die Person tatsächlich gesehen hat, samt
+// Sprachfassung und Textversion -- ohne das ist nach einer Textänderung nicht
+// mehr belegbar, worauf sich die Zustimmung nach § 356 Abs. 5 BGB bezog.
+model WithdrawalConsent {
+  id          String   @id @default(cuid())
+  userId      String
+  provider    String // "STRIPE" | "PAYPAL"
+  interval    String // "MONTH" | "YEAR"
+  version     String
+  locale      String
+  text        String   @db.Text
+  consentedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
