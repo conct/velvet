@@ -247,6 +247,48 @@ export async function sendCustomEmail(to: string, subject: string, bodyText: str
   });
 }
 
+// Mirrors an in-app message as a real email to the recipient's registered
+// address, so a reply from their normal mail client loops back into the app
+// via the IMAP relay watcher (see lib/relay.ts / relay-watcher.ts). The
+// envelope From stays the fixed, authenticated mail@ box -- SPF/DKIM only
+// align for that address, and Uberspace's SMTP would likely reject or flag a
+// From: header for a different local-part anyway. Reply-To carries the
+// sender's personal <code>@velvet-network.app relay address instead, so
+// "Reply" in a normal mail client still routes back correctly without
+// needing to spoof anything.
+export async function sendRelayMessageMail(opts: {
+  to: string;
+  replyToAddress: string;
+  senderName: string;
+  bodyText: string;
+  locale: Locale;
+}) {
+  const transport = getTransporter();
+  if (!transport) {
+    console.warn(`SMTP not configured — relay mail to ${opts.to} was not sent`);
+    return;
+  }
+
+  const html = wrapBrandedEmail(`
+    <p style="margin:0 0 12px;color:${THEME.text};"><b>${escapeHtml(opts.senderName)}</b> ${t(opts.locale, "mail.relay.wroteYou")}</p>
+    ${renderCustomBody(opts.bodyText)}
+    <p style="margin:24px 0 0;color:${THEME.textMuted};font-size:13px;">${t(opts.locale, "mail.relay.replyHint")}</p>
+  `);
+
+  const from = process.env.SMTP_FROM ?? "VELVET <mail@velvet-network.app>";
+  await transport.sendMail({
+    from,
+    replyTo: `"${opts.senderName}" <${opts.replyToAddress}>`,
+    to: opts.to,
+    subject: t(opts.locale, "mail.relay.subject", { name: opts.senderName }),
+    text: [`${opts.senderName} ${t(opts.locale, "mail.relay.wroteYouPlain")}`, "", opts.bodyText, "", t(opts.locale, "mail.relay.replyHint")].join(
+      "\n"
+    ),
+    html,
+    attachments: [{ filename: "velvet-logo.png", content: LOGO_BUFFER, cid: LOGO_CID }],
+  });
+}
+
 export async function sendVerificationEmail(to: string, verifyUrl: string, locale: Locale) {
   const html = wrapBrandedEmail(`
     <p style="margin:0 0 4px;color:${THEME.text};">${t(locale, "mail.verification.intro")}</p>

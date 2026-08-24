@@ -75,6 +75,10 @@ interface Translations {
   "mail.verification.intro": string;
   "mail.verification.cta": string;
   "mail.verification.disclaimer": string;
+  "mail.relay.subject": string;
+  "mail.relay.wroteYou": string;
+  "mail.relay.wroteYouPlain": string;
+  "mail.relay.replyHint": string;
 }
 
 const de: Translations = {
@@ -141,6 +145,10 @@ const de: Translations = {
     "Willkommen bei VELVET! Bestätige deine E-Mail-Adresse über den folgenden Link, bevor du dich einloggen kannst. Der Link ist 24 Stunden gültig.",
   "mail.verification.cta": "E-Mail-Adresse bestätigen",
   "mail.verification.disclaimer": "Wenn du dich nicht registriert hast, kannst du diese E-Mail einfach ignorieren.",
+  "mail.relay.subject": "Neue Nachricht von {name} auf VELVET",
+  "mail.relay.wroteYou": "hat dir auf VELVET geschrieben:",
+  "mail.relay.wroteYouPlain": "hat dir auf VELVET geschrieben:",
+  "mail.relay.replyHint": "Antworte einfach auf diese E-Mail, um direkt zu antworten — oder logg dich in der VELVET-App ein.",
 };
 
 const en: Translations = {
@@ -207,6 +215,10 @@ const en: Translations = {
     "Welcome to VELVET! Confirm your email address using the link below before you can log in. It's valid for 24 hours.",
   "mail.verification.cta": "Confirm email address",
   "mail.verification.disclaimer": "If you didn't sign up, you can safely ignore this email.",
+  "mail.relay.subject": "New message from {name} on VELVET",
+  "mail.relay.wroteYou": "sent you a message on VELVET:",
+  "mail.relay.wroteYouPlain": "sent you a message on VELVET:",
+  "mail.relay.replyHint": "Just reply to this email to respond directly — or sign in to the VELVET app.",
 };
 
 const dictionaries: Record<Locale, Translations> = { de, en };

@@ -4,27 +4,12 @@ import { z } from "zod";
 import { prisma } from "../db";
 import { requireAuth, requireUser } from "../middleware/auth";
 import { t } from "../lib/i18n";
+import { getOrCreateInviteCode } from "../lib/invite-code";
 
 export const invitesRouter = Router();
 
 function generateInviteCode(): string {
   return crypto.randomBytes(6).toString("base64url");
-}
-
-async function getOrCreateInviteCode(userId: string) {
-  const existing = await prisma.userInviteCode.findUnique({ where: { userId } });
-  if (existing) return existing;
-
-  // Extremely unlikely to collide (base64url of 6 random bytes), but retry
-  // on the off chance rather than letting a unique-constraint error bubble up.
-  for (let attempt = 0; attempt < 5; attempt++) {
-    try {
-      return await prisma.userInviteCode.create({ data: { userId, code: generateInviteCode() } });
-    } catch {
-      continue;
-    }
-  }
-  throw new Error("Could not generate a unique invite code");
 }
 
 invitesRouter.get("/me", requireAuth, requireUser, async (req, res) => {

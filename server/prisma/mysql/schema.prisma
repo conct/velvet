@@ -149,6 +149,15 @@ model Message {
   readAt                  DateTime?
   reportedAt              DateTime?
   reportReason            String?   @db.Text
+  // Set instead of senderId when a message arrived via the email relay from
+  // someone whose From: address didn't match any registered User.email --
+  // e.g. mail forwarded to a third party who then replied. senderId and
+  // these two are mutually exclusive in practice, never both set.
+  externalSenderEmail     String?
+  externalSenderName      String?
+  // True for messages that arrived via the personalized-email relay's IMAP
+  // watcher rather than the in-app composer.
+  viaEmailRelay           Boolean   @default(false)
 
   sender                User?         @relation("MessagesSent", fields: [senderId], references: [id])
   senderStaffAccount    StaffAccount? @relation("StaffMessagesSent", fields: [senderStaffAccountId], references: [id])

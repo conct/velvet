@@ -149,6 +149,9 @@ model Message {
   readAt                  DateTime?
   reportedAt              DateTime?
   reportReason            String?
+  externalSenderEmail     String?
+  externalSenderName      String?
+  viaEmailRelay           Boolean   @default(false)
 
   sender                User?         @relation("MessagesSent", fields: [senderId], references: [id])
   senderStaffAccount    StaffAccount? @relation("StaffMessagesSent", fields: [senderStaffAccountId], references: [id])

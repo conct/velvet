@@ -6,6 +6,7 @@ import { isPremium } from "../lib/premium";
 import { canMessage, canStaffMessage, findSharedNightCandidates } from "../lib/messaging";
 import { getUserTrust } from "../lib/trust";
 import { t } from "../lib/i18n";
+import { mirrorMessageAsEmail } from "../lib/relay";
 
 export const messagesRouter = Router();
 
@@ -143,6 +144,7 @@ messagesRouter.post("/thread/:userId", requireAuth, requireUser, async (req, res
     data: { senderId: userId, recipientId: counterpartId, body: parsed.data.body },
   });
   res.status(201).json(message);
+  void mirrorMessageAsEmail({ senderId: userId, recipientId: counterpartId, body: parsed.data.body });
 });
 
 // Guest side of a staff-initiated conversation (e.g. a manager's invite).
