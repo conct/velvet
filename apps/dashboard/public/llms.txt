@@ -6,9 +6,10 @@
 > bei null anzufangen.
 
 VELVET ersetzt die Papierliste und das Bauchgefühl am Einlass durch ein digitales
-Gästeprofil, das standortübergreifend gilt. Ein an einer Location vergebenes
-Hausverbot oder VIP-Status ist an jeder anderen teilnehmenden Tür im Netzwerk
-sichtbar.
+Gästeprofil, das standortübergreifend gilt. Hausverbot und VIP-Status werden je
+Location vergeben und sind dort auch nur sichtbar; netzwerkweit wirkt ein
+Hausverbot erst, wenn zwei unabhängige Locations dieselbe Person sperren. Was
+jede Tür dagegen sofort sieht, ist der netzwerkweite Vertrauens-Score.
 
 ## Für wen
 

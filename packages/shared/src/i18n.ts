@@ -855,7 +855,7 @@ const de: Translations = {
       { tier: "TRUSTED", body: "Bevorzugter Einlass. Verlässlich guter Eindruck, als Stammgast erkannt." },
       { tier: "STANDARD", body: "Regulärer Einlass. Der Ausgangspunkt für jedes neue Profil." },
       { tier: "WATCH", body: "Genauer hingeschaut. Einlass liegt im Ermessen der Tür." },
-      { tier: "BANNED", body: "Netzwerkweite Sperre. Ein Hausverbot an einem Standort ist an jeder Tür im Netzwerk sichtbar." },
+      { tier: "BANNED", body: "Netzwerkweite Sperre. Sie greift erst, wenn zwei unabhängige Locations dieselbe Person gesperrt haben — ein einzelnes Hausverbot bleibt Sache des Hauses, das es erteilt hat." },
     ],
 
     downloadEyebrow: "Gast-App",
@@ -1204,7 +1204,7 @@ const de: Translations = {
         "VELVET ist ein geteiltes Vertrauensnetzwerk für den Türstand: Gäste bauen sich eine Reputation auf, die über einen einzelnen Club hinausreicht.",
       longLabel: "Lang — ein Absatz",
       longText:
-        "VELVET ersetzt die Papierliste und das Bauchgefühl am Einlass durch ein digitales Gästeprofil, das standortübergreifend gilt. Gäste legen ein Profil mit Foto an und zeigen an der Tür einen QR-Code. Türsteher sehen beim Scan sofort Foto, Status und Vorgeschichte — auch aus anderen Häusern im Netzwerk. Ein an einer Location vergebenes Hausverbot ist damit an jeder anderen teilnehmenden Tür sichtbar, und Betreiber fangen nicht jeden Abend bei null an.",
+        "VELVET ersetzt die Papierliste und das Bauchgefühl am Einlass durch ein digitales Gästeprofil, das standortübergreifend gilt. Gäste legen ein Profil mit Foto an und zeigen an der Tür einen QR-Code. Türsteher sehen beim Scan Foto, den netzwerkweiten Status und die Vorgeschichte im eigenen Haus. Ein Hausverbot bleibt dabei zunächst Sache der Location, die es erteilt hat — erst wenn zwei unabhängige Häuser dieselbe Person sperren, wirkt es im ganzen Netzwerk. So profitieren Betreiber vom Wissen der anderen, ohne dass ein einzelner Streit jemanden überall aussperrt.",
       copyButton: "Text kopieren",
       copiedButton: "Kopiert",
       logosHeading: "Logos",
@@ -1675,7 +1675,7 @@ const de: Translations = {
           {
             n: "04",
             title: "Verdientes Vertrauen bleibt erhalten",
-            body: "Ein Gast muss sich in einer neuen Location nicht neu beweisen — guter Ruf reist mit. Umgekehrt ist ein Hausverbot an einem Standort ebenso netzwerkweit sichtbar, bevor der Gast an eine andere Tür kommt.",
+            body: "Ein Gast muss sich in einer neuen Location nicht neu beweisen — guter Ruf reist mit. Umgekehrt zählt ein Hausverbot mit: sperren zwei unabhängige Locations dieselbe Person, ist das an jeder Tür sichtbar, bevor der Gast dort ankommt.",
           },
         ],
       },
@@ -1855,7 +1855,7 @@ const en: Translations = {
       { tier: "TRUSTED", body: "Priority entry. Reliably good impression, recognized as a regular." },
       { tier: "STANDARD", body: "Regular entry. The starting point for every new profile." },
       { tier: "WATCH", body: "Extra scrutiny. Entry is at the door's discretion." },
-      { tier: "BANNED", body: "Network-wide ban. A ban at one location is visible at every door in the network." },
+      { tier: "BANNED", body: "Network-wide ban. It only takes effect once two independent venues have banned the same person — a single ban stays with the venue that issued it." },
     ],
 
     downloadEyebrow: "Guest app",
@@ -2204,7 +2204,7 @@ const en: Translations = {
         "VELVET is a shared trust network for the door: guests build a reputation that reaches beyond any single club.",
       longLabel: "Long — one paragraph",
       longText:
-        "VELVET replaces the paper list and the gut call at the door with a digital guest profile that travels between venues. Guests set up a profile with a photo and show a QR code at the entrance. Door staff scan it and immediately see the photo, the status and the history — including from other venues in the network. A ban issued at one location is visible at every other participating door, so operators no longer start from scratch each night.",
+        "VELVET replaces the paper list and the gut call at the door with a digital guest profile that travels between venues. Guests set up a profile with a photo and show a QR code at the entrance. Door staff scan it and see the photo, the network-wide standing, and the history at their own venue. A ban stays with the venue that issued it — only when two independent venues ban the same person does it take effect across the network. Operators gain from what the others know, without one dispute locking someone out everywhere.",
       copyButton: "Copy text",
       copiedButton: "Copied",
       logosHeading: "Logos",
@@ -2674,7 +2674,7 @@ const en: Translations = {
           {
             n: "04",
             title: "Earned trust carries over",
-            body: "A guest doesn't have to prove themselves again at a new location — a good reputation travels with them. Conversely, a ban at one location is just as visible network-wide before the guest reaches another door.",
+            body: "A guest doesn't have to prove themselves again at a new location — a good reputation travels with them. Bans count too: once two independent venues have banned the same person, every door sees it before the guest arrives.",
           },
         ],
       },
@@ -2854,7 +2854,7 @@ const pl: Translations = {
       { tier: "TRUSTED", body: "Priorytetowe wejście. Niezmiennie dobre wrażenie, rozpoznawany jako stały gość." },
       { tier: "STANDARD", body: "Standardowe wejście. Punkt startowy dla każdego nowego profilu." },
       { tier: "WATCH", body: "Dokładniejsza obserwacja. Wejście zależy od decyzji ochrony." },
-      { tier: "BANNED", body: "Blokada w całej sieci. Zakaz w jednym lokalu jest widoczny przy każdych drzwiach w sieci." },
+      { tier: "BANNED", body: "Blokada w całej sieci. Działa dopiero, gdy dwa niezależne lokale zablokowały tę samą osobę — pojedynczy zakaz pozostaje sprawą lokalu, który go wydał." },
     ],
 
     downloadEyebrow: "Aplikacja dla gości",
@@ -3203,7 +3203,7 @@ const pl: Translations = {
         "VELVET to wspólna sieć zaufania dla wejścia do klubu: goście budują reputację, która sięga poza pojedynczy lokal.",
       longLabel: "Dłużej — jeden akapit",
       longText:
-        "VELVET zastępuje papierową listę i przeczucie przy wejściu cyfrowym profilem gościa, który działa w wielu lokalach. Goście zakładają profil ze zdjęciem i pokazują przy drzwiach kod QR. Ochrona skanuje go i od razu widzi zdjęcie, status i historię — również z innych lokali w sieci. Zakaz wstępu wydany w jednym miejscu jest widoczny przy każdych innych drzwiach w sieci, więc właściciele nie zaczynają co wieczór od zera.",
+        "VELVET zastępuje papierową listę i przeczucie przy wejściu cyfrowym profilem gościa, który działa w wielu lokalach. Goście zakładają profil ze zdjęciem i pokazują przy drzwiach kod QR. Ochrona skanuje go i widzi zdjęcie, status w całej sieci oraz historię we własnym lokalu. Zakaz wstępu pozostaje najpierw sprawą lokalu, który go wydał — dopiero gdy dwa niezależne lokale zablokują tę samą osobę, działa w całej sieci. Właściciele korzystają z wiedzy innych, a pojedynczy spór nie zamyka nikomu drzwi wszędzie.",
       copyButton: "Kopiuj tekst",
       copiedButton: "Skopiowano",
       logosHeading: "Logotypy",
@@ -3674,7 +3674,7 @@ const pl: Translations = {
           {
             n: "04",
             title: "Zdobyte zaufanie zostaje",
-            body: "Gość nie musi udowadniać niczego od nowa w nowym lokalu — dobra reputacja podróżuje razem z nim. I odwrotnie, zakaz wstępu w jednym lokalu jest równie widoczny w całej sieci, zanim gość dotrze do innych drzwi.",
+            body: "Gość nie musi udowadniać niczego od nowa w nowym lokalu — dobra reputacja podróżuje razem z nim. Zakazy też się liczą: gdy dwa niezależne lokale zablokują tę samą osobę, widzą to wszystkie drzwi, zanim gość do nich dotrze.",
           },
         ],
       },
@@ -3854,7 +3854,7 @@ const es: Translations = {
       { tier: "TRUSTED", body: "Entrada prioritaria. Buena impresión de forma fiable, reconocido como habitual." },
       { tier: "STANDARD", body: "Entrada regular. El punto de partida de todo perfil nuevo." },
       { tier: "WATCH", body: "Vigilancia adicional. La entrada queda a criterio de la puerta." },
-      { tier: "BANNED", body: "Veto en toda la red. Un veto en un local es visible en cada puerta de la red." },
+      { tier: "BANNED", body: "Veto en toda la red. Solo surte efecto cuando dos locales independientes han vetado a la misma persona — un veto aislado sigue siendo cosa del local que lo emitió." },
     ],
 
     downloadEyebrow: "App para invitados",
@@ -4203,7 +4203,7 @@ const es: Translations = {
         "VELVET es una red de confianza compartida para la puerta: los invitados construyen una reputación que va más allá de un solo local.",
       longLabel: "Largo — un párrafo",
       longText:
-        "VELVET sustituye la lista en papel y la intuición en la puerta por un perfil digital del invitado que funciona entre locales. Los invitados crean un perfil con foto y muestran un código QR en la entrada. El personal lo escanea y ve al instante la foto, el estado y el historial — también el de otros locales de la red. Un veto emitido en un local es visible en cualquier otra puerta participante, de modo que los responsables no empiezan de cero cada noche.",
+        "VELVET sustituye la lista en papel y la intuición en la puerta por un perfil digital del invitado que funciona entre locales. Los invitados crean un perfil con foto y muestran un código QR en la entrada. El personal lo escanea y ve la foto, el estado en toda la red y el historial en su propio local. Un veto sigue siendo cosa del local que lo emitió — solo cuando dos locales independientes vetan a la misma persona surte efecto en toda la red. Los responsables aprovechan lo que saben los demás, sin que una sola disputa cierre todas las puertas a alguien.",
       copyButton: "Copiar texto",
       copiedButton: "Copiado",
       logosHeading: "Logotipos",
@@ -4673,7 +4673,7 @@ const es: Translations = {
           {
             n: "04",
             title: "La confianza ganada se mantiene",
-            body: "Un invitado no tiene que demostrar nada de nuevo en un local nuevo — la buena reputación viaja con él. A la inversa, un veto en un local es igual de visible en toda la red antes de que el invitado llegue a otra puerta.",
+            body: "Un invitado no tiene que demostrar nada de nuevo en un local nuevo — la buena reputación viaja con él. Los vetos también cuentan: cuando dos locales independientes vetan a la misma persona, cada puerta lo ve antes de que llegue.",
           },
         ],
       },
