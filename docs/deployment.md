@@ -141,6 +141,28 @@ Export fehlt, und prüft nach dem Neustart, ob `web.velvet-network.app` und die
 `apple-app-site-association` mit `200` antworten. Für das Backend (Punkt 1)
 gibt es kein Skript.
 
+### Wenn der Upload plötzlich in `Connection timed out` läuft
+
+Am 25.08.2026 scheiterte `dashboard.ps1` zweimal beim `scp` mit
+`ssh: connect to host mab.uberspace.de port 22: Connection timed out`. Der
+Build war einwandfrei, hochgeladen wurde nichts — das Skript bricht beim
+ersten Verzeichnis ab, es entsteht also kein halber Stand auf dem Server.
+
+Bevor man am Skript sucht: **prüfen, ob es überhaupt am SSH liegt.** Waren von
+der eigenen Maschine aus auch `https://velvet-network.app/` und
+`https://api.velvet-network.app/health` tot, über IPv4 *und* IPv6, während ein
+beliebiger anderer Host normal antwortete, dann ist nicht der SSH-Dienst weg,
+sondern die eigene IP kommt an den Host nicht mehr heran. Gegenprobe von
+außerhalb der eigenen Leitung (z.B. Handy im Mobilfunknetz): Antwortet die
+Seite dort, läuft der Server und Besucher merken nichts.
+
+Wahrscheinlichste Ursachen sind eine fail2ban-Sperre der eigenen IP nach
+abgebrochenen SSH-Verbindungen oder ein Routing-Problem des eigenen
+Anschlusses. In beiden Fällen hilft nur warten — **weitere Versuche
+verlängern eine fail2ban-Sperre**. Danach `dashboard.ps1` einfach erneut
+laufen lassen; das Skript ist wiederholbar und holt eine liegengebliebene
+`.env.local.bak` selbst zurück.
+
 ## Universal Links (iOS) / App Links (Android)
 
 Seit 2026-08-24 konfiguriert, damit ein gescannter `/invite/<code>`-Link auf
