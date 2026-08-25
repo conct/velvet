@@ -63,7 +63,7 @@ export default function GuestVenues() {
 
   return (
     <Screen>
-      <View style={styles.header}>
+      <View style={[styles.header, isTablet && styles.tabletWidth]}>
         <Label muted>{t.mobile.venues.alreadyVisited}</Label>
         <Heading size={24}>{t.mobile.venues.title}</Heading>
         {relationships.length > 3 && (
