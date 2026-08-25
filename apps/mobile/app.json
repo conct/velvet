@@ -15,7 +15,7 @@
         "NSCameraUsageDescription": "VELVET benötigt Kamerazugriff, um QR-Codes am Einlass zu scannen.",
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "3",
+      "buildNumber": "4",
       "associatedDomains": [
         "applinks:web.velvet-network.app"
       ]
@@ -32,7 +32,7 @@
       "permissions": [
         "android.permission.CAMERA"
       ],
-      "versionCode": 5,
+      "versionCode": 6,
       "intentFilters": [
         {
           "autoVerify": true,
@@ -42,7 +42,10 @@
             "host": "web.velvet-network.app",
             "pathPrefix": "/invite"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
