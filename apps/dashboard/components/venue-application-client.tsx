@@ -184,6 +184,9 @@ export function VenueApplicationClient() {
           <Link href="/hausverbot-verwalten" className="mt-2 inline-block text-sm text-gold hover:text-gold-bright">
             {t.pages.venueApplication.banLink} →
           </Link>
+          <Link href="/gaesteliste-digital" className="mt-1 inline-block text-sm text-gold hover:text-gold-bright">
+            {t.pages.venueApplication.listLink} →
+          </Link>
           <div className="flex flex-wrap items-center gap-3">
             <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
               {t.pages.venueApplication.documentChoose}

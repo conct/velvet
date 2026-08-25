@@ -344,6 +344,7 @@ export interface Translations {
       message: string;
       documentHint: string;
       banLink: string;
+      listLink: string;
       documentChoose: string;
       documentNone: string;
       termsCheckbox: string;
@@ -425,6 +426,15 @@ export interface Translations {
       unhide: string;
       unhiding: string;
       unhideFailed: string;
+    };
+    gaesteliste: {
+      eyebrow: string;
+      title: string;
+      intro: string;
+      faq: { q: string; a: string[] }[];
+      ctaHeading: string;
+      ctaBody: string;
+      ctaButton: string;
     };
     hausverbot: {
       eyebrow: string;
@@ -1109,6 +1119,7 @@ const de: Translations = {
       message: "Kurz zu deiner Location (optional)",
       documentHint: "Gewerbeanmeldung als PDF, JPEG oder PNG — maximal 10 MB.",
       banLink: "Wie VELVET Hausverbote ablegt",
+      listLink: "Was das Türteam beim Scan sieht",
       documentChoose: "Datei wählen",
       documentNone: "Keine Datei gewählt",
       termsCheckbox:
@@ -1193,6 +1204,57 @@ const de: Translations = {
       unhide: "Wieder einblenden",
       unhiding: "Blende ein…",
       unhideFailed: "Einblenden fehlgeschlagen",
+    },
+    gaesteliste: {
+      eyebrow: "Für Clubbetreiber",
+      title: "Digitale Gästeliste am Einlass",
+      intro:
+        "Was am Türstand passiert, wenn die Liste kein Papier mehr ist: was der Scan zeigt, was passiert wenn er nicht klappt, und wer im Team was darf.",
+      faq: [
+        {
+          q: "Was sieht das Türteam beim Scan?",
+          a: [
+            "Foto des Gasts, Vorname mit abgekürztem Nachnamen, den netzwerkweiten Status — und die Vorgeschichte im eigenen Haus: wie oft die Person da war, wann zuletzt, ob ein VIP- oder Hausverbots-Vermerk hinterlegt ist.",
+            "Was aus anderen Häusern kommt, ist ausschließlich der netzwerkweite Status. Fremde Vermerke, Notizen oder Besuchszahlen sieht niemand.",
+          ],
+        },
+        {
+          q: "Was, wenn der Scan nicht funktioniert?",
+          a: [
+            "Der Gast zeigt zusätzlich einen sechsstelligen Zahlencode, den das Türteam von Hand eintippen kann. Kein Ausweichen auf Papier, kein Anruf im Büro.",
+            "Der Code ist bewusst so kurz. Eine frühere Fassung packte ein vollständiges signiertes Token in den QR-Code — der wurde dadurch so dicht, dass ihn weder Webcam noch Handykamera zuverlässig lesen konnten.",
+          ],
+        },
+        {
+          q: "Wie lange gilt ein Code?",
+          a: [
+            "90 Sekunden, danach erzeugt die App automatisch einen neuen. Ein abfotografierter Screenshot nützt an einer anderen Tür also nichts.",
+          ],
+        },
+        {
+          q: "Wer im Team darf was?",
+          a: [
+            "Es gibt drei Rollen. Management sieht Gäste, scannt, bewertet und verwaltet zusätzlich Haus und Team. Türsteher und Servicekräfte sehen Gäste, scannen und bewerten — aber verwalten nichts.",
+            "Dass Servicekräfte ebenfalls flaggen dürfen, ist Absicht: Wer im Laden jemanden verweist, muss das an die Tür weitergeben können, sonst lässt der nächste Türsteher dieselbe Person wieder herein.",
+          ],
+        },
+        {
+          q: "Wie wird ein Abend festgehalten?",
+          a: [
+            "Mit ein bis fünf Sternen, optionalen Schlagworten und einer internen Notiz. Dazu kann das Team einen Vermerk setzen: VIP, Hausverbot oder nichts davon.",
+            "Jede Bewertung hängt an einem tatsächlich stattgefundenen Scan. Niemand kann eine Person bewerten, die nie an der Tür stand.",
+          ],
+        },
+        {
+          q: "Wir betreiben mehrere Läden — brauchen wir mehrere Konten?",
+          a: [
+            "Nein. Ein Konto, mehrere Locations: Nach der Anmeldung wählt man das Haus aus und kann im laufenden Betrieb zwischen den eigenen Standorten wechseln. Gästedaten und Vermerke bleiben dabei je Location getrennt.",
+          ],
+        },
+      ],
+      ctaHeading: "Location anmelden",
+      ctaBody: "Prüfung anhand der Gewerbeanmeldung, danach richten wir die Zugänge für Ihr Team ein.",
+      ctaButton: "Zum Anmeldeformular",
     },
     hausverbot: {
       eyebrow: "Für Clubbetreiber",
@@ -2161,6 +2223,7 @@ const en: Translations = {
       message: "A few words about your location (optional)",
       documentHint: "Business registration as PDF, JPEG or PNG — 10 MB max.",
       banLink: "How VELVET records bans",
+      listLink: "What the door team sees on a scan",
       documentChoose: "Choose file",
       documentNone: "No file selected",
       termsCheckbox:
@@ -2245,6 +2308,57 @@ const en: Translations = {
       unhide: "Unhide",
       unhiding: "Unhiding…",
       unhideFailed: "Failed to unhide",
+    },
+    gaesteliste: {
+      eyebrow: "For venue operators",
+      title: "A digital guest list at the door",
+      intro:
+        "What happens at the door once the list is no longer paper: what the scan shows, what happens when it fails, and who on the team is allowed to do what.",
+      faq: [
+        {
+          q: "What does the door team see on a scan?",
+          a: [
+            "The guest's photo, first name with an initial for the surname, the network-wide standing — and the history at your own venue: how often they have been in, when they were last here, whether a VIP or ban note is on file.",
+            "The only thing that comes from other venues is the network-wide standing. Nobody sees another venue's notes, flags or visit counts.",
+          ],
+        },
+        {
+          q: "What if the scan does not work?",
+          a: [
+            "The guest also shows a six-digit number the door team can type in by hand. No falling back to paper, no call to the office.",
+            "The code is short on purpose. An earlier version packed a full signed token into the QR code, which made it dense enough that neither a webcam nor a phone camera could read it reliably.",
+          ],
+        },
+        {
+          q: "How long is a code valid?",
+          a: [
+            "90 seconds, after which the app generates a new one automatically. A screenshot taken by someone else is useless at another door.",
+          ],
+        },
+        {
+          q: "Who on the team is allowed to do what?",
+          a: [
+            "There are three roles. Management sees guests, scans, rates, and additionally manages the venue and the team. Door staff and service staff see guests, scan and rate — but manage nothing.",
+            "Service staff being able to flag is deliberate: if someone is thrown out inside, that has to reach the door, or the next doorman lets the same person back in.",
+          ],
+        },
+        {
+          q: "How is a night recorded?",
+          a: [
+            "One to five stars, optional tags, and an internal note. On top of that the team can set a flag: VIP, banned, or neither.",
+            "Every rating hangs off a scan that actually happened. Nobody can rate a person who was never at the door.",
+          ],
+        },
+        {
+          q: "We run several venues — do we need several accounts?",
+          a: [
+            "No. One account, several venues: after signing in you pick the venue and can switch between your own locations during the shift. Guest data and flags stay separate per venue.",
+          ],
+        },
+      ],
+      ctaHeading: "Register your venue",
+      ctaBody: "Checked against your business registration, then we set up access for your team.",
+      ctaButton: "To the application form",
     },
     hausverbot: {
       eyebrow: "For venue operators",
@@ -3212,6 +3326,7 @@ const pl: Translations = {
       message: "Kilka słów o lokalu (opcjonalnie)",
       documentHint: "Dokument rejestracyjny jako PDF, JPEG lub PNG — maksymalnie 10 MB.",
       banLink: "Jak VELVET zapisuje zakazy wstępu",
+      listLink: "Co widzi zespół przy drzwiach",
       documentChoose: "Wybierz plik",
       documentNone: "Nie wybrano pliku",
       termsCheckbox:
@@ -3296,6 +3411,57 @@ const pl: Translations = {
       unhide: "Pokaż ponownie",
       unhiding: "Pokazywanie…",
       unhideFailed: "Nie udało się pokazać ponownie",
+    },
+    gaesteliste: {
+      eyebrow: "Dla właścicieli lokali",
+      title: "Cyfrowa lista gości przy wejściu",
+      intro:
+        "Co dzieje się przy drzwiach, gdy lista przestaje być papierowa: co pokazuje skan, co robić gdy zawiedzie i kto w zespole ma jakie uprawnienia.",
+      faq: [
+        {
+          q: "Co widzi zespół przy drzwiach po zeskanowaniu?",
+          a: [
+            "Zdjęcie gościa, imię ze skróconym nazwiskiem, status w całej sieci — oraz historię we własnym lokalu: ile razy dana osoba była, kiedy ostatnio, czy widnieje wpis VIP lub zakaz wstępu.",
+            "Z innych lokali pochodzi wyłącznie status sieciowy. Cudzych notatek, wpisów ani liczby wizyt nikt nie widzi.",
+          ],
+        },
+        {
+          q: "Co, jeśli skan nie działa?",
+          a: [
+            "Gość pokazuje dodatkowo sześciocyfrowy kod, który zespół może wpisać ręcznie. Bez wracania do papieru i bez dzwonienia do biura.",
+            "Kod jest celowo krótki. Wcześniejsza wersja umieszczała w kodzie QR pełny podpisany token, przez co stawał się tak gęsty, że ani kamera internetowa, ani telefon nie odczytywały go niezawodnie.",
+          ],
+        },
+        {
+          q: "Jak długo ważny jest kod?",
+          a: [
+            "90 sekund, potem aplikacja tworzy nowy automatycznie. Zrzut ekranu zrobiony przez kogoś innego nie przyda się przy innych drzwiach.",
+          ],
+        },
+        {
+          q: "Kto w zespole co może?",
+          a: [
+            "Są trzy role. Zarząd widzi gości, skanuje, ocenia i dodatkowo zarządza lokalem oraz zespołem. Ochrona i obsługa widzą gości, skanują i oceniają — ale niczym nie zarządzają.",
+            "To, że obsługa też może oznaczać gości, jest zamierzone: jeśli ktoś zostanie wyproszony w środku, drzwi muszą się o tym dowiedzieć, inaczej następny selekcjoner wpuści tę samą osobę.",
+          ],
+        },
+        {
+          q: "Jak zapisuje się wieczór?",
+          a: [
+            "Od jednej do pięciu gwiazdek, opcjonalne tagi i notatka wewnętrzna. Do tego zespół może ustawić wpis: VIP, zakaz wstępu albo nic z tego.",
+            "Każda ocena jest powiązana ze skanem, który faktycznie się odbył. Nikt nie oceni osoby, która nigdy nie była przy drzwiach.",
+          ],
+        },
+        {
+          q: "Prowadzimy kilka lokali — czy potrzebujemy kilku kont?",
+          a: [
+            "Nie. Jedno konto, wiele lokali: po zalogowaniu wybiera się lokal i można przełączać się między własnymi obiektami w trakcie zmiany. Dane gości i wpisy pozostają rozdzielone dla każdego lokalu.",
+          ],
+        },
+      ],
+      ctaHeading: "Zgłoś lokal",
+      ctaBody: "Weryfikacja na podstawie wpisu do rejestru działalności, potem konfigurujemy dostęp dla zespołu.",
+      ctaButton: "Do formularza zgłoszenia",
     },
     hausverbot: {
       eyebrow: "Dla właścicieli lokali",
@@ -4264,6 +4430,7 @@ const es: Translations = {
       message: "Unas palabras sobre tu local (opcional)",
       documentHint: "Alta de actividad en PDF, JPEG o PNG — máximo 10 MB.",
       banLink: "Cómo registra VELVET los vetos",
+      listLink: "Qué ve el equipo de puerta",
       documentChoose: "Elegir archivo",
       documentNone: "Ningún archivo elegido",
       termsCheckbox:
@@ -4348,6 +4515,57 @@ const es: Translations = {
       unhide: "Mostrar de nuevo",
       unhiding: "Mostrando…",
       unhideFailed: "Error al mostrar de nuevo",
+    },
+    gaesteliste: {
+      eyebrow: "Para responsables de locales",
+      title: "Lista de invitados digital en la puerta",
+      intro:
+        "Qué ocurre en la puerta cuando la lista deja de ser de papel: qué muestra el escaneo, qué pasa si falla y quién del equipo puede hacer qué.",
+      faq: [
+        {
+          q: "¿Qué ve el equipo de puerta al escanear?",
+          a: [
+            "La foto del invitado, el nombre con la inicial del apellido, su posición en la red — y el historial en tu propio local: cuántas veces ha venido, cuándo fue la última, si consta una nota de VIP o un veto.",
+            "Lo único que llega de otros locales es la posición en la red. Nadie ve las notas, marcas ni visitas de otro local.",
+          ],
+        },
+        {
+          q: "¿Y si el escaneo no funciona?",
+          a: [
+            "El invitado muestra además un número de seis cifras que el equipo puede teclear a mano. Sin volver al papel y sin llamar a la oficina.",
+            "El código es corto a propósito. Una versión anterior metía un token firmado completo en el código QR, lo que lo hacía tan denso que ni la webcam ni la cámara del móvil lo leían de forma fiable.",
+          ],
+        },
+        {
+          q: "¿Cuánto vale un código?",
+          a: [
+            "90 segundos; después la aplicación genera uno nuevo automáticamente. Una captura de pantalla ajena no sirve en otra puerta.",
+          ],
+        },
+        {
+          q: "¿Quién del equipo puede hacer qué?",
+          a: [
+            "Hay tres roles. La dirección ve invitados, escanea, valora y además gestiona el local y el equipo. Porteros y personal de sala ven invitados, escanean y valoran — pero no gestionan nada.",
+            "Que el personal de sala pueda marcar es intencionado: si se expulsa a alguien dentro, la puerta tiene que enterarse, o el siguiente portero volverá a dejarle entrar.",
+          ],
+        },
+        {
+          q: "¿Cómo se registra una noche?",
+          a: [
+            "De una a cinco estrellas, etiquetas opcionales y una nota interna. Además el equipo puede poner una marca: VIP, vetado o ninguna.",
+            "Cada valoración cuelga de un escaneo que ocurrió de verdad. Nadie puede valorar a una persona que nunca estuvo en la puerta.",
+          ],
+        },
+        {
+          q: "Tenemos varios locales, ¿necesitamos varias cuentas?",
+          a: [
+            "No. Una cuenta, varios locales: al entrar eliges el local y puedes cambiar entre los tuyos durante el turno. Los datos de invitados y las marcas se mantienen separados por local.",
+          ],
+        },
+      ],
+      ctaHeading: "Dar de alta tu local",
+      ctaBody: "Comprobación con el alta de actividad económica y después configuramos los accesos del equipo.",
+      ctaButton: "Al formulario de alta",
     },
     hausverbot: {
       eyebrow: "Para responsables de locales",

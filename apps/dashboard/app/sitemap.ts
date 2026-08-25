@@ -8,6 +8,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/demo`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/location-anmelden`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/hausverbot-verwalten`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/gaesteliste-digital`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/making-of`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: `${base}/werbematerial`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/presse`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/impressum`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
