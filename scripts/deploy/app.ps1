@@ -29,6 +29,15 @@ try {
     # gesetzte Prozessvariable gewinnt, hängt an der dotenv-Reihenfolge --
     # darauf zu wetten hat schon einmal einen Build mit localhost-URL
     # produziert. Wegschieben ist die eindeutige Variante.
+    # Ein abgebrochener Lauf (Strg-C, Timeout) kommt nie bis zum finally-Block
+    # und laesst .env.bak liegen. Ohne diese Zeilen sieht der naechste Lauf gar
+    # keine .env, schiebt nichts weg, stellt am Ende nichts wieder her -- und
+    # die Datei bleibt dauerhaft verschwunden.
+    if ((-not (Test-Path ".env")) -and (Test-Path ".env.bak")) {
+        Move-Item ".env.bak" ".env" -Force
+        Write-Host "-- .env.bak aus einem abgebrochenen Lauf zurueckgeholt"
+    }
+
     $envBackedUp = $false
     if (Test-Path ".env") {
         Move-Item ".env" ".env.bak" -Force

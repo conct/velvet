@@ -128,6 +128,12 @@ inklusive aller Fallstricke abbildet:
 .\scripts\deploy\app.ps1         # Punkt 3
 ```
 
+`dashboard.ps1` braucht je nach Netz **deutlich über zehn Minuten** — der
+`scp`-Upload von `.next/` besteht aus sehr vielen kleinen Dateien. Nicht
+abbrechen, weil es hängen aussieht. Wird der Lauf trotzdem abgebrochen, bleibt
+`apps/dashboard/.env.local.bak` liegen; das Skript holt sie beim nächsten Lauf
+selbst zurück, aber wer dazwischen lokal entwickelt, steht ohne `.env.local` da.
+
 `app.ps1` schiebt zusätzlich `apps/mobile/.env` weg (sie zeigt auf
 `http://localhost:4000` und würde die Produktions-URL verdrängen), bricht ab,
 wenn `localhost:4000` im gebauten Bundle auftaucht oder `.well-known/` im
@@ -191,6 +197,30 @@ scp -r server\scripts\* u8:velvet-api/server/scripts/
 
 Aufräumen, wenn es schon passiert ist:
 `mv scripts/scripts/* scripts/ && rmdir scripts/scripts`
+
+**Die Zielverzeichnisse der API sind zwischen Deploys schreibgeschützt.**
+`~/velvet-api/server/src`, `.../prisma` und `.../dist` liegen als `dr-x------`
+bzw. `drwx------` auf dem Server. Ein Upload scheitert dann nicht beim Schreiben
+der Dateien, sondern beim Aufräumen davor: `rm: cannot remove
+'src/routes/auth.ts': Permission denied`, zeilenweise für jede Datei — im
+eigenen Home-Verzeichnis, was zunächst nach einem kaputten Account aussieht.
+Es fehlt nur das Schreibrecht auf dem *Verzeichnis*. Vor jedem API-Upload
+deshalb einmal entsperren:
+
+```bash
+ssh u8 "chmod -R u+w ~/velvet-api"
+```
+
+`dashboard.ps1` macht genau das für seine Zielverzeichnisse schon selbst
+("Entsperre Zielverzeichnisse"); für die API gibt es kein Skript, also von
+Hand. Beim Packen lokal `tar czf - --mode='u+rwX' ...` verwenden, sonst
+wandern dieselben Modi gleich wieder mit hoch.
+
+**`tar xzf` auf dem Server überschreibt nicht.** Ein Entpacken über ein
+bestehendes Verzeichnis bricht mit `Cannot open: File exists` ab statt die
+Dateien zu ersetzen. Sicherer Weg: in ein Staging-Verzeichnis daneben
+entpacken und dann die Verzeichnisse tauschen — das gilt ohnehin für `dist`,
+das nie direkt überschrieben werden darf (siehe `dist_new` unten).
 
 **Schema-Änderungen gehören zwischen Upload und Restart.** `prisma db push`
 liest das Schema, das *auf dem Server* liegt — läuft es vor dem Upload, pusht

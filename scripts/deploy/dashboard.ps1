@@ -24,6 +24,16 @@ $RemoteDir = "~/velvet-dashboard/apps/dashboard/"
 
 Push-Location $DashboardDir
 try {
+    # Ein abgebrochener Lauf (Strg-C, Timeout) kommt nie bis zum finally-Block
+    # und laesst .env.local.bak liegen. Ohne diese Zeilen sieht der naechste
+    # Lauf gar keine .env.local, schiebt nichts weg, stellt am Ende nichts
+    # wieder her -- und die Datei bleibt dauerhaft verschwunden, was erst beim
+    # naechsten lokalen Entwickeln auffaellt.
+    if ((-not (Test-Path ".env.local")) -and (Test-Path ".env.local.bak")) {
+        Move-Item ".env.local.bak" ".env.local" -Force
+        Write-Host "-- .env.local.bak aus einem abgebrochenen Lauf zurueckgeholt"
+    }
+
     $envLocalBackedUp = $false
     if (Test-Path ".env.local") {
         Move-Item ".env.local" ".env.local.bak" -Force
