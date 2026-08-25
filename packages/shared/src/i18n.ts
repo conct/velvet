@@ -343,6 +343,7 @@ export interface Translations {
       contactPhone: string;
       message: string;
       documentHint: string;
+      banLink: string;
       documentChoose: string;
       documentNone: string;
       termsCheckbox: string;
@@ -424,6 +425,15 @@ export interface Translations {
       unhide: string;
       unhiding: string;
       unhideFailed: string;
+    };
+    hausverbot: {
+      eyebrow: string;
+      title: string;
+      intro: string;
+      faq: { q: string; a: string[] }[];
+      ctaHeading: string;
+      ctaBody: string;
+      ctaButton: string;
     };
     presse: {
       eyebrow: string;
@@ -1098,6 +1108,7 @@ const de: Translations = {
       contactPhone: "Telefon (optional)",
       message: "Kurz zu deiner Location (optional)",
       documentHint: "Gewerbeanmeldung als PDF, JPEG oder PNG — maximal 10 MB.",
+      banLink: "Wie VELVET Hausverbote ablegt",
       documentChoose: "Datei wählen",
       documentNone: "Keine Datei gewählt",
       termsCheckbox:
@@ -1182,6 +1193,57 @@ const de: Translations = {
       unhide: "Wieder einblenden",
       unhiding: "Blende ein…",
       unhideFailed: "Einblenden fehlgeschlagen",
+    },
+    hausverbot: {
+      eyebrow: "Für Clubbetreiber",
+      title: "Hausverbot digital verwalten",
+      intro:
+        "Ein Hausverbot ist schnell ausgesprochen und schwer festzuhalten. Diese Seite beschreibt, woran die übliche Handhabung scheitert, wie VELVET es stattdessen ablegt — und wo bewusst eine Grenze gezogen ist.",
+      faq: [
+        {
+          q: "Warum reicht die Liste an der Tür nicht?",
+          a: [
+            "Weil sie an Menschen hängt statt am Haus. Ein Name auf einem Zettel, ein Foto im Diensthandy, ein Gesicht, das der erfahrene Türsteher kennt — nach dem Schichtwechsel ist davon wenig übrig, nach dem nächsten Personalwechsel nichts mehr.",
+            "Dazu kommt der Gedächtnisschwund: Nach einem halben Jahr weiß niemand mehr, warum jemand auf der Liste steht. Ohne Anlass und Datum lässt sich ein Hausverbot weder dem Gast noch dem eigenen Team erklären.",
+          ],
+        },
+        {
+          q: "Wer kann ein Hausverbot eintragen, und woran hängt es?",
+          a: [
+            "Jede Person im Team mit Scan-Berechtigung — Türsteher wie Servicekräfte. Das ist Absicht: Wenn eine Servicekraft jemanden des Hauses verweist, muss das für die Tür sichtbar sein, sonst lässt der nächste Türsteher denselben Gast wieder herein.",
+            "Der Eintrag hängt immer an einem tatsächlichen Scan, nicht an einer frei eingetippten Person. Wer nie an der Tür war, kann auch nicht gesperrt werden. Und das Hausverbot gehört der Location, nicht der Person, die es eingetragen hat.",
+          ],
+        },
+        {
+          q: "Gilt das Hausverbot dann auch in anderen Clubs?",
+          a: [
+            "Nicht von allein. Ein einzelnes Hausverbot bleibt bei dem Haus, das es erteilt hat — andere Türen sehen es nicht. Erst wenn zwei unabhängige Locations dieselbe Person sperren, wirkt die Sperre im ganzen Netzwerk.",
+            "Diese Hürde ist bewusst eingebaut. Sie verhindert, dass eine einzelne Tür jemanden stadtweit aussperrt — sei es aus einem Missverständnis, aus Ärger oder aus schlichter Fehleingabe. Sind sich zwei Häuser unabhängig voneinander einig, ist das ein belastbareres Signal als die Einschätzung eines Abends.",
+          ],
+        },
+        {
+          q: "Erfährt der Gast davon?",
+          a: [
+            "Ja. Der Gast sieht in seiner App, dass bei dieser Location ein Hausverbot hinterlegt ist. Verdeckte Sperren gibt es nicht.",
+            "Der interne Vermerk dagegen bleibt intern: Was das Team für sich notiert, wird dem Gast nicht angezeigt und verlässt die Location auch nicht.",
+          ],
+        },
+        {
+          q: "Was passiert bei einem Personalwechsel?",
+          a: [
+            "Nichts. Der Eintrag liegt beim Haus, nicht beim Konto der Person, die ihn gesetzt hat. Wer neu anfängt, sieht beim ersten Scan dieselbe Vorgeschichte wie die Kollegin, die seit Jahren an der Tür steht.",
+          ],
+        },
+        {
+          q: "Wie fange ich an?",
+          a: [
+            "Über das Anmeldeformular für Locations. Die Angaben werden anhand der Gewerbeanmeldung geprüft, danach legen wir die Location an und richten die Zugänge für das Team ein.",
+          ],
+        },
+      ],
+      ctaHeading: "Location anmelden",
+      ctaBody: "Prüfung anhand der Gewerbeanmeldung, danach richten wir die Zugänge für Ihr Team ein.",
+      ctaButton: "Zum Anmeldeformular",
     },
     presse: {
       eyebrow: "Presse",
@@ -2098,6 +2160,7 @@ const en: Translations = {
       contactPhone: "Phone (optional)",
       message: "A few words about your location (optional)",
       documentHint: "Business registration as PDF, JPEG or PNG — 10 MB max.",
+      banLink: "How VELVET records bans",
       documentChoose: "Choose file",
       documentNone: "No file selected",
       termsCheckbox:
@@ -2182,6 +2245,57 @@ const en: Translations = {
       unhide: "Unhide",
       unhiding: "Unhiding…",
       unhideFailed: "Failed to unhide",
+    },
+    hausverbot: {
+      eyebrow: "For venue operators",
+      title: "Managing bans digitally",
+      intro:
+        "A ban is quick to issue and hard to keep hold of. This page covers where the usual handling breaks down, how VELVET records it instead — and where a line is deliberately drawn.",
+      faq: [
+        {
+          q: "Why isn't a list at the door enough?",
+          a: [
+            "Because it lives with people rather than with the venue. A name on a slip, a photo on the work phone, a face the experienced doorman knows — little of that survives the shift change, and none of it the next change of staff.",
+            "Then memory fades: six months on, nobody recalls why someone is on the list. Without a reason and a date, a ban can be explained neither to the guest nor to your own team.",
+          ],
+        },
+        {
+          q: "Who can record a ban, and what is it attached to?",
+          a: [
+            "Anyone on the team with scanning rights — door staff and service staff alike. That is deliberate: if service staff throw someone out, the door has to see it, or the next doorman lets the same guest back in.",
+            "The entry is always anchored to an actual scan, not to a name typed in freely. Someone who was never at the door cannot be banned. And the ban belongs to the venue, not to the person who recorded it.",
+          ],
+        },
+        {
+          q: "Does the ban then apply at other clubs?",
+          a: [
+            "Not on its own. A single ban stays with the venue that issued it — other doors do not see it. Only when two independent venues ban the same person does the ban take effect across the network.",
+            "That threshold is there on purpose. It stops one door from locking someone out city-wide over a misunderstanding, a bad temper, or a mistyped entry. Two venues agreeing independently is a sturdier signal than one night's judgement.",
+          ],
+        },
+        {
+          q: "Does the guest find out?",
+          a: [
+            "Yes. The guest sees in the app that a ban is on file at that venue. There are no hidden bans.",
+            "The internal note is a different matter: what the team writes down for itself is not shown to the guest and does not leave the venue.",
+          ],
+        },
+        {
+          q: "What happens when staff change?",
+          a: [
+            "Nothing. The entry sits with the venue, not with the account that set it. Someone starting today sees the same history on their first scan as the colleague who has worked the door for years.",
+          ],
+        },
+        {
+          q: "How do I get started?",
+          a: [
+            "Through the venue application form. The details are checked against your business registration, after which we create the venue and set up access for your team.",
+          ],
+        },
+      ],
+      ctaHeading: "Register your venue",
+      ctaBody: "Checked against your business registration, then we set up access for your team.",
+      ctaButton: "To the application form",
     },
     presse: {
       eyebrow: "Press",
@@ -3097,6 +3211,7 @@ const pl: Translations = {
       contactPhone: "Telefon (opcjonalnie)",
       message: "Kilka słów o lokalu (opcjonalnie)",
       documentHint: "Dokument rejestracyjny jako PDF, JPEG lub PNG — maksymalnie 10 MB.",
+      banLink: "Jak VELVET zapisuje zakazy wstępu",
       documentChoose: "Wybierz plik",
       documentNone: "Nie wybrano pliku",
       termsCheckbox:
@@ -3181,6 +3296,57 @@ const pl: Translations = {
       unhide: "Pokaż ponownie",
       unhiding: "Pokazywanie…",
       unhideFailed: "Nie udało się pokazać ponownie",
+    },
+    hausverbot: {
+      eyebrow: "Dla właścicieli lokali",
+      title: "Cyfrowe zarządzanie zakazami wstępu",
+      intro:
+        "Zakaz wstępu łatwo wydać, trudno utrzymać. Ta strona opisuje, gdzie zawodzi zwykła praktyka, jak zapisuje to VELVET — i gdzie świadomie postawiono granicę.",
+      faq: [
+        {
+          q: "Dlaczego lista przy drzwiach nie wystarcza?",
+          a: [
+            "Bo jest przypisana do ludzi, a nie do lokalu. Nazwisko na kartce, zdjęcie w służbowym telefonie, twarz, którą zna doświadczony selekcjoner — po zmianie zmiany zostaje z tego niewiele, po zmianie personelu nic.",
+            "Do tego dochodzi zanik pamięci: po pół roku nikt nie wie, dlaczego ktoś jest na liście. Bez powodu i daty zakazu nie da się wytłumaczyć ani gościowi, ani własnemu zespołowi.",
+          ],
+        },
+        {
+          q: "Kto może wpisać zakaz i do czego jest przypisany?",
+          a: [
+            "Każda osoba w zespole z prawem do skanowania — zarówno ochrona, jak i obsługa. To celowe: jeśli obsługa wyprosi kogoś z lokalu, drzwi muszą to widzieć, inaczej następny selekcjoner wpuści tę samą osobę.",
+            "Wpis jest zawsze powiązany z rzeczywistym skanem, a nie z dowolnie wpisanym nazwiskiem. Kto nigdy nie był przy drzwiach, nie może zostać zablokowany. A zakaz należy do lokalu, nie do osoby, która go wprowadziła.",
+          ],
+        },
+        {
+          q: "Czy zakaz obowiązuje wtedy też w innych klubach?",
+          a: [
+            "Nie sam z siebie. Pojedynczy zakaz pozostaje przy lokalu, który go wydał — inne drzwi go nie widzą. Dopiero gdy dwa niezależne lokale zablokują tę samą osobę, blokada działa w całej sieci.",
+            "Ten próg jest celowy. Nie pozwala jednym drzwiom zamknąć komuś całego miasta z powodu nieporozumienia, złości albo pomyłki. Zgodność dwóch niezależnych lokali to mocniejszy sygnał niż ocena jednego wieczoru.",
+          ],
+        },
+        {
+          q: "Czy gość się o tym dowiaduje?",
+          a: [
+            "Tak. Gość widzi w aplikacji, że w tym lokalu widnieje zakaz wstępu. Nie ma ukrytych blokad.",
+            "Notatka wewnętrzna to co innego: to, co zespół zapisuje dla siebie, nie jest pokazywane gościowi i nie opuszcza lokalu.",
+          ],
+        },
+        {
+          q: "Co się dzieje przy zmianie personelu?",
+          a: [
+            "Nic. Wpis należy do lokalu, a nie do konta osoby, która go ustawiła. Kto zaczyna dziś, przy pierwszym skanie widzi tę samą historię co koleżanka pracująca przy drzwiach od lat.",
+          ],
+        },
+        {
+          q: "Jak zacząć?",
+          a: [
+            "Przez formularz zgłoszenia lokalu. Dane sprawdzamy na podstawie wpisu do rejestru działalności, potem zakładamy lokal i konfigurujemy dostęp dla zespołu.",
+          ],
+        },
+      ],
+      ctaHeading: "Zgłoś lokal",
+      ctaBody: "Weryfikacja na podstawie wpisu do rejestru działalności, potem konfigurujemy dostęp dla zespołu.",
+      ctaButton: "Do formularza zgłoszenia",
     },
     presse: {
       eyebrow: "Prasa",
@@ -4097,6 +4263,7 @@ const es: Translations = {
       contactPhone: "Teléfono (opcional)",
       message: "Unas palabras sobre tu local (opcional)",
       documentHint: "Alta de actividad en PDF, JPEG o PNG — máximo 10 MB.",
+      banLink: "Cómo registra VELVET los vetos",
       documentChoose: "Elegir archivo",
       documentNone: "Ningún archivo elegido",
       termsCheckbox:
@@ -4181,6 +4348,57 @@ const es: Translations = {
       unhide: "Mostrar de nuevo",
       unhiding: "Mostrando…",
       unhideFailed: "Error al mostrar de nuevo",
+    },
+    hausverbot: {
+      eyebrow: "Para responsables de locales",
+      title: "Gestionar vetos de forma digital",
+      intro:
+        "Un veto se impone rápido y cuesta conservarlo. Esta página explica dónde falla la práctica habitual, cómo lo registra VELVET — y dónde se traza una línea a propósito.",
+      faq: [
+        {
+          q: "¿Por qué no basta con la lista de la puerta?",
+          a: [
+            "Porque depende de personas y no del local. Un nombre en un papel, una foto en el móvil de servicio, una cara que el portero veterano reconoce — poco de eso sobrevive al cambio de turno, y nada al siguiente cambio de personal.",
+            "A eso se suma el olvido: medio año después nadie recuerda por qué alguien está en la lista. Sin motivo ni fecha, un veto no se le puede explicar ni al invitado ni al propio equipo.",
+          ],
+        },
+        {
+          q: "¿Quién puede registrar un veto y a qué queda vinculado?",
+          a: [
+            "Cualquier persona del equipo con permiso de escaneo — tanto porteros como personal de sala. Es intencionado: si el personal de sala expulsa a alguien, la puerta tiene que verlo, o el siguiente portero volverá a dejar entrar a la misma persona.",
+            "El registro se ancla siempre a un escaneo real, no a un nombre escrito a mano. Quien nunca estuvo en la puerta no puede ser vetado. Y el veto pertenece al local, no a quien lo registró.",
+          ],
+        },
+        {
+          q: "¿El veto vale entonces en otros clubes?",
+          a: [
+            "No por sí solo. Un veto aislado se queda en el local que lo emitió — las demás puertas no lo ven. Solo cuando dos locales independientes vetan a la misma persona la restricción surte efecto en toda la red.",
+            "Ese umbral está puesto a propósito. Impide que una sola puerta cierre toda la ciudad a alguien por un malentendido, un enfado o un error al teclear. Que dos locales coincidan de forma independiente es una señal más sólida que el criterio de una noche.",
+          ],
+        },
+        {
+          q: "¿Se entera el invitado?",
+          a: [
+            "Sí. El invitado ve en la aplicación que en ese local consta un veto. No hay vetos ocultos.",
+            "La nota interna es otra cosa: lo que el equipo anota para sí mismo no se le muestra al invitado ni sale del local.",
+          ],
+        },
+        {
+          q: "¿Qué pasa cuando cambia el personal?",
+          a: [
+            "Nada. El registro pertenece al local, no a la cuenta de quien lo creó. Quien empieza hoy ve en su primer escaneo el mismo historial que la compañera que lleva años en la puerta.",
+          ],
+        },
+        {
+          q: "¿Cómo empiezo?",
+          a: [
+            "Con el formulario de alta de locales. Comprobamos los datos con el alta de actividad económica y después creamos el local y configuramos los accesos del equipo.",
+          ],
+        },
+      ],
+      ctaHeading: "Dar de alta tu local",
+      ctaBody: "Comprobación con el alta de actividad económica y después configuramos los accesos del equipo.",
+      ctaButton: "Al formulario de alta",
     },
     presse: {
       eyebrow: "Prensa",
