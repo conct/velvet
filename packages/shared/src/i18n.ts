@@ -344,6 +344,9 @@ export interface Translations {
       documentHint: string;
       documentChoose: string;
       documentNone: string;
+      termsCheckbox: string;
+      termsLink: string;
+      termsRequired: string;
       privacyHint: string;
       submit: string;
       submitting: string;
@@ -365,6 +368,8 @@ export interface Translations {
       messageLabel: string;
       documentLabel: string;
       documentDeleted: string;
+      termsLabel: string;
+      termsMissing: string;
       openDocument: string;
       opening: string;
       openFailed: string;
@@ -1068,6 +1073,10 @@ const de: Translations = {
       documentHint: "Gewerbeanmeldung als PDF, JPEG oder PNG — maximal 10 MB.",
       documentChoose: "Datei wählen",
       documentNone: "Keine Datei gewählt",
+      termsCheckbox:
+        "Ich habe die Nutzungsbedingungen für Locations gelesen und stimme ihnen zu.",
+      termsLink: "Nutzungsbedingungen für Locations öffnen",
+      termsRequired: "Bitte stimme den Nutzungsbedingungen für Locations zu.",
       privacyHint:
         "Mit dem Absenden stimmst du zu, dass wir deine Angaben zur Prüfung speichern. Details in der Datenschutzerklärung.",
       submit: "Bewerbung absenden",
@@ -1091,6 +1100,8 @@ const de: Translations = {
       messageLabel: "Nachricht",
       documentLabel: "Gewerbeanmeldung",
       documentDeleted: "Dokument nach Ablauf der 6-monatigen Aufbewahrungsfrist gelöscht",
+      termsLabel: "Bedingungen",
+      termsMissing: "keine Zustimmung erfasst (Bewerbung von vor der Pflicht-Checkbox)",
       openDocument: "Dokument öffnen",
       opening: "Öffne…",
       openFailed: "Dokument konnte nicht geöffnet werden",
@@ -2025,6 +2036,10 @@ const en: Translations = {
       documentHint: "Business registration as PDF, JPEG or PNG — 10 MB max.",
       documentChoose: "Choose file",
       documentNone: "No file selected",
+      termsCheckbox:
+        "I have read the terms of use for locations and agree to them.",
+      termsLink: "Open the terms of use for locations",
+      termsRequired: "Please agree to the terms of use for locations.",
       privacyHint:
         "By submitting you agree that we store your details for review. See the privacy policy for details.",
       submit: "Send application",
@@ -2048,6 +2063,8 @@ const en: Translations = {
       messageLabel: "Message",
       documentLabel: "Business registration",
       documentDeleted: "Document deleted after the 6-month retention period",
+      termsLabel: "Terms",
+      termsMissing: "no consent recorded (application predates the mandatory checkbox)",
       openDocument: "Open document",
       opening: "Opening…",
       openFailed: "Could not open the document",
@@ -2981,6 +2998,10 @@ const pl: Translations = {
       documentHint: "Dokument rejestracyjny jako PDF, JPEG lub PNG — maksymalnie 10 MB.",
       documentChoose: "Wybierz plik",
       documentNone: "Nie wybrano pliku",
+      termsCheckbox:
+        "Przeczytałem/am warunki korzystania dla lokali i akceptuję je.",
+      termsLink: "Otwórz warunki korzystania dla lokali",
+      termsRequired: "Zaakceptuj warunki korzystania dla lokali.",
       privacyHint:
         "Wysyłając zgłoszenie zgadzasz się na przechowywanie danych do weryfikacji. Szczegóły w polityce prywatności.",
       submit: "Wyślij zgłoszenie",
@@ -3004,6 +3025,8 @@ const pl: Translations = {
       messageLabel: "Wiadomość",
       documentLabel: "Dokument rejestracyjny",
       documentDeleted: "Dokument usunięty po upływie 6-miesięcznego okresu przechowywania",
+      termsLabel: "Warunki",
+      termsMissing: "brak zapisanej zgody (zgłoszenie sprzed obowiązkowego pola)",
       openDocument: "Otwórz dokument",
       opening: "Otwieranie…",
       openFailed: "Nie udało się otworzyć dokumentu",
@@ -3938,6 +3961,10 @@ const es: Translations = {
       documentHint: "Alta de actividad en PDF, JPEG o PNG — máximo 10 MB.",
       documentChoose: "Elegir archivo",
       documentNone: "Ningún archivo elegido",
+      termsCheckbox:
+        "He leído las condiciones de uso para locales y las acepto.",
+      termsLink: "Abrir las condiciones de uso para locales",
+      termsRequired: "Acepta las condiciones de uso para locales.",
       privacyHint:
         "Al enviar aceptas que guardemos tus datos para revisarlos. Más detalles en la política de privacidad.",
       submit: "Enviar solicitud",
@@ -3961,6 +3988,8 @@ const es: Translations = {
       messageLabel: "Mensaje",
       documentLabel: "Alta de actividad",
       documentDeleted: "Documento eliminado tras el plazo de conservación de 6 meses",
+      termsLabel: "Condiciones",
+      termsMissing: "sin consentimiento registrado (solicitud anterior a la casilla obligatoria)",
       openDocument: "Abrir documento",
       opening: "Abriendo…",
       openFailed: "No se pudo abrir el documento",

@@ -183,6 +183,8 @@ adminRouter.get("/venue-applications", requireAuth, requirePlatformAdmin, async 
       reviewNote: true,
       reviewedAt: true,
       documentDeletedAt: true,
+      acceptedTermsVersion: true,
+      acceptedTermsAt: true,
       createdVenueId: true,
       createdAt: true,
     },
@@ -235,7 +237,17 @@ adminRouter.post("/venue-applications/:id/approve", requireAuth, requirePlatform
   // venue starts out VERIFIED -- the PENDING venue state exists for venues
   // created through the staff dashboard without any document review.
   const venue = await prisma.venue.create({
-    data: { name: venueName, address, slug: await uniqueSlug(venueName), status: "VERIFIED" },
+    data: {
+      name: venueName,
+      address,
+      slug: await uniqueSlug(venueName),
+      status: "VERIFIED",
+      // Mitgenommen, damit die Zustimmung dort steht, wo sie spaeter gebraucht
+      // wird: an der Location. Die Bewerbung bleibt zwar erhalten, ist aber
+      // nach sechs Monaten nur noch ein Pruefvermerk ohne Dokument.
+      acceptedTermsVersion: application.acceptedTermsVersion,
+      acceptedTermsAt: application.acceptedTermsAt,
+    },
   });
 
   // An existing staff account (someone who already runs another location)

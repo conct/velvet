@@ -4,6 +4,7 @@ import fs from "fs";
 import multer from "multer";
 import path from "path";
 import { z } from "zod";
+import { TERMS_VERSION } from "@velvet/shared";
 import { prisma } from "../db";
 import { venueApplicationRateLimit } from "../middleware/rateLimit";
 import { sendCustomEmail, sendVenueApplicationReceivedEmail } from "../lib/mailer";
@@ -67,6 +68,11 @@ const applicationSchema = z.object({
   contactEmail: z.string().trim().email().transform((v) => v.toLowerCase()),
   contactPhone: z.string().trim().max(60).optional().or(z.literal("").transform(() => undefined)),
   message: z.string().trim().max(2000).optional().or(z.literal("").transform(() => undefined)),
+  // Pflicht-Checkbox unter dem Formular. Multipart liefert ausschliesslich
+  // Strings, die Checkbox kommt hier also als "true"/"false" an -- optional,
+  // damit ein fehlendes Feld nicht in einer generischen Feldfehlerliste
+  // untergeht, sondern unten seine eigene Meldung bekommt.
+  acceptedTerms: z.enum(["true", "false"]).optional(),
 });
 
 function discardUpload(file: Express.Multer.File | undefined) {
@@ -84,6 +90,17 @@ venueApplicationsRouter.post("/", venueApplicationRateLimit, uploadDocumentMiddl
   }
 
   const data = parsed.data;
+
+  // Die Bewerbung ist der Antrag auf den Nutzungsvertrag (siehe § 2 der
+  // Location-Bedingungen) -- ohne Zustimmung gibt es nichts zu pruefen. Die
+  // UI deaktiviert den Absende-Button bereits, die Pruefung hier ist die
+  // verbindliche.
+  if (data.acceptedTerms !== "true") {
+    discardUpload(req.file);
+    return res
+      .status(400)
+      .json({ error: t(req.locale, "venueApplications.termsRequired"), code: "LOCATION_TERMS_REQUIRED" });
+  }
 
   // One open application per contact address: without this, a resubmit (or a
   // bored visitor) fills the admin review list with duplicates, each with its
@@ -109,6 +126,10 @@ venueApplicationsRouter.post("/", venueApplicationRateLimit, uploadDocumentMiddl
       documentName: req.file.originalname,
       documentPath: req.file.filename,
       documentMime: req.file.mimetype,
+      // Serverseitig gesetzt, nicht vom Client uebernommen: sonst bestimmt
+      // der Absender, welcher Fassung er zugestimmt haben will.
+      acceptedTermsVersion: TERMS_VERSION,
+      acceptedTermsAt: new Date(),
     },
   });
 

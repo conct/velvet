@@ -56,6 +56,9 @@ export interface AdminVenueApplication {
   reviewNote: string | null;
   reviewedAt: string | null;
   documentDeletedAt: string | null;
+  // null bei Bewerbungen von vor der Pflicht-Checkbox (25.08.2026).
+  acceptedTermsVersion: string | null;
+  acceptedTermsAt: string | null;
   createdVenueId: string | null;
   createdAt: string;
 }

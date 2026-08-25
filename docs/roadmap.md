@@ -14,17 +14,6 @@ die Routine sucht nach genau diesen Begriffen.)
 
 ## Open
 
-### Zustimmung zu den Location-Nutzungsbedingungen erfassen
-**Status:** offen.
-
-Die Texte stehen (`/location-bedingungen`, Entwurf vom 24.08.2026), aber sie werden
-beim Onboarding noch nirgends akzeptiert. Nötig: Pflicht-Checkbox im Formular
-`/location-anmelden` mit Link auf die Bedingungen, dazu `acceptedTermsVersion` und
-`acceptedTermsAt` auf `VenueApplication` (beide Prisma-Schemas), Anzeige der
-akzeptierten Fassung unter `/admin/applications` und Übernahme auf die `Venue` bei
-der Freigabe. Ohne diese Felder ist nicht nachweisbar, welcher Fassung eine Location
-zugestimmt hat.
-
 ### Anwaltliche Prüfung der Rechtstexte
 **Status:** blocked — liegt bei Daniel, nicht bei der Routine.
 
@@ -59,6 +48,14 @@ erteilten Hausverbot. Keine Code-Änderung nötig, die aktuelle Berechtigung
 
 ## Done
 
+- ~~Zustimmung zu den Location-Nutzungsbedingungen erfassen~~ — seit 2026-08-25:
+  Pflicht-Checkbox im Formular `/location-anmelden` mit Link auf
+  `/location-bedingungen`, protokolliert als `acceptedTermsVersion` +
+  `acceptedTermsAt` auf `VenueApplication` (beide Prisma-Schemas), angezeigt unter
+  `/admin/applications` und bei der Freigabe auf die `Venue` übernommen. Die
+  Version setzt der Server aus `TERMS_VERSION`, nicht der Client; ohne Zustimmung
+  weist auch `POST /venue-applications` ab, nicht nur die UI. Details in
+  „Location-Bewerbungen" in `docs/deployment.md`.
 - ~~Mindestalter bei der Registrierung~~ — Entscheidung von Daniel (2026-08-25):
   Geburtsdatum erfassen statt bloßer Checkbox. Umgesetzt als `User.dateOfBirth`,
   geprüft in `packages/shared/src/age.ts` (`checkSignupDateOfBirth`) — einmal in der

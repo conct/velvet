@@ -74,6 +74,7 @@ interface Translations {
   "venueApplications.invalidDocumentType": string;
   "venueApplications.alreadyPending": string;
   "venueApplications.received": string;
+  "venueApplications.termsRequired": string;
 
   "invites.codeNotFound": string;
   "invites.cannotUseOwnCode": string;
@@ -173,6 +174,7 @@ const de: Translations = {
   "venueApplications.invalidDocumentType": "Nur PDF, JPEG oder PNG erlaubt (max. 10 MB)",
   "venueApplications.alreadyPending": "Für diese E-Mail-Adresse läuft bereits eine Bewerbung",
   "venueApplications.received": "Danke! Wir prüfen deine Angaben und melden uns per E-Mail.",
+  "venueApplications.termsRequired": "Bitte stimme den Nutzungsbedingungen für Locations zu",
 
   "invites.codeNotFound": "Einladungscode nicht gefunden",
   "invites.cannotUseOwnCode": "Eigenen Einladungscode kann man nicht verwenden",
@@ -281,6 +283,7 @@ const en: Translations = {
   "venueApplications.invalidDocumentType": "Only PDF, JPEG or PNG allowed (max 10 MB)",
   "venueApplications.alreadyPending": "There is already a pending application for this email address",
   "venueApplications.received": "Thanks! We'll review your details and get back to you by email.",
+  "venueApplications.termsRequired": "Please agree to the terms of use for locations",
 
   "invites.codeNotFound": "Invite code not found",
   "invites.cannotUseOwnCode": "You can't use your own invite code",

@@ -8,7 +8,7 @@ import { useAuth } from "../../../../lib/auth-context";
 import { useLocale } from "../../../../lib/locale-context";
 
 export default function AdminApplicationsPage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { token, staff } = useAuth();
   const [applications, setApplications] = useState<AdminVenueApplication[]>([]);
   const [loading, setLoading] = useState(true);
@@ -156,6 +156,14 @@ export default function AdminApplicationsPage() {
                   )}
                   <dt className="text-text-muted">{t.pages.adminApplications.documentLabel}</dt>
                   <dd className="break-all text-text">{a.documentName}</dd>
+                  <dt className="text-text-muted">{t.pages.adminApplications.termsLabel}</dt>
+                  <dd className="text-text">
+                    {a.acceptedTermsVersion && a.acceptedTermsAt
+                      ? `${a.acceptedTermsVersion} · ${new Date(a.acceptedTermsAt).toLocaleDateString(
+                          locale === "de" ? "de-DE" : "en-US"
+                        )}`
+                      : t.pages.adminApplications.termsMissing}
+                  </dd>
                 </dl>
 
                 <div className="mt-5 flex flex-wrap items-center gap-3">

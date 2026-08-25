@@ -22,6 +22,7 @@ export function VenueApplicationClient() {
   const [contactPhone, setContactPhone] = useState("");
   const [message, setMessage] = useState("");
   const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +31,10 @@ export function VenueApplicationClient() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!documentFile) return;
+    if (!acceptedTerms) {
+      setError(t.pages.venueApplication.termsRequired);
+      return;
+    }
     // Mirrors the server's own limit so an oversized file fails instantly
     // instead of after a full upload.
     if (documentFile.size > MAX_DOCUMENT_BYTES) {
@@ -49,6 +54,7 @@ export function VenueApplicationClient() {
       form.append("contactEmail", contactEmail.trim());
       form.append("contactPhone", contactPhone.trim());
       form.append("message", message.trim());
+      form.append("acceptedTerms", "true");
       form.append("document", documentFile);
 
       await apiUpload("/venue-applications", form);
@@ -196,9 +202,29 @@ export function VenueApplicationClient() {
         </fieldset>
 
         <div className="flex flex-col gap-3">
+          <label className="flex cursor-pointer items-start gap-3 text-sm text-text">
+            <input
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={(e) => {
+                setAcceptedTerms(e.target.checked);
+                setError(null);
+              }}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-gold"
+            />
+            <span>{t.pages.venueApplication.termsCheckbox}</span>
+          </label>
+          <Link
+            href="/location-bedingungen"
+            target="_blank"
+            rel="noopener"
+            className="self-start text-xs text-gold hover:text-gold-bright"
+          >
+            {t.pages.venueApplication.termsLink}
+          </Link>
           <p className="text-xs text-text-muted">{t.pages.venueApplication.privacyHint}</p>
           {error && <p className="text-sm text-danger">{error}</p>}
-          <Button type="submit" disabled={submitting || !documentFile} className="self-start">
+          <Button type="submit" disabled={submitting || !documentFile || !acceptedTerms} className="self-start">
             {submitting ? t.pages.venueApplication.submitting : t.pages.venueApplication.submit}
           </Button>
         </div>

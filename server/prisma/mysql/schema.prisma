@@ -55,6 +55,11 @@ model Venue {
   // A sandbox venue: hidden from the public venue list, and nothing that
   // happens there counts towards anyone's trust score or history.
   isDemo    Boolean  @default(false)
+  // Bei der Freigabe aus der Bewerbung uebernommen. Bleibt leer bei
+  // Locations, die wir direkt angelegt haben -- deren Zustimmung steckt in
+  // einem Vertrag ausserhalb der App, nicht in einer Checkbox.
+  acceptedTermsVersion String?
+  acceptedTermsAt      DateTime?
   createdAt DateTime @default(now())
 
   memberships   StaffVenueMembership[]
@@ -285,6 +290,15 @@ model VenueApplication {
   // is time-limited.
   documentDeletedAt DateTime?
   createdVenueId String?
+  // Zustimmung zu den Location-Nutzungsbedingungen, erhoben als Pflicht-
+  // Checkbox im Bewerbungsformular. Nullable, weil Bewerbungen von vor dem
+  // 25.08.2026 keine haben -- nachtraeglich abgefragt wird nichts.
+  // Gespeichert wird die Version, nicht der Wortlaut: anders als bei
+  // WithdrawalConsent (ein Satz) ist das hier ein vollstaendiges
+  // Vertragsdokument, und TERMS_VERSION zeigt eindeutig auf die im Repo
+  // versionierte Fassung.
+  acceptedTermsVersion String?
+  acceptedTermsAt      DateTime?
   createdAt      DateTime  @default(now())
 
   @@index([status, createdAt])

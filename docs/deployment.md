@@ -440,8 +440,28 @@ Weg heraus ist die Admin-Route
 - Bei einer Absage wird die Datei gelöscht, die Entscheidung samt Grund
   bleibt auf der `VenueApplication`-Zeile stehen.
 
-Das Schema-Update ist rein additiv (neue Tabelle `VenueApplication`), also ein
-normaler `prisma db push` ohne `--accept-data-loss`.
+**Zustimmung zu den Nutzungsbedingungen.** Das Formular hat seit dem
+25.08.2026 eine Pflicht-Checkbox mit Link auf `/location-bedingungen`; ohne
+Haken ist der Absende-Button aus, und `POST /venue-applications` weist die
+Bewerbung zusätzlich mit `code: "LOCATION_TERMS_REQUIRED"` ab. Gespeichert
+werden `acceptedTermsVersion` und `acceptedTermsAt` auf der
+`VenueApplication`, angezeigt unter `/admin/applications`, und bei der
+Freigabe auf die `Venue` übernommen — dort werden sie gebraucht, wenn die
+Bewerbung nach sechs Monaten nur noch ein Prüfvermerk ohne Dokument ist.
+
+Die Version wird **serverseitig** aus `TERMS_VERSION` gesetzt, nicht aus dem
+Request übernommen: sonst bestimmte der Absender, welcher Fassung er
+zugestimmt haben will. Anders als bei `WithdrawalConsent` wird der Wortlaut
+nicht mitkopiert — das ist dort ein einzelner Satz, hier ein vollständiges
+Vertragsdokument, und `TERMS_VERSION` zeigt eindeutig auf die im Repo
+versionierte Fassung. Beide Felder sind nullable: Bewerbungen von vor der
+Checkbox haben keine, und nachträglich abgefragt wird nichts. Bei einer
+`Venue`, die wir direkt angelegt haben, bleiben sie ebenfalls leer — deren
+Zustimmung steckt in einem Vertrag außerhalb der App.
+
+Das Schema-Update ist rein additiv (neue Tabelle `VenueApplication`, später
+`acceptedTermsVersion`/`acceptedTermsAt` auf `VenueApplication` und `Venue`),
+also ein normaler `prisma db push` ohne `--accept-data-loss`.
 
 ## Rechtstexte und ihre Fassungen
 
