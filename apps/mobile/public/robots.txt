@@ -1,2 +1,9 @@
+# Kein Disallow: Die Mobile-Web-Version soll nicht in den Index, und dafuer
+# sorgt der X-Robots-Tag: noindex, den Uberspace auf web.velvet-network.app
+# ausliefert. Ein Crawler muss die Seite aber abrufen koennen, um diesen
+# Header ueberhaupt zu lesen -- ein "Disallow: /" wuerde genau den Abruf
+# verhindern und damit die eigene noindex-Anweisung verstecken. Die URL
+# koennte dann aus jedem eingehenden Link trotzdem im Index landen.
+# Gleiche Begruendung wie in apps/dashboard/app/robots.ts fuer /making-of.
 User-agent: *
-Disallow: /
+Allow: /

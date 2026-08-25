@@ -35,13 +35,27 @@ list`, zeigt nichts Kontoweites). Die App-eigene `ALLOWED_ORIGINS`-Allowlist
 in `server/src/index.ts` reicht allein aus, kein `uberspace web header set`
 nötig.
 
-`web.velvet-network.app` bekommt weiterhin `X-Robots-Tag: noindex, nofollow`,
-damit die Mobile-Web-Version nicht von Suchmaschinen indexiert wird — ergänzt
-durch `apps/mobile/public/robots.txt` (`Disallow: /`):
+`web.velvet-network.app` bekommt `X-Robots-Tag: noindex`, damit die
+Mobile-Web-Version nicht von Suchmaschinen indexiert wird:
 
 ```bash
-uberspace web header add 'web.velvet-network.app/' X-Robots-Tag 'noindex, nofollow'
+uberspace web header add 'web.velvet-network.app/' X-Robots-Tag 'noindex'
 ```
+
+**`apps/mobile/public/robots.txt` darf kein `Disallow: /` enthalten** — das ist
+dieselbe Falle wie bei `/making-of` im Dashboard: Ein Crawler muss die Seite
+abrufen, um den `noindex`-Header überhaupt zu lesen. Ein `Disallow` verhindert
+genau diesen Abruf, versteckt damit die eigene noindex-Anweisung, und die URL
+kann aus jedem eingehenden Link trotzdem im Index landen — dann als nackter
+Eintrag ohne Snippet. Entweder `Disallow` oder `noindex`, und wirksam ist nur
+`noindex`. Das `nofollow` von früher ist ersatzlos entfallen: Bei einer Seite,
+die ohnehin nicht in den Index soll, bringt es nichts.
+
+`uberspace web header add` überschreibt einen bestehenden Eintrag nicht,
+sondern legt einen zweiten daneben (der Header wird dann doppelt ausgeliefert).
+Vor einer Wertänderung erst `uberspace web header del
+'web.velvet-network.app/' X-Robots-Tag`, dann neu hinzufügen; `uberspace web
+header list` zeigt den Ist-Zustand.
 
 ## Datenbank
 
