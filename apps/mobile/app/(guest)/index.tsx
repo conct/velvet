@@ -8,6 +8,7 @@ import { Avatar, Card, Divider, GoldButton, Heading, Label, Screen, TierBadge } 
 import { ApiError, uploadGuestPhoto } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useLocale } from "../../lib/locale-context";
+import { TABLET_CONTENT_WIDTH, useIsTablet } from "../../lib/use-tablet";
 
 // Abmelden liegt zusätzlich hier oben, weil der Knopf am Ende der Seite unter
 // Statuskarte, QR-Button, Premium- und Einladungs-Kachel verschwindet -- in
@@ -24,6 +25,7 @@ function LogoutIcon() {
 }
 
 export default function GuestHome() {
+  const isTablet = useIsTablet();
   const { token, guestProfile, refreshGuestProfile, deleteAccount, logout } = useAuth();
   const { t } = useLocale();
   const [refreshing, setRefreshing] = useState(false);
@@ -96,7 +98,7 @@ export default function GuestHome() {
   return (
     <Screen>
       <ScrollView
-        contentContainerStyle={styles.container}
+        contentContainerStyle={[styles.container, isTablet && styles.tabletWidth]}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.gold} />}
       >
         <View style={styles.headerRow}>
@@ -161,6 +163,8 @@ export default function GuestHome() {
 
 const styles = StyleSheet.create({
   container: { padding: 24, paddingTop: 60, paddingBottom: 60 },
+  // Auf Tablets laeuft der Inhalt sonst ueber die volle iPad-Breite.
+  tabletWidth: { width: "100%", maxWidth: TABLET_CONTENT_WIDTH, alignSelf: "center" },
   headerRow: { flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" },
   headerLogout: { marginTop: 4 },
   avatarRow: { flexDirection: "row", alignItems: "center", gap: 16, marginTop: 20 },

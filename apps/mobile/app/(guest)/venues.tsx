@@ -5,6 +5,7 @@ import { Card, Heading, Input, Label, Screen } from "../../components/ui";
 import { apiFetch } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useLocale } from "../../lib/locale-context";
+import { TABLET_CONTENT_WIDTH, useIsTablet } from "../../lib/use-tablet";
 
 interface Relationship {
   venue: { id: string; name: string; address: string };
@@ -14,6 +15,7 @@ interface Relationship {
 }
 
 export default function GuestVenues() {
+  const isTablet = useIsTablet();
   const { token } = useAuth();
   const { t } = useLocale();
   const FLAG_LABEL: Record<string, string> = { VIP: t.mobile.venues.flagVip, BANNED: t.mobile.venues.flagBanned, NONE: "" };
@@ -73,7 +75,7 @@ export default function GuestVenues() {
       <FlatList
         data={filtered}
         keyExtractor={(r) => r.venue.id}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, isTablet && styles.tabletWidth]}
         ListEmptyComponent={
           <Text style={styles.empty}>
             {relationships.length === 0 ? t.mobile.venues.emptyNoVisits : t.mobile.venues.emptyNoResults}
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: 24, paddingTop: 60, paddingBottom: 12, gap: 12 },
   search: { marginTop: 4 },
   list: { paddingHorizontal: 24, paddingBottom: 40, gap: 12 },
+  tabletWidth: { width: "100%", maxWidth: TABLET_CONTENT_WIDTH, alignSelf: "center" },
   card: { gap: 4 },
   row: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
   details: { flex: 1, gap: 4 },
