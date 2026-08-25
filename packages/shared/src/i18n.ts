@@ -123,6 +123,7 @@ export interface Translations {
     footerImpressum: string;
     footerDatenschutz: string;
     footerWerbematerial: string;
+    footerPresse: string;
     footerAgb: string;
     footerWiderruf: string;
     footerLocationTerms: string;
@@ -423,6 +424,31 @@ export interface Translations {
       unhide: string;
       unhiding: string;
       unhideFailed: string;
+    };
+    presse: {
+      eyebrow: string;
+      title: string;
+      intro: string;
+      factsHeading: string;
+      facts: { label: string; value: string }[];
+      boilerplateHeading: string;
+      boilerplateIntro: string;
+      shortLabel: string;
+      shortText: string;
+      longLabel: string;
+      longText: string;
+      copyButton: string;
+      copiedButton: string;
+      logosHeading: string;
+      logosIntro: string;
+      logoOnDark: string;
+      logoTransparent: string;
+      downloadButton: string;
+      printBody: string;
+      printLinkLabel: string;
+      contactHeading: string;
+      contactBody: string;
+      contactButton: string;
     };
     werbematerial: {
       eyebrow: string;
@@ -849,6 +875,7 @@ const de: Translations = {
     footerImpressum: "Impressum",
     footerDatenschutz: "Datenschutz",
     footerWerbematerial: "Werbematerial",
+    footerPresse: "Presse",
     footerAgb: "AGB",
     footerWiderruf: "Widerruf",
     footerLocationTerms: "Bedingungen für Locations",
@@ -1155,6 +1182,42 @@ const de: Translations = {
       unhide: "Wieder einblenden",
       unhiding: "Blende ein…",
       unhideFailed: "Einblenden fehlgeschlagen",
+    },
+    presse: {
+      eyebrow: "Presse",
+      title: "Pressebereich",
+      intro:
+        "Material für die Berichterstattung über VELVET: Beschreibungstexte zum Übernehmen, Logos und die wichtigsten Eckdaten. Alles darf im redaktionellen Zusammenhang ohne Rückfrage verwendet werden.",
+      factsHeading: "Auf einen Blick",
+      facts: [
+        { label: "Was es ist", value: "Geteiltes Vertrauensnetzwerk für den Türstand" },
+        { label: "Für wen", value: "Gäste, Türsteher und Sicherheitsdienste, Clubbetreiber" },
+        { label: "Plattformen", value: "iOS, Android, Web-Dashboard" },
+        { label: "Sprachen", value: "Deutsch, Englisch, Polnisch, Spanisch" },
+        { label: "Sitz", value: "Dürrröhrsdorf-Dittersbach, Deutschland" },
+        { label: "Kontakt", value: "mail@velvet-network.app" },
+      ],
+      boilerplateHeading: "Beschreibungstexte",
+      boilerplateIntro: "Zwei Längen, beide freigegeben. Der Knopf legt den Text in die Zwischenablage.",
+      shortLabel: "Kurz — ein Satz",
+      shortText:
+        "VELVET ist ein geteiltes Vertrauensnetzwerk für den Türstand: Gäste bauen sich eine Reputation auf, die über einen einzelnen Club hinausreicht.",
+      longLabel: "Lang — ein Absatz",
+      longText:
+        "VELVET ersetzt die Papierliste und das Bauchgefühl am Einlass durch ein digitales Gästeprofil, das standortübergreifend gilt. Gäste legen ein Profil mit Foto an und zeigen an der Tür einen QR-Code. Türsteher sehen beim Scan sofort Foto, Status und Vorgeschichte — auch aus anderen Häusern im Netzwerk. Ein an einer Location vergebenes Hausverbot ist damit an jeder anderen teilnehmenden Tür sichtbar, und Betreiber fangen nicht jeden Abend bei null an.",
+      copyButton: "Text kopieren",
+      copiedButton: "Kopiert",
+      logosHeading: "Logos",
+      logosIntro: "Bitte nicht verzerren, einfärben oder mit anderen Elementen zu einem neuen Zeichen verbinden.",
+      logoOnDark: "Logo auf Dunkel",
+      logoTransparent: "Logo freigestellt",
+      downloadButton: "Herunterladen",
+      printBody: "Flyer, Aufsteller und Visitenkarte für den Druck liegen beim Werbematerial.",
+      printLinkLabel: "Zum Werbematerial",
+      contactHeading: "Anfragen",
+      contactBody:
+        "Für Interviews, Bildmaterial in höherer Auflösung oder Fragen dazu, wie das Netzwerk im Betrieb funktioniert.",
+      contactButton: "E-Mail schreiben",
     },
     werbematerial: {
       eyebrow: "Für Clubbetreiber",
@@ -1812,6 +1875,7 @@ const en: Translations = {
     footerImpressum: "Legal notice",
     footerDatenschutz: "Privacy",
     footerWerbematerial: "Promo material",
+    footerPresse: "Press",
     footerAgb: "Terms",
     footerWiderruf: "Withdrawal",
     footerLocationTerms: "Terms for locations",
@@ -2118,6 +2182,42 @@ const en: Translations = {
       unhide: "Unhide",
       unhiding: "Unhiding…",
       unhideFailed: "Failed to unhide",
+    },
+    presse: {
+      eyebrow: "Press",
+      title: "Press kit",
+      intro:
+        "Material for reporting on VELVET: descriptions you can lift as they are, logos, and the key facts. Everything here may be used in an editorial context without asking first.",
+      factsHeading: "At a glance",
+      facts: [
+        { label: "What it is", value: "A shared trust network for the door" },
+        { label: "Who it serves", value: "Guests, door staff and security, venue operators" },
+        { label: "Platforms", value: "iOS, Android, web dashboard" },
+        { label: "Languages", value: "German, English, Polish, Spanish" },
+        { label: "Based in", value: "Dürrröhrsdorf-Dittersbach, Germany" },
+        { label: "Contact", value: "mail@velvet-network.app" },
+      ],
+      boilerplateHeading: "Descriptions",
+      boilerplateIntro: "Two lengths, both cleared for use. The button copies the text to your clipboard.",
+      shortLabel: "Short — one sentence",
+      shortText:
+        "VELVET is a shared trust network for the door: guests build a reputation that reaches beyond any single club.",
+      longLabel: "Long — one paragraph",
+      longText:
+        "VELVET replaces the paper list and the gut call at the door with a digital guest profile that travels between venues. Guests set up a profile with a photo and show a QR code at the entrance. Door staff scan it and immediately see the photo, the status and the history — including from other venues in the network. A ban issued at one location is visible at every other participating door, so operators no longer start from scratch each night.",
+      copyButton: "Copy text",
+      copiedButton: "Copied",
+      logosHeading: "Logos",
+      logosIntro: "Please do not stretch, recolour, or combine them with other elements into a new mark.",
+      logoOnDark: "Logo on dark",
+      logoTransparent: "Logo, transparent",
+      downloadButton: "Download",
+      printBody: "Flyers, standees and business cards for print are with the promotional material.",
+      printLinkLabel: "Promotional material",
+      contactHeading: "Enquiries",
+      contactBody:
+        "For interviews, higher-resolution imagery, or questions about how the network works in practice.",
+      contactButton: "Send an email",
     },
     werbematerial: {
       eyebrow: "For venue operators",
@@ -2774,6 +2874,7 @@ const pl: Translations = {
     footerImpressum: "Nota prawna",
     footerDatenschutz: "Prywatność",
     footerWerbematerial: "Materiały reklamowe",
+    footerPresse: "Prasa",
     footerAgb: "Regulamin",
     footerWiderruf: "Odstąpienie",
     footerLocationTerms: "Warunki dla lokali",
@@ -3080,6 +3181,42 @@ const pl: Translations = {
       unhide: "Pokaż ponownie",
       unhiding: "Pokazywanie…",
       unhideFailed: "Nie udało się pokazać ponownie",
+    },
+    presse: {
+      eyebrow: "Prasa",
+      title: "Materiały dla prasy",
+      intro:
+        "Materiały do publikacji o VELVET: gotowe opisy, logotypy i najważniejsze fakty. Wszystko można wykorzystać w kontekście redakcyjnym bez wcześniejszego pytania.",
+      factsHeading: "W skrócie",
+      facts: [
+        { label: "Czym jest", value: "Wspólna sieć zaufania dla wejścia do klubu" },
+        { label: "Dla kogo", value: "Goście, ochrona i selekcjonerzy, właściciele lokali" },
+        { label: "Platformy", value: "iOS, Android, panel internetowy" },
+        { label: "Języki", value: "niemiecki, angielski, polski, hiszpański" },
+        { label: "Siedziba", value: "Dürrröhrsdorf-Dittersbach, Niemcy" },
+        { label: "Kontakt", value: "mail@velvet-network.app" },
+      ],
+      boilerplateHeading: "Opisy",
+      boilerplateIntro: "Dwie długości, obie zatwierdzone. Przycisk kopiuje tekst do schowka.",
+      shortLabel: "Krótko — jedno zdanie",
+      shortText:
+        "VELVET to wspólna sieć zaufania dla wejścia do klubu: goście budują reputację, która sięga poza pojedynczy lokal.",
+      longLabel: "Dłużej — jeden akapit",
+      longText:
+        "VELVET zastępuje papierową listę i przeczucie przy wejściu cyfrowym profilem gościa, który działa w wielu lokalach. Goście zakładają profil ze zdjęciem i pokazują przy drzwiach kod QR. Ochrona skanuje go i od razu widzi zdjęcie, status i historię — również z innych lokali w sieci. Zakaz wstępu wydany w jednym miejscu jest widoczny przy każdych innych drzwiach w sieci, więc właściciele nie zaczynają co wieczór od zera.",
+      copyButton: "Kopiuj tekst",
+      copiedButton: "Skopiowano",
+      logosHeading: "Logotypy",
+      logosIntro: "Prosimy nie rozciągać, nie przebarwiać ani nie łączyć ich z innymi elementami w nowy znak.",
+      logoOnDark: "Logo na ciemnym tle",
+      logoTransparent: "Logo bez tła",
+      downloadButton: "Pobierz",
+      printBody: "Ulotki, stojaki i wizytówki do druku znajdują się w materiałach reklamowych.",
+      printLinkLabel: "Materiały reklamowe",
+      contactHeading: "Zapytania",
+      contactBody:
+        "W sprawie wywiadów, zdjęć w wyższej rozdzielczości lub pytań o działanie sieci w praktyce.",
+      contactButton: "Napisz e-mail",
     },
     werbematerial: {
       eyebrow: "Dla właścicieli lokali",
@@ -3737,6 +3874,7 @@ const es: Translations = {
     footerImpressum: "Aviso legal",
     footerDatenschutz: "Privacidad",
     footerWerbematerial: "Material promocional",
+    footerPresse: "Prensa",
     footerAgb: "Condiciones",
     footerWiderruf: "Desistimiento",
     footerLocationTerms: "Condiciones para locales",
@@ -4043,6 +4181,42 @@ const es: Translations = {
       unhide: "Mostrar de nuevo",
       unhiding: "Mostrando…",
       unhideFailed: "Error al mostrar de nuevo",
+    },
+    presse: {
+      eyebrow: "Prensa",
+      title: "Área de prensa",
+      intro:
+        "Material para informar sobre VELVET: descripciones listas para usar, logotipos y los datos clave. Todo puede utilizarse en contexto editorial sin necesidad de consultarnos.",
+      factsHeading: "De un vistazo",
+      facts: [
+        { label: "Qué es", value: "Una red de confianza compartida para la puerta" },
+        { label: "Para quién", value: "Invitados, porteros y seguridad, responsables de locales" },
+        { label: "Plataformas", value: "iOS, Android, panel web" },
+        { label: "Idiomas", value: "alemán, inglés, polaco, español" },
+        { label: "Sede", value: "Dürrröhrsdorf-Dittersbach, Alemania" },
+        { label: "Contacto", value: "mail@velvet-network.app" },
+      ],
+      boilerplateHeading: "Descripciones",
+      boilerplateIntro: "Dos longitudes, ambas aprobadas. El botón copia el texto al portapapeles.",
+      shortLabel: "Breve — una frase",
+      shortText:
+        "VELVET es una red de confianza compartida para la puerta: los invitados construyen una reputación que va más allá de un solo local.",
+      longLabel: "Largo — un párrafo",
+      longText:
+        "VELVET sustituye la lista en papel y la intuición en la puerta por un perfil digital del invitado que funciona entre locales. Los invitados crean un perfil con foto y muestran un código QR en la entrada. El personal lo escanea y ve al instante la foto, el estado y el historial — también el de otros locales de la red. Un veto emitido en un local es visible en cualquier otra puerta participante, de modo que los responsables no empiezan de cero cada noche.",
+      copyButton: "Copiar texto",
+      copiedButton: "Copiado",
+      logosHeading: "Logotipos",
+      logosIntro: "No los deformes, no cambies su color ni los combines con otros elementos para crear una marca nueva.",
+      logoOnDark: "Logotipo sobre fondo oscuro",
+      logoTransparent: "Logotipo sin fondo",
+      downloadButton: "Descargar",
+      printBody: "Los folletos, expositores y tarjetas para imprimir están en el material promocional.",
+      printLinkLabel: "Material promocional",
+      contactHeading: "Consultas",
+      contactBody:
+        "Para entrevistas, imágenes en mayor resolución o preguntas sobre cómo funciona la red en la práctica.",
+      contactButton: "Escribir un correo",
     },
     werbematerial: {
       eyebrow: "Para propietarios de locales",

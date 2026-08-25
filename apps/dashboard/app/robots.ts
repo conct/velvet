@@ -21,9 +21,11 @@ export default function robots(): MetadataRoute.Robots {
         "/admin/applications",
         "/admin/hidden-venues",
         "/venues/new",
-        // Guest-facing explainer handed out via /werbematerial -- deliberately
-        // unlisted so it does not compete with /datenschutz in search.
-        "/fuer-gaeste",
+        // /fuer-gaeste is NOT listed here for the same reason /making-of is
+        // not: it carries a noindex tag, and a Disallow would stop the crawler
+        // from ever fetching the page that states it -- leaving it indexable
+        // from any inbound link, which is the outcome the tag exists to
+        // prevent.
       ],
     },
     sitemap: "https://velvet-network.app/sitemap.xml",
