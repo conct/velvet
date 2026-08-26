@@ -21,6 +21,19 @@ $DashboardDir = Join-Path $RepoRoot "apps\dashboard"
 $ApiUrl = "https://api.velvet-network.app"
 $RemoteHost = "u8"
 $RemoteDir = "~/velvet-dashboard/apps/dashboard/"
+$SharedDir = Join-Path $RepoRoot "packages\shared"
+$RemoteSharedDir = "~/velvet-dashboard/packages/shared/"
+
+# @velvet/shared wird als kompiliertes Paket konsumiert, nicht als Quelltext.
+# Ohne diesen Schritt baut das Dashboard gegen ein womoeglich veraltetes dist,
+# und der Fehler faellt nirgends auf -- er wird einfach mitgebacken.
+Write-Host "-- Baue @velvet/shared"
+Push-Location $RepoRoot
+try {
+    npm run build --workspace=@velvet/shared
+    if ($LASTEXITCODE -ne 0) { throw "Build von @velvet/shared fehlgeschlagen (Exit $LASTEXITCODE)" }
+}
+finally { Pop-Location }
 
 Push-Location $DashboardDir
 try {
@@ -76,6 +89,19 @@ try {
         scp -r "$stageDir\$dir" "${RemoteHost}:${RemoteDir}"
         if ($LASTEXITCODE -ne 0) { throw "scp von $dir fehlgeschlagen (Exit $LASTEXITCODE)" }
     }
+
+    # Der Server haelt eine eigene shared-Kopie fuer alles, was zur Laufzeit
+    # rendert. Vorgerenderte Seiten wie /impressum sehen korrekt aus, waehrend
+    # diese Kopie tagelang hinterherhaengt -- genau so lag die geloeschte
+    # Steuernummer am 26.08.2026 noch auf der Platte, obwohl die Seite sauber
+    # war. Verzeichnisform wie oben, nicht dist/* -- PowerShell expandiert
+    # Wildcards fuer native Befehle nicht.
+    Write-Host "-- Lade @velvet/shared hoch"
+    ssh $RemoteHost "chmod -R u+w $RemoteSharedDir 2>/dev/null; mkdir -p $RemoteSharedDir; true"
+    scp -r "$SharedDir\dist" "${RemoteHost}:${RemoteSharedDir}"
+    if ($LASTEXITCODE -ne 0) { throw "scp von shared/dist fehlgeschlagen (Exit $LASTEXITCODE)" }
+    scp "$SharedDir\package.json" "${RemoteHost}:${RemoteSharedDir}"
+    if ($LASTEXITCODE -ne 0) { throw "scp von shared/package.json fehlgeschlagen (Exit $LASTEXITCODE)" }
 
     Write-Host "-- Sperre Zielverzeichnisse wieder"
     ssh $RemoteHost "chmod -R 500 ${RemoteDir}app ${RemoteDir}components ${RemoteDir}lib ${RemoteDir}public && chmod -R 700 ${RemoteDir}.next"

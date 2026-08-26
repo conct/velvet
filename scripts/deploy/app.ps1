@@ -23,6 +23,17 @@ $RemoteHost = "u8"
 $RemoteDir = "~/html/velvet-app"
 $RemoteTarball = "~/velvet-app-dist.tgz"
 
+# Wie beim Dashboard: der Web-Export backt @velvet/shared mit ein, also muss
+# das kompilierte dist vorher aktuell sein. Einen Upload braucht es hier nicht
+# -- der Export ist ein statisches Bundle ohne Laufzeit-Kopie auf dem Server.
+Write-Host "-- Baue @velvet/shared"
+Push-Location $RepoRoot
+try {
+    npm run build --workspace=@velvet/shared
+    if ($LASTEXITCODE -ne 0) { throw "Build von @velvet/shared fehlgeschlagen (Exit $LASTEXITCODE)" }
+}
+finally { Pop-Location }
+
 Push-Location $MobileDir
 try {
     # apps/mobile/.env zeigt auf http://localhost:4000. Ob eine bereits

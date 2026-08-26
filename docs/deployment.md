@@ -242,10 +242,25 @@ Browser-Fallback. Setup:
 
 `@velvet/shared` braucht dafür einen echten Build-Schritt (`npm run build`
 dort), da `server`, `apps/dashboard` und `apps/mobile` es als kompiliertes
-Package konsumieren, nicht als rohe TypeScript-Quelle. Beide Server-Deploy-
-Ziele (`velvet-api`, `velvet-dashboard`) haben eine eigene
-`packages/shared/`-Kopie auf dem Server — bei Änderungen an Shared-Typen
-beide aktualisieren.
+Package konsumieren, nicht als rohe TypeScript-Quelle.
+
+**Seit dem 26.08.2026 erledigen die beiden Skripte das selbst.** `dashboard.ps1`
+und `app.ps1` übersetzen `@velvet/shared` vor dem jeweiligen Build, und
+`dashboard.ps1` lädt die kompilierte `dist/` zusätzlich nach
+`~/velvet-dashboard/packages/shared/` hoch. Vorher war beides Handarbeit, und
+genau das ging schief: das Dashboard rendert `/impressum` beim Build statisch
+vor, die Seite sah also korrekt aus, während die Laufzeit-Kopie auf dem Server
+tagelang die alte Fassung behielt — inklusive einer Steuernummer, die aus
+Datenschutzgründen entfernt worden war.
+
+`app.ps1` lädt bewusst *keine* Kopie hoch: der Web-Export ist ein statisches
+Bundle, dort gibt es zur Laufzeit nichts nachzuladen.
+
+**Für die API bleibt es Handarbeit** — dafür gibt es kein Skript.
+`~/velvet-api/packages/shared/` gehört bei jeder Shared-Änderung mit
+hochgeladen, sonst laufen die beiden Server-Kopien auseinander. Prüfen lässt
+sich der Stand ohne Zeitstempel-Raterei über den Inhalt, z.B.
+`ssh u8 "grep -c TERMS_VERSION ~/velvet-api/packages/shared/dist/terms.js"`.
 
 **`scp -r <verzeichnis> ziel/` verschachtelt beim zweiten Mal.** Existiert das
 Zielverzeichnis noch nicht, legt `scp` es an — existiert es bereits, kopiert es
