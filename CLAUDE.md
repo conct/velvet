@@ -49,13 +49,21 @@ geraten — braucht erst eine Entscheidung des Nutzers.
 - Aus einer Remote-Cloud-Session ist SSH (Port 22) zu Uberspace nicht
   erreichbar — Deploy/SSH-Aufgaben sind nur über eine lokale Session beim
   Nutzer möglich, nicht von hier aus.
-- **Für alles, was sich nicht per Routine automatisieren lässt** (v.a.
-  Deploy, da SSH von hier aus nicht erreichbar ist): keine neue
-  Infrastruktur dafür bauen (siehe das verworfene Runner-Experiment oben),
-  sondern als klare, einfache Befehlsfolge aufbereiten, die der Nutzer
-  bzw. seine lokale Session copy-paste ausführen kann. Auf Nachfrage die
-  Befehle als Erinnerung erneut auflisten, statt nur auf `docs/` zu
-  verweisen.
+- **Deploy läuft über Skripte, nicht über Copy-paste.** Seit dem
+  26.08.2026 gibt es `scripts/deploy/{api,dashboard,app}.ps1` und darüber
+  `ship.ps1`, das pusht und genau die betroffenen Ziele deployed
+  (Pfad-Zuordnung siehe `docs/deployment.md`). Aus einer **lokalen**
+  Session diese Skripte benutzen, statt Befehlsfolgen zum Abtippen zu
+  liefern — vorher prüfen, ob man lokal ist, statt es anzunehmen.
+- **Gebaut wird lokal.** Entscheidung von Daniel (26.08.2026): solange der
+  Build auf seinem Rechner läuft, keine Build-Infrastruktur bauen. Ein
+  Runner *auf* Uberspace ist am 24.08.2026 an zu wenig RAM gescheitert;
+  ein gehosteter GitHub-Runner bräuchte einen Deploy-SSH-Key als Secret in
+  einem öffentlichen Repo und ist als Plan B vermerkt, nicht gebaut.
+- **Aus einer Remote-Cloud-Session** ist SSH nicht erreichbar, `ship.ps1`
+  also nicht nutzbar. Dann gilt weiter: keine neue Infrastruktur bauen,
+  sondern die Befehlsfolge aufbereiten. Auf Nachfrage die Befehle als
+  Erinnerung erneut auflisten, statt nur auf `docs/` zu verweisen.
 
 ## Infrastruktur
 

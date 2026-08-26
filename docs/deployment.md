@@ -151,6 +151,50 @@ Export fehlt, und prüft nach dem Neustart, ob `web.velvet-network.app` und die
 `apple-app-site-association` mit `200` antworten. Für das Backend (Punkt 1)
 gibt es kein Skript.
 
+### Der normale Weg: `ship.ps1`
+
+Seit dem 26.08.2026 gibt es einen Befehl, der pusht und anschliessend genau die
+Ziele deployed, die der Push berührt hat:
+
+```powershell
+.\scripts\deploy\ship.ps1            # pushen + betroffene Ziele deployen
+.\scripts\deploy\ship.ps1 -DryRun    # nur anzeigen, was passieren wuerde
+.\scripts\deploy\ship.ps1 -Redeploy  # ohne neue Commits alle drei deployen
+```
+
+Die Zuordnung von Pfad zu Ziel:
+
+| Geänderte Pfade | Deployed |
+|---|---|
+| `server/**`, `package.json`, `package-lock.json` | `api.ps1` |
+| `apps/dashboard/**` | `dashboard.ps1` |
+| `apps/mobile/**` | `app.ps1` |
+| `packages/shared/**` | alle drei |
+| `docs/**`, `scripts/**`, `CLAUDE.md` | keines — es wird nur gepusht |
+
+**Warum ein Befehl und kein Git-Hook.** Git kennt keinen `post-push`-Hook, und
+ein `pre-push`-Hook liefe in der falschen Richtung: ein gescheiterter Deploy
+würde dann den Push blockieren, mit dem man den Fix nachreichen will. Deshalb
+erst pushen, dann deployen — in dieser Reihenfolge.
+
+**Zwei Grenzen, die man kennen muss:**
+
+- Es läuft nur dort, wo es aufgerufen wird. Pushes der wöchentlichen
+  Cloud-Routine oder einer anderen Session lösen **keinen** Deploy aus — von
+  dort ist SSH zu Uberspace ohnehin nicht erreichbar. Nach so einem Push bleibt
+  `ship.ps1 -Redeploy` von diesem Rechner aus der Weg.
+- Scheitert ein Ziel, laufen die übrigen trotzdem (sie hängen nicht
+  voneinander ab), und die Zusammenfassung sagt ausdrücklich, dass `master`
+  weiter ist als die Produktion.
+
+**Warum lokal gebaut wird und nicht in GitHub Actions.** Entscheidung von
+Daniel (26.08.2026): bauen bleibt auf seinem Rechner, solange das geht. Ein
+Runner *auf* Uberspace war am 24.08.2026 schon gescheitert (zu wenig RAM). Der
+verbleibende Weg wäre ein *gehosteter* GitHub-Runner, der baut und nur das
+fertige Artefakt hochlädt — der bräuchte aber einen Deploy-SSH-Key als Secret
+in einem öffentlichen Repo. Solange lokal gebaut werden kann, ist das nicht
+nötig; falls es einmal nicht mehr geht, ist das der vermerkte Plan B.
+
 ### Wenn der Upload plötzlich in `Connection timed out` läuft
 
 Am 25.08.2026 scheiterte `dashboard.ps1` zweimal beim `scp` mit
