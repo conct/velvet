@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Polyline } from "react-native-svg";
-import { Avatar, Card, Divider, GoldButton, Heading, Label, Screen, TierBadge } from "../../components/ui";
+import { Avatar, Card, Divider, GoldButton, Heading, Label, LocaleIndicator, Screen, TierBadge } from "../../components/ui";
 import { ApiError, uploadGuestPhoto } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useLocale } from "../../lib/locale-context";
@@ -149,6 +149,11 @@ export default function GuestHome() {
           <Text style={styles.inviteText}>{t.mobile.invite.shareSubtitle}</Text>
         </Pressable>
 
+        <Pressable style={styles.languageRow} onPress={() => router.push("/language")}>
+          <Text style={styles.languageLabel}>{t.languagePage.title}</Text>
+          <LocaleIndicator />
+        </Pressable>
+
         <View style={{ marginTop: 32 }}>
           <GoldButton title={t.mobile.home.logout} variant="outline" onPress={logout} />
         </View>
@@ -196,4 +201,18 @@ const styles = StyleSheet.create({
   },
   inviteTitle: { fontFamily: fonts.heading, color: colors.text, fontSize: 16 },
   inviteText: { fontFamily: fonts.body, color: colors.textMuted, fontSize: 13, lineHeight: 19, marginTop: 6 },
+  // Bewusst schlichter als die Premium- und Einladungs-Kachel darueber: das
+  // hier ist eine Einstellung, keine Kachel, die Aufmerksamkeit will.
+  languageRow: {
+    marginTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  languageLabel: { fontFamily: fonts.body, color: colors.text, fontSize: 15 },
 });

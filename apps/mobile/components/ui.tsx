@@ -1,4 +1,4 @@
-import { colors, fonts, LOCALE_FLAGS, radii, tierColors } from "@velvet/shared";
+import { colors, fonts, LOCALE_FLAGS, LOCALE_LABELS, radii, tierColors } from "@velvet/shared";
 import { router } from "expo-router";
 import { useState, type ReactNode } from "react";
 import { useLocale } from "../lib/locale-context";
@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Text,
   TextInput as RNTextInput,
+  useWindowDimensions,
   View,
   type TextInputProps,
 } from "react-native";
@@ -35,11 +36,38 @@ export function Card({ children, style }: { children: ReactNode; style?: object 
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
-export function LanguageSwitcher({ style }: { style?: object } = {}) {
+// Ab dieser Breite zeigen wir die Sprache ausgeschrieben statt als Flagge.
+// 640 ist Tailwinds `sm` und damit derselbe Punkt, an dem der Website-Header
+// umschaltet (apps/dashboard/components/language-switcher.tsx) -- App und
+// Website sollen bei gleicher Fensterbreite gleich aussehen.
+//
+// Der Textfall ist nicht nur Kosmetik: Windows liefert in Segoe UI Emoji
+// bewusst keine Laenderflaggen-Glyphen aus, Chrome und Edge zeigen dort statt
+// der Flagge nichts Brauchbares. Auf einem Desktop -- und das ist praktisch
+// jedes Fenster ueber 640 -- ist das Label die einzige verlaessliche Anzeige.
+const LOCALE_LABEL_MIN_WIDTH = 640;
+
+/**
+ * Nur die Anzeige der aktiven Sprache, ohne eigenes Antippen. Getrennt vom
+ * Schalter, damit eine Zeile, die selbst schon Pressable ist (etwa im Profil),
+ * die Anzeige einbinden kann, ohne zwei Pressables ineinander zu schachteln.
+ */
+export function LocaleIndicator() {
   const { locale } = useLocale();
+  const { width } = useWindowDimensions();
+  const showLabel = width >= LOCALE_LABEL_MIN_WIDTH;
+
+  return (
+    <Text style={showLabel ? styles.langLabelText : styles.langFlagText}>
+      {showLabel ? LOCALE_LABELS[locale] : LOCALE_FLAGS[locale]}
+    </Text>
+  );
+}
+
+export function LanguageSwitcher({ style }: { style?: object } = {}) {
   return (
     <Pressable onPress={() => router.push("/language")} style={[styles.langFlag, style]}>
-      <Text style={styles.langFlagText}>{LOCALE_FLAGS[locale]}</Text>
+      <LocaleIndicator />
     </Pressable>
   );
 }
@@ -212,6 +240,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   langFlagText: { fontSize: 16 },
+  langLabelText: { fontFamily: fonts.bodyMedium, color: colors.gold, fontSize: 14, letterSpacing: 0.3 },
   heading: { fontFamily: fonts.heading, color: colors.text, letterSpacing: 0.3 },
   label: { fontFamily: fonts.body, color: colors.text, fontSize: 15 },
   card: {
