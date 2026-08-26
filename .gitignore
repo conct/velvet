@@ -18,3 +18,8 @@ docs/play-store-listing.md
 # Never served statically (see server/src/routes/venue-applications.ts).
 server/private-uploads/*
 !server/private-uploads/.gitkeep
+
+# Internes Datenblatt: Stammdaten inkl. Steuer-Identifikationsnummer.
+# Dieses Repo ist oeffentlich (github.com/conct/velvet) -- alles unter
+# docs/intern/ bleibt lokal und wird nie committet.
+docs/intern/
