@@ -5,7 +5,6 @@ export const LEGAL_OPERATOR = {
   city: "Dürrröhrsdorf-Dittersbach",
   email: "mail@velvet-network.app",
   phone: "061194584300",
-  taxNumber: "210/246/14465",
 } as const;
 
 export interface LegalSection {
@@ -25,10 +24,6 @@ export const IMPRESSUM_SECTIONS: LegalSection[] = [
   {
     heading: "Kontakt",
     paragraphs: [`E-Mail: ${LEGAL_OPERATOR.email}`, `Telefon: ${LEGAL_OPERATOR.phone}`],
-  },
-  {
-    heading: "Steuernummer",
-    paragraphs: [LEGAL_OPERATOR.taxNumber],
   },
   {
     heading: "Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV",
