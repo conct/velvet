@@ -120,10 +120,11 @@ Kein automatisiertes Deployment — Builds werden lokal erzeugt und per
    halben Stand aus. Stattdessen daneben entpacken und das Verzeichnis
    tauschen (macht das Skript unten so).
 
-Für Dashboard und Mobile-Web gibt es je ein Skript, das den ganzen Ablauf
-inklusive aller Fallstricke abbildet:
+Für alle drei Ziele gibt es je ein Skript, das den ganzen Ablauf inklusive
+aller Fallstricke abbildet:
 
 ```powershell
+.\scripts\deploy\api.ps1         # Punkt 1
 .\scripts\deploy\dashboard.ps1   # Punkt 2
 .\scripts\deploy\app.ps1         # Punkt 3
 ```
@@ -133,6 +134,15 @@ inklusive aller Fallstricke abbildet:
 abbrechen, weil es hängen aussieht. Wird der Lauf trotzdem abgebrochen, bleibt
 `apps/dashboard/.env.local.bak` liegen; das Skript holt sie beim nächsten Lauf
 selbst zurück, aber wer dazwischen lokal entwickelt, steht ohne `.env.local` da.
+
+`api.ps1` (seit 26.08.2026) bildet Punkt 1 vollständig ab: shared und server
+bauen, entsperren, Inhalt statt Verzeichnis hochladen, `npm install` mit
+Erkennung blockierter Postinstall-Skripte, `prisma generate` und `db push`
+**nach** dem Upload, den neuen `dist_new` starten und auf `EADDRINUSE` prüfen,
+erst dann tauschen (mit `[ -d dist_new ]`-Wächter und Zeitstempel im
+Backup-Namen), Restart, Health-Check. Es bricht an jeder Stelle ab, ohne den
+laufenden `dist` anzufassen. Alte `dist.bak-*` löscht es bewusst nicht — das
+ist das Rückfallnetz.
 
 `app.ps1` schiebt zusätzlich `apps/mobile/.env` weg (sie zeigt auf
 `http://localhost:4000` und würde die Produktions-URL verdrängen), bricht ab,
@@ -256,11 +266,11 @@ Datenschutzgründen entfernt worden war.
 `app.ps1` lädt bewusst *keine* Kopie hoch: der Web-Export ist ein statisches
 Bundle, dort gibt es zur Laufzeit nichts nachzuladen.
 
-**Für die API bleibt es Handarbeit** — dafür gibt es kein Skript.
-`~/velvet-api/packages/shared/` gehört bei jeder Shared-Änderung mit
-hochgeladen, sonst laufen die beiden Server-Kopien auseinander. Prüfen lässt
-sich der Stand ohne Zeitstempel-Raterei über den Inhalt, z.B.
-`ssh u8 "grep -c TERMS_VERSION ~/velvet-api/packages/shared/dist/terms.js"`.
+Die API zieht ihre Kopie über `api.ps1` mit. Prüfen lässt sich der Stand ohne
+Zeitstempel-Raterei über den Inhalt, z.B.
+`ssh u8 "grep -c TERMS_VERSION ~/velvet-api/packages/shared/dist/terms.js"` —
+die Zeitstempel der Verzeichnisse stammen vom Upload und sagen nichts über
+den Inhalt.
 
 **`scp -r <verzeichnis> ziel/` verschachtelt beim zweiten Mal.** Existiert das
 Zielverzeichnis noch nicht, legt `scp` es an — existiert es bereits, kopiert es
