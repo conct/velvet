@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Polyline } from "react-native-svg";
-import { Avatar, Card, Divider, GoldButton, Input, Label, Screen, TierBadge } from "../../components/ui";
+import { Avatar, Card, Divider, GoldButton, Input, Label, LocaleIndicator, Screen, TierBadge } from "../../components/ui";
 import { ApiError, apiFetch } from "../../lib/api";
 import { useAuth } from "../../lib/auth-context";
 import { useLocale } from "../../lib/locale-context";
@@ -116,9 +116,19 @@ export default function StaffScanner() {
             <Label muted>{t.mobile.staffScanner.entryScanner}</Label>
             {staffProfile?.venue.name && <Text style={styles.venueName}>{staffProfile.venue.name}</Text>}
           </View>
-          <Pressable onPress={() => logout()} hitSlop={10} accessibilityLabel={t.mobile.staffScanner.logoutLabel} style={{ marginTop: 3 }}>
-            <LogoutIcon />
-          </Pressable>
+          <View style={styles.headerActions}>
+            {/* Personal hat kein Profil, in das eine Einstellungszeile passen
+                wuerde, und der Scanner-Screen ist von Kamera und manueller
+                Eingabe ausgefuellt. Die Kopfzeile ist damit die einzige Stelle,
+                an der die Sprache nach dem Login noch erreichbar ist -- so wie
+                sie es im Dashboard ueber die Sidebar immer ist. */}
+            <Pressable onPress={() => router.push("/language")} hitSlop={10} accessibilityLabel={t.languagePage.title}>
+              <LocaleIndicator />
+            </Pressable>
+            <Pressable onPress={() => logout()} hitSlop={10} accessibilityLabel={t.mobile.staffScanner.logoutLabel} style={{ marginTop: 3 }}>
+              <LogoutIcon />
+            </Pressable>
+          </View>
         </View>
         <Text style={styles.title}>{t.mobile.staffScanner.scanTitle}</Text>
 
@@ -164,6 +174,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-between",
   },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 14 },
   venueName: { fontFamily: fonts.bodySemiBold, color: colors.text, fontSize: 13, marginTop: 2 },
   title: { fontFamily: fonts.heading, color: colors.gold, fontSize: 24, marginTop: 4, marginBottom: 24 },
   cameraFrame: {
