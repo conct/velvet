@@ -98,6 +98,18 @@ mv $RemoteDir.new $RemoteDir
 rm -rf $RemoteDir.old $RemoteTarball
 systemctl --user restart velvet-app
 "@
+    # Das Here-String hat unter Windows CRLF-Zeilenenden. Ungefiltert an die
+    # Bash auf dem Server geschickt haengt damit an jedem Befehl ein \r: aus
+    # "set -e" wird "set -e\r" -- bash meldet "invalid option" und errexit
+    # bleibt AUS, alle Folgefehler laufen also stumm durch. Schlimmer noch legt
+    # "mkdir velvet-app.new\r" ein Verzeichnis an, dessen Name auf ein Carriage
+    # Return endet; das anschliessende "mv velvet-app.new" findet es nicht.
+    # Genau so lief web.velvet-network.app am 26.08.2026 auf 404: neuer Build
+    # hochgeladen, altes Verzeichnis weggeschoben, Tausch gescheitert -- und
+    # ohne wirksames set -e startete der Service trotzdem neu, auf ein
+    # Verzeichnis, das es nicht mehr gab.
+    $remoteScript = $remoteScript -replace "`r`n", "`n"
+
     ssh $RemoteHost $remoteScript
     if ($LASTEXITCODE -ne 0) { throw "Deploy über ssh fehlgeschlagen (Exit $LASTEXITCODE)" }
 

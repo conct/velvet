@@ -163,6 +163,52 @@ verlängern eine fail2ban-Sperre**. Danach `dashboard.ps1` einfach erneut
 laufen lassen; das Skript ist wiederholbar und holt eine liegengebliebene
 `.env.local.bak` selbst zurück.
 
+### Wenn `web.velvet-network.app` nach dem Deploy 404 liefert
+
+Am 26.08.2026 lief `app.ps1` genau so auf 404: Build sauber, Upload sauber,
+Verzeichnistausch gescheitert, Dienst trotzdem neu gestartet — auf ein
+Verzeichnis, das es nicht mehr gab.
+
+Ursache waren die **CRLF-Zeilenenden des PowerShell-Here-Strings**, mit dem
+das Skript den Tausch per `ssh` an die Bash auf dem Server schickt. Unverändert
+übertragen hängt an jeder Zeile ein `\r`:
+
+- aus `set -e` wird `set -e\r` — bash meldet `set: -: invalid option`, und
+  **errexit bleibt aus**, alle Folgefehler laufen stumm weiter;
+- `mkdir velvet-app.new` legt ein Verzeichnis an, dessen Name auf ein Carriage
+  Return endet, und das folgende `mv velvet-app.new velvet-app` findet es
+  nicht mehr — `mv: cannot stat`.
+
+Das alte Verzeichnis war zu dem Zeitpunkt schon nach `velvet-app.old` verschoben.
+Ergebnis: gar kein `velvet-app` mehr, und der Restart serviert ins Leere.
+
+**Das Skript merkt so einen Fehler nicht von selbst.** `ssh` liefert den
+Exit-Status des *letzten* Remote-Befehls — das war der erfolgreiche
+`systemctl restart`, also `0`. Die `$LASTEXITCODE`-Prüfung im Skript kann
+deshalb nicht greifen; aufgefallen ist es erst am HTTP-Check danach.
+
+Behoben in `scripts/deploy/app.ps1` durch
+`$remoteScript = $remoteScript -replace "`r`n", "`n"` vor dem `ssh`-Aufruf.
+Die Zeile ist auch dann nötig, wenn die Datei im Arbeitsverzeichnis gerade
+LF-Enden hat: bei aktivem `core.autocrlf` holt ein frischer Checkout die CRLF
+zurück.
+
+**Erkennen:** `ssh u8 "ls -b ~/html/"` — `ls -b` macht nicht druckbare Zeichen
+sichtbar. Ein Eintrag `velvet-app.new\r` ist der Beweis; ein bloßes `ls`
+zeigt den Namen unauffällig als `velvet-app.new`.
+
+**Reparieren** (der neue Build ist vollständig da, er liegt nur falsch):
+
+```bash
+ssh u8 'set -e; cd ~/html; test ! -e velvet-app; mv velvet-app.new* velvet-app; systemctl --user restart velvet-app'
+```
+
+Der Glob `velvet-app.new*` trifft den Namen mitsamt Carriage Return.
+`test ! -e velvet-app` verhindert, dass ein zweiter Aufruf den bereits
+getauschten Stand nach `velvet-app/velvet-app` hineinschiebt. Danach das
+Backup auf einen sauberen Namen ziehen: `mv velvet-app.old* velvet-app.old`.
+Zurück geht es mit `mv velvet-app.old velvet-app`.
+
 ## Universal Links (iOS) / App Links (Android)
 
 Seit 2026-08-24 konfiguriert, damit ein gescannter `/invite/<code>`-Link auf
