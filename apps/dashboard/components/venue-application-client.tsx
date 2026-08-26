@@ -236,7 +236,7 @@ export function VenueApplicationClient() {
         </div>
       </form>
 
-      <div className="mt-10 flex justify-center gap-4 text-xs text-text-muted">
+      <div className="mt-10 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-text-muted">
         <Link href="/impressum" className="hover:text-text">
           {t.landing.footerImpressum}
         </Link>

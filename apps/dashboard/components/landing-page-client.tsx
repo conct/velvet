@@ -359,7 +359,11 @@ export function LandingPageClient() {
 
       <footer className="flex flex-col items-center gap-2 border-t border-border px-6 py-6 text-center text-xs text-text-muted md:px-10">
         <span>{t.landing.footerTagline}</span>
-        <span className="flex gap-4">
+        {/* flex-wrap ist hier nicht optional: sechs Links mit deutschen
+            Woertern wie "Location anmelden" sind auf einem Telefon breiter als
+            der Viewport, und ohne Umbruch schiebt die Zeile den Footer seitlich
+            aus dem Bild -- links abgeschnittenes "Impressum" inklusive. */}
+        <span className="flex flex-wrap justify-center gap-x-4 gap-y-2">
           <Link href="/impressum" className="hover:text-text">
             {t.landing.footerImpressum}
           </Link>
