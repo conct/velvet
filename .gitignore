@@ -23,3 +23,8 @@ server/private-uploads/*
 # Dieses Repo ist oeffentlich (github.com/conct/velvet) -- alles unter
 # docs/intern/ bleibt lokal und wird nie committet.
 docs/intern/
+
+# Markierung des Autostart-Toolings fuer Hintergrund-Sessions (liegt leer im
+# Projektverzeichnis, wird von aussen angelegt). Gehoert nicht in die
+# Projekthistorie -- und dieses Repo ist oeffentlich.
+.remote_autostart
