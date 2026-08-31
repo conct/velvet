@@ -97,6 +97,12 @@ ssh $RemoteHost "rm -rf $RemoteRoot/server/dist_new"
 if ($LASTEXITCODE -ne 0) { throw "Aufraeumen von dist_new fehlgeschlagen (Exit $LASTEXITCODE)" }
 Copy-DirContents (Join-Path $ServerDir "dist") "$RemoteRoot/server/dist_new"
 
+# Die Freigabe der Install-Skripte lebt als "allowScripts" in der Root-
+# package.json -- und die laedt dieser Deploy oben mit hoch. Ein `npm
+# install-scripts approve` *auf dem Server* wird deshalb beim naechsten Deploy
+# wieder ueberschrieben; die Freigabe gehoert ins Repo, sonst kommt der Fehler
+# bei jedem Deploy zurueck. Genau das ist am 31.08.2026 zweimal passiert.
+#
 # Reihenfolge ist wichtig: `prisma db push` liest das Schema, das auf dem
 # Server liegt. Vor dem Upload ausgefuehrt pusht es das alte und meldet
 # "already in sync", ohne etwas zu tun. Der noch laufende alte Server stoert
@@ -106,7 +112,7 @@ $install = @"
 set -e
 cd $RemoteRoot
 npm install 2>&1 | tee /tmp/velvet-npm-install.log
-if grep -q 'install-scripts' /tmp/velvet-npm-install.log; then
+if grep -q 'install scripts blocked' /tmp/velvet-npm-install.log; then
   echo 'BLOCKIERTE-POSTINSTALL-SKRIPTE'
 fi
 cd server
@@ -120,11 +126,15 @@ $installOutput = ssh $RemoteHost ($install -replace "`r`n", "`n") 2>&1 | Out-Str
 Write-Host $installOutput
 if ($LASTEXITCODE -ne 0) { throw "npm install / prisma auf dem Server fehlgeschlagen (Exit $LASTEXITCODE)" }
 if ($installOutput -match "BLOCKIERTE-POSTINSTALL-SKRIPTE") {
-    throw "npm hat Postinstall-Skripte blockiert (npm warn install-scripts). " +
-          "Betrifft meist @prisma/client, @prisma/engines, prisma, esbuild. " +
-          "Auf dem Server 'npm install-scripts approve <pkg>' fuer jedes Paket " +
-          "ausfuehren, dann 'npm install' erneut -- sonst schlagen prisma/tsx " +
-          "spaeter mit verwirrenden Fehlern fehl. Getauscht wurde noch nichts."
+    throw "npm hat Postinstall-Skripte blockiert. Betrifft meist @prisma/client, " +
+          "@prisma/engines, prisma, esbuild -- ohne deren Skripte fehlen die " +
+          "Prisma-Engines und die esbuild-Binary. Freigegeben wird das ueber " +
+          "'allowScripts' in der Root-package.json, und zwar IM REPO: der Deploy " +
+          "laedt diese Datei hoch, ein 'npm install-scripts approve' auf dem " +
+          "Server ueberlebt den naechsten Deploy also nicht. Nach einem " +
+          "Versions-Update der vier Pakete sind die Eintraege veraltet (sie " +
+          "nennen die Version) und muessen nachgezogen werden. Getauscht wurde " +
+          "noch nichts."
 }
 
 # Der neue Code muss starten, bevor systemctl angefasst wird. EADDRINUSE ist

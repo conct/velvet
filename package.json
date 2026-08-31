@@ -12,5 +12,11 @@
     "dev:dashboard": "npm run dev --workspace=dashboard",
     "dev:mobile": "npm run start --workspace=mobile",
     "seed": "npm run seed --workspace=server"
+  },
+  "allowScripts": {
+    "@prisma/client@5.22.0": true,
+    "@prisma/engines@5.22.0": true,
+    "esbuild@0.28.2": true,
+    "prisma@5.22.0": true
   }
 }
